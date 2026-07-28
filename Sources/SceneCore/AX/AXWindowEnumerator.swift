@@ -17,6 +17,8 @@ public enum AXWindowEnumerator {
         }
 
         var results: [AXWindow] = []
+        var candidatesByPID: [pid_t: [AXWindowCandidate]] = [:]
+        var claimedCandidateIndexesByPID: [pid_t: Set<Int>] = [:]
         for info in list {
             guard
                 let id = info[kCGWindowNumber as String] as? CGWindowID,
@@ -35,9 +37,27 @@ public enum AXWindowEnumerator {
             let centerTopLeft = CGPoint(x: cgBounds.midX, y: cgBounds.midY)
             guard screen.frame.contains(DisplayCoordinates.axToNS(centerTopLeft)) else { continue }
 
+            let candidates: [AXWindowCandidate]
+            if let cached = candidatesByPID[pid] {
+                candidates = cached
+            } else {
+                candidates = windowCandidates(for: pid)
+                candidatesByPID[pid] = candidates
+            }
+
             let bundleID = NSRunningApplication(processIdentifier: pid)?.bundleIdentifier
-            if let axWindow = buildAXWindow(pid: pid, id: id, bundleID: bundleID, bounds: cgBounds) {
+            let claimedIndexes = claimedCandidateIndexesByPID[pid, default: []]
+            if let match = buildAXWindow(
+                id: id,
+                pid: pid,
+                bundleID: bundleID,
+                bounds: cgBounds,
+                candidates: candidates,
+                claimedCandidateIndexes: claimedIndexes
+            ) {
+                let axWindow = match.window
                 if !axWindow.isMinimized && !axWindow.isFullscreen {
+                    claimedCandidateIndexesByPID[pid, default: []].insert(match.candidateIndex)
                     results.append(axWindow)
                 }
             }
@@ -55,30 +75,69 @@ public enum AXWindowEnumerator {
         return CGRect(x: x, y: y, width: w, height: h)
     }
 
-    private static func buildAXWindow(pid: pid_t, id: CGWindowID, bundleID: String?, bounds: CGRect) -> AXWindow? {
+    /// Returns the first AX candidate that has the same frame as the CG window
+    /// and has not already been paired with another CG window from this app.
+    ///
+    /// Multiple windows in one app commonly share a frame immediately after
+    /// they are restored or unminimized. Reusing the first matching AX element
+    /// for each CG window makes Scene move one window repeatedly while leaving
+    /// its siblings in place.
+    static func firstUnclaimedCandidateIndex(
+        candidateFrames: [CGRect],
+        matching targetFrame: CGRect,
+        claimedIndexes: Set<Int>,
+        tolerance: CGFloat = 2
+    ) -> Int? {
+        candidateFrames.indices.first { index in
+            !claimedIndexes.contains(index) &&
+            rectsApproxEqual(candidateFrames[index], targetFrame, tolerance: tolerance)
+        }
+    }
+
+    private struct AXWindowCandidate {
+        let element: AXUIElement
+        let frame: CGRect
+    }
+
+    private static func windowCandidates(for pid: pid_t) -> [AXWindowCandidate] {
         let appElement = AXUIElementCreateApplication(pid)
         var windowsRef: CFTypeRef?
         guard AXUIElementCopyAttributeValue(appElement, kAXWindowsAttribute as CFString, &windowsRef) == .success,
               let windows = windowsRef as? [AXUIElement]
-        else { return nil }
+        else { return [] }
 
-        for window in windows {
+        return windows.compactMap { window in
             var posRef: CFTypeRef?
             var sizeRef: CFTypeRef?
             AXUIElementCopyAttributeValue(window, kAXPositionAttribute as CFString, &posRef)
             AXUIElementCopyAttributeValue(window, kAXSizeAttribute as CFString, &sizeRef)
-            guard let pos = posRef, let size = sizeRef else { continue }
+            guard let pos = posRef, let size = sizeRef else { return nil }
 
             var point = CGPoint.zero
             var sz = CGSize.zero
             AXValueGetValue(pos as! AXValue, .cgPoint, &point)
             AXValueGetValue(size as! AXValue, .cgSize, &sz)
-            let axFrame = CGRect(origin: point, size: sz)
-
-            if rectsApproxEqual(axFrame, bounds, tolerance: 2) {
-                return AXWindow(element: window, id: id, pid: pid, bundleID: bundleID)
-            }
+            return AXWindowCandidate(element: window, frame: CGRect(origin: point, size: sz))
         }
-        return nil
+    }
+
+    private static func buildAXWindow(
+        id: CGWindowID,
+        pid: pid_t,
+        bundleID: String?,
+        bounds: CGRect,
+        candidates: [AXWindowCandidate],
+        claimedCandidateIndexes: Set<Int>
+    ) -> (window: AXWindow, candidateIndex: Int)? {
+        guard let candidateIndex = firstUnclaimedCandidateIndex(
+            candidateFrames: candidates.map(\.frame),
+            matching: bounds,
+            claimedIndexes: claimedCandidateIndexes
+        ) else { return nil }
+
+        return (
+            AXWindow(element: candidates[candidateIndex].element, id: id, pid: pid, bundleID: bundleID),
+            candidateIndex
+        )
     }
 }
