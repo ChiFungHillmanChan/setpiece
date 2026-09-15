@@ -76,9 +76,21 @@ public enum AXWindowEnumerator {
             let axFrame = CGRect(origin: point, size: sz)
 
             if rectsApproxEqual(axFrame, bounds, tolerance: 2) {
+                // A dialog, sheet, inspector or floating palette is on screen
+                // at layer 0 just like a real window, but it is not something
+                // the user arranges. Tiling it consumed a slot and pushed a
+                // genuine window into `toMinimize`. See `WindowSubrole`.
+                guard WindowSubrole.isTileable(subrole(of: window)) else { return nil }
                 return AXWindow(element: window, id: id, pid: pid, bundleID: bundleID)
             }
         }
         return nil
+    }
+
+    private static func subrole(of element: AXUIElement) -> String? {
+        var ref: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, kAXSubroleAttribute as CFString, &ref) == .success
+        else { return nil }
+        return ref as? String
     }
 }

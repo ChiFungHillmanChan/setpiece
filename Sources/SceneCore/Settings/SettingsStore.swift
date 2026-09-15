@@ -13,24 +13,32 @@ public final class SettingsStore {
     /// toggle lets them opt out (which drains the writer + deletes the
     /// `diagnostics/` directory).
     public private(set) var diagnosticsEnabled: Bool
+    /// V0.7.6. When `true` (the default, and V0.7.4's behaviour) the Dock's
+    /// thickness is reserved on every display so the tiling rect cannot move
+    /// when the Dock hops screens. Turning it off restores raw `visibleFrame`:
+    /// windows reach the bottom edge of a display the Dock is not on, and a
+    /// re-apply can shift them when the Dock moves. See `TilingFrame`.
+    public private(set) var dockReserveAllDisplays: Bool
     private let fileURL: URL
     private var observers: [UUID: () -> Void] = [:]
 
-    public static let currentVersion = 3
+    public static let currentVersion = 4
 
     public init(fileURL: URL) throws {
         self.fileURL = fileURL
         if FileManager.default.fileExists(atPath: fileURL.path) {
             let data = try Data(contentsOf: fileURL)
-            let (animation, dragSwap, diagnosticsEnabled, needsRewrite) = try Self.decodeWithMigration(data: data)
-            self.animation = animation
-            self.dragSwap = dragSwap
-            self.diagnosticsEnabled = diagnosticsEnabled
-            if needsRewrite { try persist() }
+            let decoded = try Self.decodeWithMigration(data: data)
+            self.animation = decoded.animation
+            self.dragSwap = decoded.dragSwap
+            self.diagnosticsEnabled = decoded.diagnosticsEnabled
+            self.dockReserveAllDisplays = decoded.dockReserveAllDisplays
+            if decoded.needsRewrite { try persist() }
         } else {
             self.animation = .default
             self.dragSwap = .default
             self.diagnosticsEnabled = true
+            self.dockReserveAllDisplays = true
             try persist()
         }
     }
@@ -53,6 +61,12 @@ public final class SettingsStore {
         for h in observers.values { h() }
     }
 
+    public func setDockReserveAllDisplays(_ value: Bool) throws {
+        dockReserveAllDisplays = value
+        try persist()
+        for h in observers.values { h() }
+    }
+
     public func onChange(_ handler: @escaping () -> Void) -> Cancellable {
         let token = UUID()
         observers[token] = handler
@@ -64,7 +78,8 @@ public final class SettingsStore {
             version: Self.currentVersion,
             animation: animation,
             dragSwap: dragSwap,
-            diagnosticsEnabled: diagnosticsEnabled
+            diagnosticsEnabled: diagnosticsEnabled,
+            dockReserveAllDisplays: dockReserveAllDisplays
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -78,31 +93,91 @@ public final class SettingsStore {
 
     /// Decodes whatever schema version is on disk; returns `needsRewrite=true`
     /// if the file must be upgraded and persisted back.
-    private static func decodeWithMigration(data: Data) throws -> (AnimationConfig, DragSwapConfig, Bool, Bool) {
+    private static func decodeWithMigration(data: Data) throws -> Decoded {
         let versionProbe = try JSONDecoder().decode(VersionProbe.self, from: data)
         switch versionProbe.version {
+        case 4:
+            let v4 = try JSONDecoder().decode(StoredFile.self, from: data)
+            return Decoded(animation: v4.animation, dragSwap: v4.dragSwap,
+                           diagnosticsEnabled: v4.diagnosticsEnabled,
+                           dockReserveAllDisplays: v4.dockReserveAllDisplays,
+                           needsRewrite: false)
         case 3:
-            let v3 = try JSONDecoder().decode(StoredFile.self, from: data)
-            return (v3.animation, v3.dragSwap, v3.diagnosticsEnabled, false)
+            let v3 = try JSONDecoder().decode(StoredFileV3.self, from: data)
+            // V0.7.6: default the escape hatch OFF for upgraders, i.e. keep
+            // reserving on every display. Someone upgrading already has the
+            // stable-tiling behaviour and must not have it changed under them.
+            return Decoded(animation: v3.animation, dragSwap: v3.dragSwap,
+                           diagnosticsEnabled: v3.diagnosticsEnabled,
+                           dockReserveAllDisplays: true, needsRewrite: true)
         case 2:
             let v2 = try JSONDecoder().decode(StoredFileV2.self, from: data)
             // Default V0.6 diagnostics ON for upgraded users — they can
             // still opt out via the AboutTab toggle.
-            return (v2.animation, v2.dragSwap, true, true)
+            return Decoded(animation: v2.animation, dragSwap: v2.dragSwap,
+                           diagnosticsEnabled: true, dockReserveAllDisplays: true,
+                           needsRewrite: true)
         case 1:
             let v1 = try JSONDecoder().decode(StoredFileV1.self, from: data)
-            return (v1.animation, .default, true, true)
+            return Decoded(animation: v1.animation, dragSwap: .default,
+                           diagnosticsEnabled: true, dockReserveAllDisplays: true,
+                           needsRewrite: true)
         default:
-            throw DecodingError.dataCorrupted(.init(
-                codingPath: [],
-                debugDescription: "Unsupported settings schema version \(versionProbe.version)"
-            ))
+            guard versionProbe.version > currentVersion else {
+                throw DecodingError.dataCorrupted(.init(
+                    codingPath: [],
+                    debugDescription: "Unsupported settings schema version \(versionProbe.version)"
+                ))
+            }
+            // Written by a newer Scene. `AppDelegate.init` turns a store-init
+            // throw into `fatalError`, so refusing this file would mean anyone
+            // who ran a newer build and then went back could not launch at all.
+            // Take the fields this build understands, default the rest.
+            let future = try JSONDecoder().decode(LenientFile.self, from: data)
+            // `needsRewrite: false` deliberately: do not downgrade the file on
+            // load, so returning to the newer build finds its settings intact.
+            // Saving any setting from here does rewrite it at this build's
+            // version, which is the user's own action rather than a silent one.
+            return Decoded(
+                animation: future.animation ?? .default,
+                dragSwap: future.dragSwap ?? .default,
+                diagnosticsEnabled: future.diagnosticsEnabled ?? true,
+                dockReserveAllDisplays: future.dockReserveAllDisplays ?? true,
+                needsRewrite: false
+            )
         }
     }
 
     private struct VersionProbe: Codable { let version: Int }
 
+    /// Whatever `decodeWithMigration` managed to read, plus whether the file
+    /// on disk has to be upgraded and written back.
+    private struct Decoded {
+        let animation: AnimationConfig
+        let dragSwap: DragSwapConfig
+        let diagnosticsEnabled: Bool
+        let dockReserveAllDisplays: Bool
+        let needsRewrite: Bool
+    }
+
     private struct StoredFile: Codable {
+        let version: Int
+        let animation: AnimationConfig
+        let dragSwap: DragSwapConfig
+        let diagnosticsEnabled: Bool
+        let dockReserveAllDisplays: Bool
+    }
+
+    /// Every field optional, so a file from a future schema still yields
+    /// whatever this build knows how to read. Unknown keys are ignored.
+    private struct LenientFile: Codable {
+        let animation: AnimationConfig?
+        let dragSwap: DragSwapConfig?
+        let diagnosticsEnabled: Bool?
+        let dockReserveAllDisplays: Bool?
+    }
+
+    private struct StoredFileV3: Codable {
         let version: Int
         let animation: AnimationConfig
         let dragSwap: DragSwapConfig

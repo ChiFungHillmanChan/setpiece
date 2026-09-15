@@ -101,7 +101,7 @@ extension SettingsStoreTests {
         XCTAssertTrue(store.diagnosticsEnabled)
     }
 
-    func testV2FileMigratesToV3WithDiagnosticsEnabled() throws {
+    func testV2FileMigratesToCurrentVersionWithDiagnosticsEnabled() throws {
         // Simulate V0.5.x settings file (version 2, no diagnosticsEnabled).
         let v2json = #"""
         {"version":2,"animation":{"enabled":true,"durationMs":250,"easing":"easeOut"},"dragSwap":{"enabled":true,"distanceThresholdPt":40}}
@@ -111,10 +111,12 @@ extension SettingsStoreTests {
         )
         try v2json.write(to: fileURL)
         let store = try SettingsStore(fileURL: fileURL)
-        XCTAssertTrue(store.diagnosticsEnabled, "V2 → V3 migration defaults diagnosticsEnabled = true")
+        XCTAssertTrue(store.diagnosticsEnabled, "migrating a V2 file defaults diagnosticsEnabled = true")
         let raw = try Data(contentsOf: fileURL)
         let rewritten = String(data: raw, encoding: .utf8) ?? ""
-        XCTAssertTrue(rewritten.contains("\"version\" : 3"))
+        // Assert against `currentVersion` rather than a literal so bumping the
+        // schema again does not rot this test.
+        XCTAssertTrue(rewritten.contains("\"version\" : \(SettingsStore.currentVersion)"))
         XCTAssertTrue(rewritten.contains("diagnosticsEnabled"))
     }
 

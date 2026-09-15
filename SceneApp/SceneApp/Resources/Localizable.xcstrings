@@ -519,6 +519,75 @@
         }
       }
     },
+    "interaction.dock.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock space"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock 空間"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock 空間"
+          }
+        }
+      }
+    },
+    "interaction.dock.reserve_all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reserve Dock space on every display"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "喺每個螢幕都預留 Dock 空間"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在每個螢幕都保留 Dock 空間"
+          }
+        }
+      }
+    },
+    "interaction.dock.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On by default. macOS only reserves room for the Dock on the display it currently sits on, and the Dock follows your pointer between displays — so with this off, re-applying the same layout can shift every window by the Dock's height. Turning it off lets windows reach the bottom edge of a display the Dock is not on, at the cost of that stability. Single-display Macs are unaffected either way."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預設開。macOS 淨係會喺 Dock 而家嗰個螢幕留位，而 Dock 會跟住你個滑鼠喺螢幕之間走 — 所以熄咗之後，重新套用同一個 layout 可能會令每個窗都移咗 Dock 咁高。熄咗佢，啲窗就可以貼到冇 Dock 嗰個螢幕嘅底邊，代價係冇咗嗰份穩定。單螢幕嘅 Mac 開唔開都一樣。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預設開啟。macOS 只會在 Dock 目前所在的螢幕保留空間，而 Dock 會跟著滑鼠在螢幕之間移動 — 因此關閉後，重新套用同一個版面可能會讓每個視窗都位移 Dock 的高度。關閉後視窗就能貼到沒有 Dock 的那個螢幕的底部邊緣，代價是失去那份穩定性。單螢幕的 Mac 不受影響。"
+          }
+        }
+      }
+    },
     "interaction.drag_swap.enable": {
       "extractionState": "manual",
       "localizations": {

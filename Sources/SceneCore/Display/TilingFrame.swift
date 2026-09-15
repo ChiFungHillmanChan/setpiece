@@ -50,27 +50,38 @@ public struct ScreenInsets: Equatable, Sendable {
 /// bar does not follow the pointer, so a display without one must not surrender
 /// 25pt to a display that has one.
 ///
-/// The trade-off, deliberately accepted: on a multi-display setup the screen
-/// the Dock is *not* on gives up the Dock strip. That is the price of "re-apply
-/// never moves anything". Single-display users see no change at all — the
-/// maximum over one screen is that screen's own inset, so the result equals
-/// `visibleFrame` exactly.
+/// The trade-off: on a multi-display setup the screen the Dock is *not* on
+/// gives up the Dock strip. That is the price of "re-apply never moves
+/// anything". Single-display users see no change at all — the maximum over one
+/// screen is that screen's own inset, so the result equals `visibleFrame`
+/// exactly.
+///
+/// Users who would rather have windows flush against the bottom edge can turn
+/// the unified reserve off via `SettingsStore.dockReserveAllDisplays`, which
+/// flows in as `reserveDockOnAllDisplays` and restores raw `visibleFrame`
+/// behaviour — roaming Dock and all.
 public enum TilingFrame {
     /// AppKit entry point. Reads the live screen list.
     ///
     /// Left non-isolated to match `ScreenResolver` — it is called from the
     /// `visibleFrameOverride` closures on `DragSwapController` /
     /// `SeamResizeController`, which are not `@MainActor`-annotated.
-    public static func forScreen(_ screen: NSScreen) -> CGRect {
-        forScreen(screen, screens: NSScreen.screens)
+    public static func forScreen(_ screen: NSScreen, reserveDockOnAllDisplays: Bool = true) -> CGRect {
+        forScreen(screen, screens: NSScreen.screens,
+                  reserveDockOnAllDisplays: reserveDockOnAllDisplays)
     }
 
     /// Injectable variant — `screens` is the full arrangement the Dock could be
     /// sitting on.
-    public static func forScreen(_ screen: NSScreen, screens: [NSScreen]) -> CGRect {
+    public static func forScreen(
+        _ screen: NSScreen,
+        screens: [NSScreen],
+        reserveDockOnAllDisplays: Bool = true
+    ) -> CGRect {
         let own = ScreenInsets(frame: screen.frame, visibleFrame: screen.visibleFrame)
         let all = screens.map { ScreenInsets(frame: $0.frame, visibleFrame: $0.visibleFrame) }
-        return compute(frame: screen.frame, ownInsets: own, allInsets: all)
+        return compute(frame: screen.frame, ownInsets: own, allInsets: all,
+                       reserveDockOnAllDisplays: reserveDockOnAllDisplays)
     }
 
     /// Pure core, unit-testable without `NSScreen`.
@@ -81,10 +92,17 @@ public enum TilingFrame {
     public static func compute(
         frame: CGRect,
         ownInsets: ScreenInsets,
-        allInsets: [ScreenInsets]
+        allInsets: [ScreenInsets],
+        reserveDockOnAllDisplays: Bool = true
     ) -> CGRect {
         let ownFrame = inset(frame, by: ownInsets)
         guard !allInsets.isEmpty else { return ownFrame }
+        // Opted out: fall back to this screen's own `visibleFrame`. Windows
+        // reach the bottom edge on a display the Dock is not on, at the cost
+        // of the re-apply stability the unified reserve buys. Single-display
+        // setups are identical either way — the maximum over one screen is
+        // that screen's own inset.
+        guard reserveDockOnAllDisplays else { return ownFrame }
 
         let unified = ScreenInsets(
             // Menu bar — does not hop with the pointer, so keep this screen's own.

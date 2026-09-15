@@ -52,6 +52,14 @@ struct InteractionTab: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            Section("interaction.dock.section") {
+                Toggle("interaction.dock.reserve_all", isOn: dockReserveBinding)
+
+                Text("interaction.dock.hint")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding()
     }
@@ -131,6 +139,13 @@ struct InteractionTab: View {
                 let c = settingsVM.dragSwap
                 try? settingsVM.store.setDragSwap(DragSwapConfig(enabled: c.enabled, distanceThresholdPt: CGFloat(v)))
             }
+        )
+    }
+
+    private var dockReserveBinding: Binding<Bool> {
+        Binding(
+            get: { settingsVM.dockReserveAllDisplays },
+            set: { try? settingsVM.store.setDockReserveAllDisplays($0) }
         )
     }
 
