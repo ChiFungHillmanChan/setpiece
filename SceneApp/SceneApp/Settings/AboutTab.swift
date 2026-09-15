@@ -19,8 +19,8 @@ struct AboutTab: View {
             Text(verbatim: "V\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?")")
                 .foregroundStyle(.secondary)
             Link(
-                "github.com/ChiFungHillmanChan/macbook-resizer",
-                destination: URL(string: "https://github.com/ChiFungHillmanChan/macbook-resizer")!
+                "github.com/ChiFungHillmanChan/scene-macos",
+                destination: URL(string: "https://github.com/ChiFungHillmanChan/scene-macos")!
             )
 
             Divider().padding(.vertical, 8)

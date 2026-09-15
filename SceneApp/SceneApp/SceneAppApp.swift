@@ -10,7 +10,8 @@ struct SceneAppEntry: App {
             MenuBarContentView(
                 coordinator: delegate.coordinator,
                 workspaceStore: delegate.workspaceVM,
-                layoutStore: delegate.layoutVM
+                layoutStore: delegate.layoutVM,
+                starPrompt: delegate.starPrompt
             )
             .environmentObject(delegate.coordinator)
             .environmentObject(delegate)

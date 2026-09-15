@@ -42,7 +42,7 @@ final class UpdateChecker: ObservableObject {
     /// many times over; if it ever overflows, GitHub returns newest-created
     /// first, so page 1 still holds every recent release.
     private let apiURL = URL(string:
-        "https://api.github.com/repos/ChiFungHillmanChan/macbook-resizer/releases?per_page=100"
+        "https://api.github.com/repos/ChiFungHillmanChan/scene-macos/releases?per_page=100"
     )!
     private let lastCheckKey = "com.scene.UpdateChecker.lastCheckedAt"
     private let minInterval: TimeInterval = 24 * 60 * 60

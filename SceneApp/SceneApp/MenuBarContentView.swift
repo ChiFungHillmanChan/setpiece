@@ -3,6 +3,8 @@ import AppKit
 import SceneCore
 
 struct MenuBarContentView: View {
+    private static let repositoryURL = URL(string: "https://github.com/ChiFungHillmanChan/scene-macos")!
+
     // Observe the coordinator directly rather than via @EnvironmentObject.
     // MenuBarExtra's menu (like its label — see MenuBarLabel) does NOT reliably
     // re-subscribe to @Published changes from environment objects, so toggling
@@ -15,6 +17,7 @@ struct MenuBarContentView: View {
     @EnvironmentObject var updateInstaller: UpdateInstaller
     @ObservedObject var workspaceStore: WorkspaceStoreViewModel
     @ObservedObject var layoutStore: LayoutStoreViewModel
+    @ObservedObject var starPrompt: StarPromptTracker
 
     /// Hosting NSWindow of the window-style panel, captured via
     /// PanelWindowAccessor so actions can dismiss the panel explicitly
@@ -95,6 +98,11 @@ struct MenuBarContentView: View {
 
             PanelDivider()
 
+            if starPrompt.shouldPrompt {
+                starPromptRow
+                PanelDivider()
+            }
+
             Button(action: {
                 closePanel()
                 appDelegate.openSettings()
@@ -137,6 +145,42 @@ struct MenuBarContentView: View {
     }
 
     // MARK: - Rows
+
+    /// One-shot nudge shown once `StarPromptState.promptThreshold` layouts have
+    /// actually landed. Either half answers it for good, so this row can never
+    /// become a recurring nag.
+    private var starPromptRow: some View {
+        HStack(spacing: 0) {
+            Button(action: {
+                starPrompt.resolve(.starred)
+                NSWorkspace.shared.open(Self.repositoryURL)
+                closePanel()
+            }) {
+                HStack(spacing: 6) {
+                    Image(systemName: "star.fill")
+                        .foregroundStyle(.yellow)
+                    Text("menu.star_prompt")
+                    Spacer()
+                }
+            }
+            .buttonStyle(MenuRowButtonStyle())
+
+            Button(action: { starPrompt.resolve(.dismissed) }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(.tertiary)
+                    .padding(4)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            // `.help` only sets the tooltip; without an explicit label
+            // VoiceOver reads the SF Symbol's generic name ("Close") instead
+            // of what the button actually does.
+            .accessibilityLabel(Text("menu.star_prompt.dismiss"))
+            .help(Text("menu.star_prompt.dismiss"))
+            .padding(.trailing, 6)
+        }
+    }
 
     private func workspaceRow(_ workspace: Workspace) -> some View {
         Button(action: { activate(workspace: workspace) }) {

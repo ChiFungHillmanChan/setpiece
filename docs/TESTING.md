@@ -320,7 +320,7 @@ After a fresh `rm -rf` of `~/Library/Application Support/Scene-testing/diagnosti
 
 - [ ] Settings → About → "Export Diagnostics for Bug Report" opens NSSavePanel with default filename `scene-diagnostics-YYYYMMDD-HHMMSS.zip`. Save to ~/Downloads.
 - [ ] **After save, Finder activates and the saved `.zip` is selected** (so the user can drag it into the GitHub issue without hunting for it).
-- [ ] **Default browser opens to** `https://github.com/ChiFungHillmanChan/macbook-resizer/issues/new` with:
+- [ ] **Default browser opens to** `https://github.com/ChiFungHillmanChan/scene-macos/issues/new` with:
   - Title pre-filled: `Bug: ` (cursor positioned for user to type)
   - Body pre-filled with `Scene version`, `macOS` version string, and `Diagnostic hash ID`
   - Labels applied: `bug,diagnostics`
