@@ -1,13 +1,13 @@
-# Copy this file to the `macbook-resizer` repo at
+# Copy this file to the `scene-macos` repo at
 # .github/workflows/notify-website.yml
 #
 # Setup:
 # 1. In Vercel dashboard → scene-website project → Settings → Git → Deploy Hooks:
 #    create a hook named "github-release-publish" against the main branch.
 #    Copy the generated URL.
-# 2. In the macbook-resizer repo → Settings → Secrets and variables → Actions:
+# 2. In the scene-macos repo → Settings → Secrets and variables → Actions:
 #    add VERCEL_DEPLOY_HOOK with the URL from step 1 as its value.
-# 3. Commit this workflow to macbook-resizer.
+# 3. Commit this workflow to scene-macos.
 #
 # From then on, `gh release create vX.Y.Z …` triggers a scene-website
 # rebuild automatically — the new DMG URL gets baked into the Download

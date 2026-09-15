@@ -4,9 +4,9 @@
 
 免費、開源 macOS menu bar 視窗管理工具。純 Swift 寫，零外部 dependency，Apple notarized。需要 macOS 14（Sonoma）或以上。Universal binary — Apple Silicon 同 Intel 都行到。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-blue)](https://www.apple.com/macos/) [![Universal](https://img.shields.io/badge/binary-universal-brightgreen)](https://github.com/ChiFungHillmanChan/macbook-resizer/releases/latest) [![Latest release](https://img.shields.io/github/v/release/ChiFungHillmanChan/macbook-resizer)](https://github.com/ChiFungHillmanChan/macbook-resizer/releases/latest) [![GitHub stars](https://img.shields.io/github/stars/ChiFungHillmanChan/macbook-resizer?style=flat)](https://github.com/ChiFungHillmanChan/macbook-resizer/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-blue)](https://www.apple.com/macos/) [![Universal](https://img.shields.io/badge/binary-universal-brightgreen)](https://github.com/ChiFungHillmanChan/scene-macos/releases/latest) [![Latest release](https://img.shields.io/github/v/release/ChiFungHillmanChan/scene-macos)](https://github.com/ChiFungHillmanChan/scene-macos/releases/latest) [![GitHub stars](https://img.shields.io/github/stars/ChiFungHillmanChan/scene-macos?style=flat)](https://github.com/ChiFungHillmanChan/scene-macos/stargazers)
 
-![Scene Workspaces — 一鋪過將 layout、apps 同 Focus mode bundle 埋一齊](docs/media/scene-workspaces.png)
+![Scene — 喺 menu bar 揀個 layout，成枱窗即刻入位](docs/media/scene-demo.gif)
 
 > English version: [README.md](README.md)
 
@@ -37,19 +37,25 @@ brew install --cask chifunghillmanchan/tap/scene
 
 自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Scene 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Scene 就得。
 
-**或者直接下載 DMG**：**[Scene-0.7.5.dmg](https://github.com/ChiFungHillmanChan/macbook-resizer/releases/download/v0.7.5/Scene-0.7.5.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
+**或者直接下載 DMG**：**[Scene-0.7.5.dmg](https://github.com/ChiFungHillmanChan/scene-macos/releases/download/v0.7.5/Scene-0.7.5.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
 
-所有版本：[Releases page](https://github.com/ChiFungHillmanChan/macbook-resizer/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
+所有版本：[Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
 
 ## 示範片
 
-[![Scene Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)](docs/media/scene-marketing.mp4)
+**情境（Workspaces）** — 將 layout、要開嘅 app 同 Focus mode bundle 埋一齊，撳一下搞掂：
 
-▶ [睇 30 秒示範片](docs/media/scene-marketing.mp4)（MP4，13 MB）
+![Scene Workspaces — 一鋪過將 layout、apps 同 Focus mode bundle 埋一齊](docs/media/scene-workspaces.png)
+
+**Layout 編輯器** — 拖 seam 就整到任何形狀嘅 tile 排列：
+
+![Scene Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)
+
+▶ [睇完整 30 秒示範片](docs/media/scene-marketing.mp4)（MP4，13 MB）
 
 ## v0.7.5 嘅新功能
 
-**macOS 26（Tahoe）設定視窗嘅制返晒嚟。** Layouts 嗰版嘅 **+**、**+ Custom**、刪除、還原做預設同 **Restore Default Presets** 全部唔見咗；Workspaces 嗰版嘅 **New**、**Duplicate**、**Delete** 都係。你仲可以改返啲已經有嘅 layout，但係喺設定入面新增、複製、刪除通通做唔到。原因係 v0.7.2 加嘅成個窗透明效果：嗰層毛玻璃底係一個 AppKit container，而 SwiftUI 個 view 係揼咗入去入面 — 而 hosting controller 淨係喺佢自己就係個窗嘅內容嗰陣先會將 toolbar 交畀個窗，包多咗一層就乜都唔交。而家嗰層毛玻璃改咗做 SwiftUI 嘅背景圖層，所以塊玻璃樣一模一樣，啲制亦都返晒嚟。macOS 14 同 15 一直都冇事。多謝 [@nphxexp-create](https://github.com/nphxexp-create) 報料（[#4](https://github.com/ChiFungHillmanChan/macbook-resizer/issues/4)）。
+**macOS 26（Tahoe）設定視窗嘅制返晒嚟。** Layouts 嗰版嘅 **+**、**+ Custom**、刪除、還原做預設同 **Restore Default Presets** 全部唔見咗；Workspaces 嗰版嘅 **New**、**Duplicate**、**Delete** 都係。你仲可以改返啲已經有嘅 layout，但係喺設定入面新增、複製、刪除通通做唔到。原因係 v0.7.2 加嘅成個窗透明效果：嗰層毛玻璃底係一個 AppKit container，而 SwiftUI 個 view 係揼咗入去入面 — 而 hosting controller 淨係喺佢自己就係個窗嘅內容嗰陣先會將 toolbar 交畀個窗，包多咗一層就乜都唔交。而家嗰層毛玻璃改咗做 SwiftUI 嘅背景圖層，所以塊玻璃樣一模一樣，啲制亦都返晒嚟。macOS 14 同 15 一直都冇事。多謝 [@nphxexp-create](https://github.com/nphxexp-create) 報料（[#4](https://github.com/ChiFungHillmanChan/scene-macos/issues/4)）。
 
 完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md)。
 
@@ -107,8 +113,8 @@ brew install --cask chifunghillmanchan/tap/scene
 ### 用 Xcode build
 
 ```bash
-git clone https://github.com/ChiFungHillmanChan/macbook-resizer.git
-cd macbook-resizer
+git clone https://github.com/ChiFungHillmanChan/scene-macos.git
+cd scene-macos
 open SceneApp/SceneApp.xcodeproj
 ```
 
@@ -130,7 +136,7 @@ Layout / animation / store / hotkey / drag-swap / seam reflow / 自訂 tree / �
 swift test
 ```
 
-363 個 unit test 覆蓋 layout 數學、window-to-slot mapping、animation 狀態機、JSON persistence、hotkey 衝突、drag-to-swap 邏輯、seam reflow、自訂 layout tree round-trip、診斷 writer + sanitizer、update nudge 嘅 semver 比較、edge case。
+407 個 unit test 覆蓋 layout 數學、window-to-slot mapping、animation 狀態機、JSON persistence、hotkey 衝突、drag-to-swap 邏輯、seam reflow、自訂 layout tree round-trip、診斷 writer + sanitizer、update nudge 嘅 semver 比較、edge case。
 
 ## 用法
 
@@ -212,7 +218,7 @@ Scene 喺 Shortcuts.app 註冊咗 5 個 actions（喺「Scene」分類入面）�
 ## 架構
 
 ```
-macbook-resizer/
+scene-macos/
 ├── Package.swift
 ├── Sources/SceneCore/          # 純邏輯，唔使 Xcode unit test 得
 │   ├── AX/                     # Accessibility API wrapper
@@ -226,7 +232,7 @@ macbook-resizer/
 │   │                           #   SettingsStore, Cancellable
 │   └── Workspace/              # Workspace, WorkspaceTrigger, WorkspaceSeeds,
 │                               #   WorkspaceStore, FocusModeReference
-├── Tests/SceneCoreTests/       # 363 個 XCTest case
+├── Tests/SceneCoreTests/       # 407 個 XCTest case
 ├── SceneApp/                   # Xcode project — menu bar shell + 設定視窗
 │   └── SceneApp/
 │       ├── Animation/          # WindowAnimator（CVDisplayLink + AX bridge）
@@ -256,11 +262,11 @@ macbook-resizer/
     └── media/                  # 示範片 + screenshots
 ```
 
-故意分層：**`SceneCore` 完全 framework-neutral** — 冇 SwiftUI、冇 Combine、冇 ObservableObject。所有 hard logic（AX call、layout 數學、animation 狀態機、store CRUD、drag-to-swap、seam reflow、診斷）住喺度，363 個 unit test 覆蓋。**`SceneApp` 係薄殼**，只負責 SwiftUI binding、AppKit lifecycle，同埋 framework-neutral library 做唔到嘅 AppKit/AX bridge（`WindowAnimator`、`AXMoveObserverGroup`、`AXWindowLookup`、`DragSwapAnimationSink`）。SceneCore 用 closure-based observation 同 SceneApp 通訊（`@MainActor class FooStoreViewModel: ObservableObject` 做 adapter）。
+故意分層：**`SceneCore` 完全 framework-neutral** — 冇 SwiftUI、冇 Combine、冇 ObservableObject。所有 hard logic（AX call、layout 數學、animation 狀態機、store CRUD、drag-to-swap、seam reflow、診斷）住喺度，407 個 unit test 覆蓋。**`SceneApp` 係薄殼**，只負責 SwiftUI binding、AppKit lifecycle，同埋 framework-neutral library 做唔到嘅 AppKit/AX bridge（`WindowAnimator`、`AXMoveObserverGroup`、`AXWindowLookup`、`DragSwapAnimationSink`）。SceneCore 用 closure-based observation 同 SceneApp 通訊（`@MainActor class FooStoreViewModel: ObservableObject` 做 adapter）。
 
 `swift test` 由 command line 跑得，唔使 Xcode；只有最後 `.app` build 先要。
 
-詳細架構 + 進階文檔：[Wiki（繁體中文）](https://github.com/ChiFungHillmanChan/macbook-resizer/wiki/Home-zh-HK)
+詳細架構 + 進階文檔：[Wiki（繁體中文）](https://github.com/ChiFungHillmanChan/scene-macos/wiki/Home-zh-HK)
 
 ## 設定持久化
 

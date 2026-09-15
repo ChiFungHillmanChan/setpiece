@@ -31,7 +31,7 @@ brew uninstall --cask --zap scene
 
 ## Install from DMG
 
-1. **Download** the latest `Scene-X.Y.Z.dmg` from the [Releases page](https://github.com/ChiFungHillmanChan/macbook-resizer/releases).
+1. **Download** the latest `Scene-X.Y.Z.dmg` from the [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases).
 2. **Double-click** the DMG to mount it.
 3. **Drag `Scene.app` into `Applications`**.
 4. Eject the mounted DMG.
@@ -101,8 +101,8 @@ Then relaunch and re-authorize.
 If you prefer building yourself, you need an Apple Developer account for notarization. Without one, set `SKIP_NOTARY=1` to produce an ad-hoc signed DMG for local testing (you'll get the Gatekeeper prompt that v0.5.0+ avoids).
 
 ```bash
-git clone https://github.com/ChiFungHillmanChan/macbook-resizer.git
-cd macbook-resizer
+git clone https://github.com/ChiFungHillmanChan/scene-macos.git
+cd scene-macos
 ./scripts/build-dmg.sh 0.5.0                      # full notarized build (needs Developer ID)
 SKIP_NOTARY=1 ./scripts/build-dmg.sh 0.5.0-dev    # local ad-hoc build
 ```

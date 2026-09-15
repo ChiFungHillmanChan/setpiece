@@ -4,9 +4,9 @@
 
 A free, open-source macOS menu bar window manager. Native Swift, zero dependencies, notarized by Apple. Requires macOS 14 (Sonoma) or later. Universal binary — runs native on both Apple Silicon and Intel.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-blue)](https://www.apple.com/macos/) [![Universal](https://img.shields.io/badge/binary-universal-brightgreen)](https://github.com/ChiFungHillmanChan/macbook-resizer/releases/latest) [![Latest release](https://img.shields.io/github/v/release/ChiFungHillmanChan/macbook-resizer)](https://github.com/ChiFungHillmanChan/macbook-resizer/releases/latest) [![GitHub stars](https://img.shields.io/github/stars/ChiFungHillmanChan/macbook-resizer?style=flat)](https://github.com/ChiFungHillmanChan/macbook-resizer/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-blue)](https://www.apple.com/macos/) [![Universal](https://img.shields.io/badge/binary-universal-brightgreen)](https://github.com/ChiFungHillmanChan/scene-macos/releases/latest) [![Latest release](https://img.shields.io/github/v/release/ChiFungHillmanChan/scene-macos)](https://github.com/ChiFungHillmanChan/scene-macos/releases/latest) [![GitHub stars](https://img.shields.io/github/stars/ChiFungHillmanChan/scene-macos?style=flat)](https://github.com/ChiFungHillmanChan/scene-macos/stargazers)
 
-![Scene Workspaces — bundle layout, apps and Focus mode into one-click contexts](docs/media/scene-workspaces.png)
+![Scene — pick a layout from the menu bar and every window snaps into place](docs/media/scene-demo.gif)
 
 > 繁體中文版本：[README.zh-HK.md](README.zh-HK.md)
 
@@ -37,19 +37,25 @@ brew install --cask chifunghillmanchan/tap/scene
 
 Quarantine is stripped automatically — no "cannot be verified" prompt. On first launch, grant Accessibility in **System Settings → Privacy & Security → Accessibility**.
 
-**Or download the DMG directly**: **[Scene-0.7.5.dmg](https://github.com/ChiFungHillmanChan/macbook-resizer/releases/download/v0.7.5/Scene-0.7.5.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
+**Or download the DMG directly**: **[Scene-0.7.5.dmg](https://github.com/ChiFungHillmanChan/scene-macos/releases/download/v0.7.5/Scene-0.7.5.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
 
-All versions: [Releases page](https://github.com/ChiFungHillmanChan/macbook-resizer/releases) · DMG users, see [`docs/INSTALL.md`](docs/INSTALL.md) for the one-time Gatekeeper + Accessibility-permission steps.
+All versions: [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases) · DMG users, see [`docs/INSTALL.md`](docs/INSTALL.md) for the one-time Gatekeeper + Accessibility-permission steps.
 
 ## Demo
 
-[![Scene Layouts editor — drag seams to design any tile shape](docs/media/scene-layouts.png)](docs/media/scene-marketing.mp4)
+**Workspaces** — bundle a layout, the apps it needs and a Focus mode into one click:
 
-▶ [Watch the 30-second demo](docs/media/scene-marketing.mp4) (MP4, 13 MB)
+![Scene Workspaces — bundle layout, apps and Focus mode into one-click contexts](docs/media/scene-workspaces.png)
+
+**Layout editor** — drag the seams to design any tile shape:
+
+![Scene Layouts editor — drag seams to design any tile shape](docs/media/scene-layouts.png)
+
+▶ [Watch the full 30-second demo](docs/media/scene-marketing.mp4) (MP4, 13 MB)
 
 ## What's new in v0.7.5
 
-**The Settings toolbar buttons are back on macOS 26 (Tahoe).** On the Layouts tab, **+**, **+ Custom**, delete, reset-to-default and **Restore Default Presets** were all missing; on Workspaces, **New**, **Duplicate** and **Delete** were missing. You could still edit the layouts you already had, but you couldn't create, duplicate or delete anything from Settings. The cause was the whole-window translucency added in v0.7.2: the frosted backdrop was an AppKit container that the SwiftUI view was nested *inside*, and a hosting controller only hands its toolbar to the window when it *is* the window's content — nested one level deeper, it hands over nothing. The backdrop is now a SwiftUI background layer, so the glass look is exactly the same and the buttons are back. macOS 14 and 15 were never affected. Thanks to [@nphxexp-create](https://github.com/nphxexp-create) for the report ([#4](https://github.com/ChiFungHillmanChan/macbook-resizer/issues/4)).
+**The Settings toolbar buttons are back on macOS 26 (Tahoe).** On the Layouts tab, **+**, **+ Custom**, delete, reset-to-default and **Restore Default Presets** were all missing; on Workspaces, **New**, **Duplicate** and **Delete** were missing. You could still edit the layouts you already had, but you couldn't create, duplicate or delete anything from Settings. The cause was the whole-window translucency added in v0.7.2: the frosted backdrop was an AppKit container that the SwiftUI view was nested *inside*, and a hosting controller only hands its toolbar to the window when it *is* the window's content — nested one level deeper, it hands over nothing. The backdrop is now a SwiftUI background layer, so the glass look is exactly the same and the buttons are back. macOS 14 and 15 were never affected. Thanks to [@nphxexp-create](https://github.com/nphxexp-create) for the report ([#4](https://github.com/ChiFungHillmanChan/scene-macos/issues/4)).
 
 For the full version history, see [`CHANGELOG.md`](CHANGELOG.md).
 
@@ -106,7 +112,7 @@ For the full version history, see [`CHANGELOG.md`](CHANGELOG.md).
 
 ```bash
 git clone <repo-url>
-cd macbook-resizer
+cd scene-macos
 open SceneApp/SceneApp.xcodeproj
 ```
 
@@ -128,7 +134,7 @@ The layout logic lives in `SceneCore`, a Swift package that works without Xcode:
 swift test
 ```
 
-363 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
+407 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
 
 ## Usage
 
@@ -210,7 +216,7 @@ The actions iCloud-sync to Shortcuts on iPhone, iPad, and Apple Watch. Voice com
 ## Architecture
 
 ```
-macbook-resizer/
+scene-macos/
 ├── Package.swift
 ├── Sources/SceneCore/          # pure logic, unit-testable without Xcode
 │   ├── AX/                     # Accessibility API wrappers
@@ -224,7 +230,7 @@ macbook-resizer/
 │   │                           #   SettingsStore, Cancellable
 │   └── Workspace/              # Workspace, WorkspaceTrigger, WorkspaceSeeds,
 │                               #   WorkspaceStore, FocusModeReference
-├── Tests/SceneCoreTests/       # 363 XCTest cases
+├── Tests/SceneCoreTests/       # 407 XCTest cases
 ├── SceneApp/                   # Xcode project — menu bar shell + settings window
 │   └── SceneApp/
 │       ├── Animation/                 # WindowAnimator (CVDisplayLink + AX bridge)
@@ -254,7 +260,7 @@ macbook-resizer/
     └── media/                         # demo video + screenshots
 ```
 
-The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 363 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
+The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 407 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
 
 ## Persistence
 

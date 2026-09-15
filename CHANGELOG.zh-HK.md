@@ -2,7 +2,7 @@
 
 Scene 嘅完整版本史，最新嘅 release 喺最頂。
 
-要 download binary，去 [Releases page](https://github.com/ChiFungHillmanChan/macbook-resizer/releases)。
+要 download binary，去 [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases)。
 
 ## V0.6.1 — 閒置模式（Free Mode）
 
