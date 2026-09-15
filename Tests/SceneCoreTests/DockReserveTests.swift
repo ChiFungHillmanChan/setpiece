@@ -147,3 +147,72 @@ final class DockReserveSettingsTests: XCTestCase {
         XCTAssertFalse(store.diagnosticsEnabled)
     }
 }
+
+/// A settings file written by a *newer* Scene must not brick an older one.
+/// `AppDelegate.init` turns any store-init throw into `fatalError`, so an
+/// unrecognized schema version was a crash-on-launch for anyone who ran a
+/// newer build and then went back — which bumping the schema to v4 made a
+/// live possibility rather than a theoretical one.
+final class SettingsForwardCompatibilityTests: XCTestCase {
+    private var fileURL: URL!
+
+    override func setUpWithError() throws {
+        fileURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("scene-forward-compat-\(UUID().uuidString).json")
+    }
+
+    override func tearDownWithError() throws {
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            try FileManager.default.removeItem(at: fileURL)
+        }
+    }
+
+    private func writeFutureFile() throws {
+        let future = """
+        {"version":99,
+         "animation":{"enabled":false,"durationMs":400,"easing":"spring"},
+         "dragSwap":{"enabled":false,"distanceThresholdPt":45},
+         "diagnosticsEnabled":false,
+         "dockReserveAllDisplays":false,
+         "somethingThisBuildHasNeverHeardOf":{"nested":[1,2,3]}}
+        """
+        try Data(future.utf8).write(to: fileURL)
+    }
+
+    func testAFileFromTheFutureLoadsInsteadOfThrowing() throws {
+        try writeFutureFile()
+        XCTAssertNoThrow(try SettingsStore(fileURL: fileURL))
+    }
+
+    func testAFileFromTheFutureKeepsTheSettingsThisBuildUnderstands() throws {
+        try writeFutureFile()
+        let store = try SettingsStore(fileURL: fileURL)
+        XCTAssertEqual(store.animation, AnimationConfig(enabled: false, durationMs: 400, easing: .spring))
+        XCTAssertEqual(store.dragSwap, DragSwapConfig(enabled: false, distanceThresholdPt: 45))
+        XCTAssertFalse(store.diagnosticsEnabled)
+        XCTAssertFalse(store.dockReserveAllDisplays)
+    }
+
+    /// Reading must not downgrade the file — the user may go straight back to
+    /// the newer build, and whatever it stored has to survive the round trip.
+    func testAFileFromTheFutureIsNotRewrittenOnLoad() throws {
+        try writeFutureFile()
+        _ = try SettingsStore(fileURL: fileURL)
+        let raw = try JSONSerialization.jsonObject(with: Data(contentsOf: fileURL)) as! [String: Any]
+        XCTAssertEqual(raw["version"] as? Int, 99, "load must leave a newer file alone")
+        XCTAssertNotNil(raw["somethingThisBuildHasNeverHeardOf"])
+    }
+
+    /// A future file missing a field this build needs falls back to the
+    /// default rather than refusing to load.
+    func testAFileFromTheFutureMissingAKnownFieldUsesDefaults() throws {
+        let sparse = """
+        {"version":99,"animation":{"enabled":true,"durationMs":250,"easing":"easeOut"}}
+        """
+        try Data(sparse.utf8).write(to: fileURL)
+        let store = try SettingsStore(fileURL: fileURL)
+        XCTAssertEqual(store.dragSwap, DragSwapConfig.default)
+        XCTAssertTrue(store.diagnosticsEnabled)
+        XCTAssertTrue(store.dockReserveAllDisplays)
+    }
+}

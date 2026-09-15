@@ -123,10 +123,28 @@ public final class SettingsStore {
                            diagnosticsEnabled: true, dockReserveAllDisplays: true,
                            needsRewrite: true)
         default:
-            throw DecodingError.dataCorrupted(.init(
-                codingPath: [],
-                debugDescription: "Unsupported settings schema version \(versionProbe.version)"
-            ))
+            guard versionProbe.version > currentVersion else {
+                throw DecodingError.dataCorrupted(.init(
+                    codingPath: [],
+                    debugDescription: "Unsupported settings schema version \(versionProbe.version)"
+                ))
+            }
+            // Written by a newer Scene. `AppDelegate.init` turns a store-init
+            // throw into `fatalError`, so refusing this file would mean anyone
+            // who ran a newer build and then went back could not launch at all.
+            // Take the fields this build understands, default the rest.
+            let future = try JSONDecoder().decode(LenientFile.self, from: data)
+            // `needsRewrite: false` deliberately: do not downgrade the file on
+            // load, so returning to the newer build finds its settings intact.
+            // Saving any setting from here does rewrite it at this build's
+            // version, which is the user's own action rather than a silent one.
+            return Decoded(
+                animation: future.animation ?? .default,
+                dragSwap: future.dragSwap ?? .default,
+                diagnosticsEnabled: future.diagnosticsEnabled ?? true,
+                dockReserveAllDisplays: future.dockReserveAllDisplays ?? true,
+                needsRewrite: false
+            )
         }
     }
 
@@ -148,6 +166,15 @@ public final class SettingsStore {
         let dragSwap: DragSwapConfig
         let diagnosticsEnabled: Bool
         let dockReserveAllDisplays: Bool
+    }
+
+    /// Every field optional, so a file from a future schema still yields
+    /// whatever this build knows how to read. Unknown keys are ignored.
+    private struct LenientFile: Codable {
+        let animation: AnimationConfig?
+        let dragSwap: DragSwapConfig?
+        let diagnosticsEnabled: Bool?
+        let dockReserveAllDisplays: Bool?
     }
 
     private struct StoredFileV3: Codable {
