@@ -104,18 +104,25 @@ final class Coordinator: ObservableObject {
 
     private let diagnostics: DiagnosticSink
 
+    /// Counts layouts that actually landed, so the menu bar panel can ask for
+    /// a GitHub star once the user has real mileage. Optional so a Coordinator
+    /// can be constructed without one.
+    private let starPrompt: StarPromptTracker?
+
     init(
         layoutStore: LayoutStore,
         workspaceStore: WorkspaceStore? = nil,
         settingsStore: SettingsStore,
         onPermissionChange: @escaping (Bool) -> Void,
-        diagnostics: DiagnosticSink = .noop
+        diagnostics: DiagnosticSink = .noop,
+        starPrompt: StarPromptTracker? = nil
     ) {
         self.layoutStore = layoutStore
         self.workspaceStore = workspaceStore
         self.settingsStore = settingsStore
         self.onPermissionChange = onPermissionChange
         self.diagnostics = diagnostics
+        self.starPrompt = starPrompt
         self.onboarding.onCheck = { [weak self] in
             Task { @MainActor in self?.refreshPermission() }
         }
@@ -284,6 +291,9 @@ final class Coordinator: ObservableObject {
             log.info("applied \(custom.name, privacy: .public) animated=\(shouldAnimate)")
             rebuildDragSwapObservers(plan: plan, windows: windows, layout: custom.toLayout(), customLayout: custom, screen: screen)
             activeLayoutID = custom.id
+            // Only landed layouts count — a permission failure or an AX throw
+            // exits above without reaching here.
+            starPrompt?.recordSuccessfulApply()
             return true
         } catch AXWindowEnumerator.EnumerationError.permissionDenied {
             stopDragSwapInfrastructure()

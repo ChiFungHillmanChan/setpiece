@@ -23,6 +23,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     /// V0.4: Coordinator gains a reference to `WorkspaceStore` so its hotkey
     /// registrar can fold Workspace chords into `HotkeyManager` alongside
     /// Layout chords. V0.6: also accepts a `DiagnosticSink`.
+    /// One-shot "star Scene on GitHub" nudge. Lazy for the same reason as
+    /// `firstLaunchWindow`: the type is `@MainActor` and `AppDelegate.init()`
+    /// is not.
+    lazy var starPrompt = StarPromptTracker()
+
     lazy var coordinator: Coordinator = Coordinator(
         layoutStore: layoutStore,
         workspaceStore: workspaceStore,
@@ -32,7 +37,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                 self?.permissionGranted = granted
             }
         },
-        diagnostics: diagnostics.sink
+        diagnostics: diagnostics.sink,
+        starPrompt: starPrompt
     )
 
     /// V0.4 app-layer bridges. Constructed lazily — `applicationDidFinishLaunching`
@@ -150,7 +156,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         Drag the `scene-diagnostics-*.zip` from the Finder window into this issue. The bundle is sanitized — see `README.txt` inside.
         """
 
-        var components = URLComponents(string: "https://github.com/ChiFungHillmanChan/macbook-resizer/issues/new")
+        var components = URLComponents(string: "https://github.com/ChiFungHillmanChan/scene-macos/issues/new")
         components?.queryItems = [
             URLQueryItem(name: "title", value: "Bug report (Scene v\(bundleVersion))"),
             URLQueryItem(name: "body", value: body),
