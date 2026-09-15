@@ -173,6 +173,10 @@ struct MenuBarContentView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            // `.help` only sets the tooltip; without an explicit label
+            // VoiceOver reads the SF Symbol's generic name ("Close") instead
+            // of what the button actually does.
+            .accessibilityLabel(Text("menu.star_prompt.dismiss"))
             .help(Text("menu.star_prompt.dismiss"))
             .padding(.trailing, 6)
         }
