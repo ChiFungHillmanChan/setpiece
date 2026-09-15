@@ -1,0 +1,53 @@
+name: Feature request
+description: Suggest something Scene should be able to do.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read the [Roadmap](https://github.com/ChiFungHillmanChan/scene-macos#roadmap)
+        first — items already listed as deferred are known and tracked, and re-requesting
+        them does not move them up.
+
+        Scene says no fairly often, and the biases behind that are worth knowing up front.
+        It intends to stay a small menu bar app that does layouts and workspaces well: no
+        plugin system, no accounts, no cloud sync, no telemetry, and no external
+        dependencies.
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What are you trying to do?
+      description: |
+        Lead with the use case, not the implementation. "I want my editor and terminal to
+        swap sides when I plug in at the office" says more than "add a swap-sides button" —
+        and the use case sometimes turns out to be reachable with what already ships.
+      placeholder: |
+        When I dock at the office my external display becomes the main one, and I want my
+        editor on the big screen and chat on the laptop, without picking a workspace by hand.
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: How do you handle it today?
+      description: What you currently do instead, in Scene or by hand.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like Scene to do?
+      description: Optional. If you have a specific behaviour in mind, describe it here.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before you file
+      options:
+        - label: I read the Roadmap and this is not already listed.
+          required: true
+        - label: I searched the existing issues, including closed ones.
+          required: true

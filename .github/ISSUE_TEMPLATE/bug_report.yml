@@ -1,0 +1,113 @@
+name: Bug report
+description: Something in Scene behaves differently from how it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. Before filing, please search the existing issues
+        **including closed ones** — several known macOS quirks are documented there and
+        closed as "not a Scene bug".
+
+        **Security bugs do not belong in a public issue.** Use the private advisory
+        route in [SECURITY.md](https://github.com/ChiFungHillmanChan/scene-macos/blob/main/SECURITY.md)
+        instead.
+
+  - type: input
+    id: version
+    attributes:
+      label: Scene version
+      description: Settings → About.
+      placeholder: "0.7.6"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: macos
+    attributes:
+      label: macOS version
+      options:
+        - "14 (Sonoma)"
+        - "15 (Sequoia)"
+        - "26 (Tahoe)"
+        - Other (say which below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Chip
+      options:
+        - Apple Silicon
+        - Intel
+    validations:
+      required: true
+
+  - type: textarea
+    id: displays
+    attributes:
+      label: Your display setup
+      description: |
+        How many displays, their arrangement, scaling, which one is the main display, and
+        which one the pointer was on when the bug happened. Whether the Dock was on that
+        display, and whether Dock auto-hide is on.
+
+        A surprising share of layout bugs are multi-display bugs, and this is usually the
+        field that makes them reproducible. If you have one display, say so — that is
+        equally useful.
+      placeholder: |
+        Two displays: built-in Retina left, 27" 4K right (main). Default scaling.
+        Pointer was on the built-in. Dock was on the 4K, auto-hide off.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what you expected instead
+      description: Name the layout or workspace involved.
+      placeholder: |
+        Fired Quads (⌘⌃4) with four windows open. Expected a 2×2 grid; the bottom two
+        windows overlapped and one ended up minimized.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Finder, Safari, Terminal and Notes on the built-in display
+        2. Move the pointer to the built-in display
+        3. Press ⌘⌃4
+    validations:
+      required: true
+
+  - type: textarea
+    id: recording
+    attributes:
+      label: Screen recording
+      description: |
+        If the bug is about windows moving, please attach one. Window geometry is close to
+        impossible to describe accurately in prose, and five seconds of video ends the
+        guessing. Drag the file into this box.
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics export
+      description: |
+        If the bug involves workspace activation, triggers or the updater: Settings → About
+        → enable **Diagnostic logging**, reproduce the bug, then **Export Diagnostics for
+        Bug Report** and attach the file. Nothing leaves your Mac until you attach it.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before you file
+      options:
+        - label: I searched the existing issues, including closed ones.
+          required: true
+        - label: This is not a security vulnerability (those go through SECURITY.md).
+          required: true
