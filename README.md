@@ -128,7 +128,7 @@ The layout logic lives in `SceneCore`, a Swift package that works without Xcode:
 swift test
 ```
 
-363 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
+416 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
 
 ## Usage
 
@@ -224,7 +224,7 @@ macbook-resizer/
 │   │                           #   SettingsStore, Cancellable
 │   └── Workspace/              # Workspace, WorkspaceTrigger, WorkspaceSeeds,
 │                               #   WorkspaceStore, FocusModeReference
-├── Tests/SceneCoreTests/       # 363 XCTest cases
+├── Tests/SceneCoreTests/       # 416 XCTest cases
 ├── SceneApp/                   # Xcode project — menu bar shell + settings window
 │   └── SceneApp/
 │       ├── Animation/                 # WindowAnimator (CVDisplayLink + AX bridge)
@@ -254,7 +254,7 @@ macbook-resizer/
     └── media/                         # demo video + screenshots
 ```
 
-The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 363 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
+The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 416 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
 
 ## Persistence
 

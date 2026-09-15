@@ -257,7 +257,10 @@ final class Coordinator: ObservableObject {
             // `TilingFrame` for the full reasoning.
             let plan = LayoutEngine.plan(
                 windows: windows,
-                visibleFrame: TilingFrame.forScreen(screen),
+                visibleFrame: TilingFrame.forScreen(
+                    screen,
+                    reserveDockOnAllDisplays: settingsStore.dockReserveAllDisplays
+                ),
                 layout: custom.toLayout()
             )
             let cfg = settingsStore.animation
@@ -468,7 +471,12 @@ final class Coordinator: ObservableObject {
             // Must match the frame `performApplyLayout` tiled into, or a drag
             // would snap the window to a slot rect belonging to a different
             // frame than the one every other window was placed in.
-            visibleFrameOverride: { TilingFrame.forScreen($0) }
+            visibleFrameOverride: { [weak self] screen in
+                TilingFrame.forScreen(
+                    screen,
+                    reserveDockOnAllDisplays: self?.settingsStore.dockReserveAllDisplays ?? true
+                )
+            }
         )
     }
 
@@ -502,7 +510,12 @@ final class Coordinator: ObservableObject {
             config: { [weak self] in self?.settingsStore.dragSwap ?? .default },
             // Same reason as drag-swap: reflow must measure the seam against
             // the frame the layout was actually tiled into.
-            visibleFrameOverride: { TilingFrame.forScreen($0) }
+            visibleFrameOverride: { [weak self] screen in
+                TilingFrame.forScreen(
+                    screen,
+                    reserveDockOnAllDisplays: self?.settingsStore.dockReserveAllDisplays ?? true
+                )
+            }
         )
     }
 

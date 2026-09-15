@@ -12,6 +12,7 @@ final class SettingsStoreViewModel: ObservableObject {
     @Published private(set) var animation: AnimationConfig
     @Published private(set) var dragSwap: DragSwapConfig
     @Published private(set) var diagnosticsEnabled: Bool
+    @Published private(set) var dockReserveAllDisplays: Bool
     /// Set by `AppDelegate` so toggling `diagnosticsEnabled` from the
     /// AboutTab can drain the writer + delete artifacts (off) or recreate
     /// the writer with a fresh salt (on). Async because disable awaits
@@ -24,6 +25,7 @@ final class SettingsStoreViewModel: ObservableObject {
         self.animation = store.animation
         self.dragSwap = store.dragSwap
         self.diagnosticsEnabled = store.diagnosticsEnabled
+        self.dockReserveAllDisplays = store.dockReserveAllDisplays
         let weakSelf = WeakBox(self)
         self.token = store.onChange {
             Task { @MainActor in
@@ -31,6 +33,7 @@ final class SettingsStoreViewModel: ObservableObject {
                 strong.animation = strong.store.animation
                 strong.dragSwap = strong.store.dragSwap
                 strong.diagnosticsEnabled = strong.store.diagnosticsEnabled
+                strong.dockReserveAllDisplays = strong.store.dockReserveAllDisplays
             }
         }
     }
