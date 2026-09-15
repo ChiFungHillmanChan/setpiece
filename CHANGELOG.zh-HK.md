@@ -4,6 +4,15 @@ Scene 嘅完整版本史，最新嘅 release 喺最頂。
 
 要 download binary，去 [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases)。
 
+## V0.7.6 — 更乾淨嘅窗口過濾 + Dock 空間控制
+
+- **對話框、sheet、inspector 同浮動面板唔會再被排版。** `AXWindowEnumerator` 以前收晒所有 layer-0 而 AX frame 對得上 `CGWindowList` 範圍嘅窗，即係一個 app 擁有嘅每一個窗。開個偏好設定對話框或者「顯示簡介」就會食咗一格、令所有真窗重新洗牌、將最後一個推去 `toMinimize`。新嘅 `WindowSubrole` 會讀 `kAXSubroleAttribute`，拒絕 `AXDialog`、`AXSystemDialog`、`AXFloatingWindow`、`AXSystemFloatingWindow`、`AXSheet` 同 `AXDrawer` — sheet 同 drawer 係附喺母窗上面，根本冇得獨立擺位。呢個判斷用**排除清單，唔用允許清單**：好多 app 根本冇填 subrole 或者填啲自訂嘢，如果唔排嗰啲，就會靜靜雞令成個 app 都排唔到，而唔係淨係多咗一個面板 — 前者用家完全查唔到原因。冇填、空白、認唔出嘅一律照排，而 `AXUnknown` 特登唔放入清單：佢嘅意思係「個 app 冇講呢個係乜」，係含糊唔係唔合資格，而且 layer-0 嗰層已經隔走咗通常帶住佢嘅 overlay。已用真實窗口驗證：四個到達 layer-0 關卡嘅測試窗入面，`AXDialog` 同 `AXFloatingWindow` 嗰兩個而家被隔走，文件窗照排。
+- **`dockReserveAllDisplays` 令 V0.7.4 嘅取捨變成你嘅選擇。** 喺每個螢幕都預留 Dock 厚度，可以令 Dock 游走時 tiling rect 保持穩定，代價係冇 Dock 嗰個螢幕底部有一條死位 — 喺雙螢幕實測係 55pt。**設定 → 互動 → Dock 空間** 可以熄咗個預留，還原做原始 `visibleFrame`：啲窗貼實底邊，同時 Dock 游走嘅位移亦跟住返嚟。提示文字直接寫明呢個代價，冇當佢係免費。預設開；升級嘅用家 migrate 之後仍然係開，因為佢哋本身已經係穩定行為，唔應該喺唔知情下改。單螢幕嘅 Mac 開唔開都一樣 — 一個螢幕嘅最大 inset 就係佢自己。三個用到 tiling rect 嘅地方都讀同一個設定（plan、drag-swap 最近 slot、seam reflow），因為 drag 如果對住另一個 rect 度，就會 snap 去錯嘅格。
+- **新版寫嘅設定檔唔會再令舊版開唔到。** `AppDelegate.init` 會將任何 store 初始化嘅 throw 變成 `fatalError`，而 `decodeWithMigration` 撞到任何認唔出嘅 schema version 都會 throw — 所以行過新版再返去舊版嘅人，會得到一個開唔到而且冇任何提示嘅 app。呢個問題喺今次 release 嘅測試過程中實地重現咗。而家高過 `currentVersion` 嘅版本會寬鬆解碼：攞呢個 build 識得嘅欄位，其餘用預設。真正唔支援嘅版本仍然會 throw，因為嗰啲係檔案損壞而唔係嚟自未來。個檔案喺載入時**特登唔會**被改寫，所以返去新版嗰陣設定仍然完好；儲存設定就會用呢個 build 嘅版本改寫，但嗰個係用家自己嘅動作。呢個修復救唔到 v0.7.5（佢啲 code 已經出咗街 — 由 v0.7.6 降去 v0.7.5 仍然要刪 `settings.json`），但之後每一對版本都安全。
+- **一次過嘅 GitHub star 提示。** 真正成功套用咗 `StarPromptState.promptThreshold`（20）次 layout 之後，menu bar 面板會喺 Settings 上面出一行 — 放喺嗰度就唔會擠走你開個 menu 本來想撳嘅 workspace 或者 layout。兩邊任何一邊撳咗都係永久回答。個計數器喺門檻度封頂，所以長期使用都唔會 overflow；答咗之後就停止郁；解碼寫得保守，人手改過或者未來版本寫嘅內容都唔會令 app crash，亦唔會令已經撳走嘅提示再彈返出嚟。存喺 `UserDefaults` 而唔係 `settings.json`：佢喺 hotkey 頻率嘅路徑上跳，而 `SettingsStore.persist()` 係成個檔案 atomic 重寫。只有行到 `performApplyLayout` 尾嘅套用先計數 — 搵唔到窗嘅會提早 return，唔計。
+- **Repository 由 `macbook-resizer` 改名做 `scene-macos`**，README 亦都改用動態示範，唔再係一張靜態圖加一條 GitHub 唔會內嵌播放嘅 13 MB MP4 連結。GitHub 嘅永久 redirect 已經針對三條路徑驗證過：app 內建更新器會 poll 嘅 releases API、Homebrew cask 會解析嘅 release asset URL、同埋網頁 URL — 已經喺用家手上嘅嘢一樣都唔會斷。
+- **Tests：394 → 433。** 十二個 `WindowSubroleTests` 釘死排除清單嘅合約，包括冇填／空白／認唔出 subrole 嘅保證；十個 `DockReserveTests` 釘死兩個螢幕上嘅預留行為、預設值同單螢幕一致性；四個 `SettingsForwardCompatibilityTests` 釘死未來檔案嘅處理；十三個 `StarPromptStateTests` 釘死門檻、永久性同解碼容錯。
+
 ## V0.6.1 — 閒置模式（Free Mode）
 
 - **一掣暫停 Scene。** Menu bar 多咗個「閒置模式」row（喺 Layouts 同 Settings 之間）。撳一下，Scene 嘅自動行為全部暫停：layout 快捷鍵（⌘⌃1-9,0）、workspace 快捷鍵（⌘⌥1-4）、拖邊互換、seam resize、同 workspace 嘅自動觸發（接駁 monitor / 時間 / calendar event）。已儲存嘅 layout、workspace、快捷鍵綁定、設定統統保留 — 純粹係唔再自動 fire，撳返一下就回復正常。閒置時 row 入面有個 ✓，Layouts 同 Workspaces 嗰啲 row 變灰，menu bar 個 icon 由 `rectangle.3.group` 變 `pause.rectangle`，一眼睇得出 Scene 而家停咗。

@@ -37,7 +37,7 @@ brew install --cask chifunghillmanchan/tap/scene
 
 自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Scene 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Scene 就得。
 
-**或者直接下載 DMG**：**[Scene-0.7.5.dmg](https://github.com/ChiFungHillmanChan/scene-macos/releases/download/v0.7.5/Scene-0.7.5.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
+**或者直接下載 DMG**：**[Scene-0.7.6.dmg](https://github.com/ChiFungHillmanChan/scene-macos/releases/download/v0.7.6/Scene-0.7.6.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
 
 所有版本：[Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
 
@@ -52,6 +52,18 @@ brew install --cask chifunghillmanchan/tap/scene
 ![Scene Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)
 
 ▶ [睇完整 30 秒示範片](docs/media/scene-marketing.mp4)（MP4，13 MB）
+
+## v0.7.6 嘅新功能
+
+**對話框同浮動面板唔會再食咗一格。** Scene 以前將一個 app 喺螢幕上擁有嘅每一個窗都當成可以排，入面包括佢嘅偏好設定對話框、儲存 sheet、inspector 同浮動面板。開其中一個就會令成個 layout 重新洗牌，將一個真窗推去最小化嗰堆 — 開個「顯示簡介」就足以搞亂一個三分排版。而家 Scene 會讀每個窗嘅 accessibility subrole，跳過唔係俾用家自己擺位嗰啲。呢個判斷用嘅係「排除清單」而唔係「允許清單」：好多 app 根本冇填 subrole，或者填啲自訂嘢，如果淨係認標準嗰隻，就會靜靜雞令成個 app 都排唔到 — 咁比起排多咗一個面板嚴重好多。所以認唔出嘅一律照排。
+
+**啲窗貼得返底邊。** v0.7.4 為咗唔俾 Dock 拖住 layout 走，喺每個螢幕都預留咗 Dock 嘅厚度，因為 macOS 淨係會喺 Dock 而家嗰個螢幕留位，而 Dock 會跟住你個滑鼠走。代價係冇 Dock 嗰個螢幕底部會有一條死位。而家 **設定 → 互動 → Dock 空間** 可以熄咗個預留，啲窗就貼實底邊 — 代價就係冇咗嗰份「重新套用唔會郁」嘅穩定。預設仍然係開，單螢幕嘅 Mac 開唔開都一樣。
+
+**新版寫嘅設定檔唔會再令 Scene 開唔到。** 行過新版 Scene 之後 `settings.json` 會升級；跟住返去舊版，舊版會唔認個檔案然後喺啟動時直接死咗，亦都冇任何提示話你知點解。而家 Scene 讀到「未來版本」嘅檔案會寬鬆處理 — 攞佢識得嘅設定，其餘用預設 — 而且唔會改寫個檔案，所以返去新版嗰陣啲設定仍然完好。
+
+**Scene 會問你攞一次 GitHub star。** 當你真正成功套用咗二十次 layout 之後，menu bar 面板會出一行。無論你揀邊樣，佢都唔會再出現。
+
+完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md).
 
 ## v0.7.5 嘅新功能
 
@@ -123,7 +135,7 @@ Xcode 揀 `SceneApp` scheme → ⌘R。App 以 menu bar extra 形式行（冇 Do
 ### Build distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.7.5    # 出 dist/Scene-0.7.5.dmg（universal + notarized）
+./scripts/build-dmg.sh 0.7.6    # 出 dist/Scene-0.7.6.dmg（universal + notarized）
 ```
 
 Build universal（arm64 + x86_64）binary，Developer ID sign，submit 去 Apple notary，pack 入 DMG 連 `Applications` drop shortcut。Apple Silicon 同 Intel Mac 用同一個 DMG。如果想 local iterate DMG layout，set `SKIP_NOTARY=1` 會 skip Apple notary submission，改用 ad-hoc sign。

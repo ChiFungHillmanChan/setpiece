@@ -37,7 +37,7 @@ brew install --cask chifunghillmanchan/tap/scene
 
 Quarantine is stripped automatically — no "cannot be verified" prompt. On first launch, grant Accessibility in **System Settings → Privacy & Security → Accessibility**.
 
-**Or download the DMG directly**: **[Scene-0.7.5.dmg](https://github.com/ChiFungHillmanChan/scene-macos/releases/download/v0.7.5/Scene-0.7.5.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
+**Or download the DMG directly**: **[Scene-0.7.6.dmg](https://github.com/ChiFungHillmanChan/scene-macos/releases/download/v0.7.6/Scene-0.7.6.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
 
 All versions: [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases) · DMG users, see [`docs/INSTALL.md`](docs/INSTALL.md) for the one-time Gatekeeper + Accessibility-permission steps.
 
@@ -52,6 +52,18 @@ All versions: [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/
 ![Scene Layouts editor — drag seams to design any tile shape](docs/media/scene-layouts.png)
 
 ▶ [Watch the full 30-second demo](docs/media/scene-marketing.mp4) (MP4, 13 MB)
+
+## What's new in v0.7.6
+
+**Dialogs and floating panels no longer eat a slot.** Scene tiled every on-screen window an app owned, which included its preferences dialogs, save sheets, inspectors and floating palettes. Opening one re-shuffled the whole layout and pushed a real window into the minimize pile — a Get Info panel was enough to scramble a three-way split. Scene now reads each window's accessibility subrole and skips the ones that are not user-arrangeable. The test is a deny-list, not an allow-list: plenty of apps leave the subrole unset or report something bespoke, and refusing to tile those would silently break an entire app rather than one stray panel, so anything unrecognized is still tiled.
+
+**Windows reach the bottom edge again.** v0.7.4 stopped the Dock dragging layouts around by reserving the Dock's thickness on every display, since macOS reserves it only on whichever display the Dock currently sits on and the Dock follows your pointer. The cost was a dead strip along the bottom of every display the Dock is *not* on. **Settings → Interaction → Dock space** now lets you turn that reserve off, so windows sit flush on the bottom — at the price of the re-apply stability it buys. It stays on by default, and single-display Macs are unaffected either way.
+
+**A newer settings file can no longer stop Scene from launching.** Running a newer Scene upgrades `settings.json`; going back to an older one made it refuse the file and hard-fail at startup, with no way to tell why. Scene now reads a file from the future leniently — taking the settings it understands, defaulting the rest — and leaves the file alone so returning to the newer build finds it intact.
+
+**Scene asks for a GitHub star, once.** After twenty layouts that actually landed, a single row appears in the menu bar panel. Answer it either way and it never comes back.
+
+For the full version history, see [`CHANGELOG.md`](CHANGELOG.md).
 
 ## What's new in v0.7.5
 
@@ -121,7 +133,7 @@ In Xcode, select the `SceneApp` scheme and press ⌘R. The app runs as a menu ba
 ### Build a distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.7.5    # produces dist/Scene-0.7.5.dmg (universal, notarized)
+./scripts/build-dmg.sh 0.7.6    # produces dist/Scene-0.7.6.dmg (universal, notarized)
 ```
 
 This builds a universal (arm64 + x86_64) binary, Developer ID-signs it, submits it to Apple for notarization, and packages it into a DMG with an `Applications` drop shortcut. Both Apple Silicon and Intel Macs install from the same DMG. Set `SKIP_NOTARY=1` for a local ad-hoc build that skips the Apple notary submission (useful while iterating on DMG layout).
