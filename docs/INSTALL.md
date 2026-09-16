@@ -10,7 +10,7 @@ Setpiece v0.5.0+ is **notarized by Apple** — no Gatekeeper bypass, no quaranti
 ## Install via Homebrew (recommended)
 
 ```bash
-brew install --cask chifunghillmanchan/tap/scene
+brew install --cask chifunghillmanchan/tap/setpiece
 ```
 
 Homebrew drops `Scene.app` into `/Applications`. Jump to [Grant Accessibility permission](#grant-accessibility-permission).

@@ -36,8 +36,13 @@
 **用 Homebrew**（推薦）：
 
 ```bash
-brew install --cask chifunghillmanchan/tap/scene
+brew trust chifunghillmanchan/tap       # Homebrew 7+ 要求第三方 tap 先要 trust
+brew install --cask chifunghillmanchan/tap/setpiece
 ```
+
+Homebrew 7 唔會載入你未 trust 過嘅 tap 入面嘅 cask，而且佢係直接報錯唔會問你 —— 跳過第一行
+就會撞到 `Refusing to load cask … from untrusted tap`。Homebrew 6 或更早只需要第二行。舊嘅
+`…/tap/scene` token 仍然解析得到，所以已經裝咗嘅安裝唔使做任何嘢照樣更新。
 
 自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Setpiece 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Setpiece 就得。
 

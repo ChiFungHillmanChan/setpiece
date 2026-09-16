@@ -37,8 +37,14 @@ If you only need snap-to-edge tiling, Rectangle is great. If you want one click 
 **Homebrew** (recommended):
 
 ```bash
-brew install --cask chifunghillmanchan/tap/scene
+brew trust chifunghillmanchan/tap       # Homebrew 7+ requires this for third-party taps
+brew install --cask chifunghillmanchan/tap/setpiece
 ```
+
+Homebrew 7 refuses to load casks from a tap you have not trusted, and it raises rather than
+prompting — if you skip the first line you get `Refusing to load cask … from untrusted tap`.
+Homebrew 6 and earlier need only the second line. The old `…/tap/scene` token still resolves,
+so an existing install keeps upgrading without any action.
 
 Quarantine is stripped automatically — no "cannot be verified" prompt. On first launch, grant Accessibility in **System Settings → Privacy & Security → Accessibility**.
 
