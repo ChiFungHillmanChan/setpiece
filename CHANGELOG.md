@@ -4,6 +4,18 @@ All notable changes to Scene. Newest releases are listed first.
 
 For binaries, see the [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases).
 
+## Renamed: Scene is now Setpiece
+
+The app was called **Scene** through v0.7.6. Everything below that line was
+written under the old name and is left as it was — renaming the past would make
+the history harder to follow, not easier.
+
+Nothing about an existing install changes. The bundle identifier is still
+`com.hillman.SceneApp`, so your Accessibility grant is untouched; your layouts,
+hotkeys and workspaces still live in `~/Library/Application Support/Scene`; and
+`scene://` URLs keep working forever alongside the new `setpiece://`. The app
+simply displays a different name.
+
 ## V0.7.6 — Cleaner Window Filtering + Dock Space Control
 
 - **Dialogs, sheets, inspectors and floating palettes are no longer tiled.** `AXWindowEnumerator` accepted every layer-0 window whose AX frame matched its `CGWindowList` bounds, which is every window an app owns. A preferences dialog or a Get Info panel therefore consumed a layout slot, re-shuffled every real window and pushed the last one into `toMinimize`. The new `WindowSubrole` reads `kAXSubroleAttribute` and rejects `AXDialog`, `AXSystemDialog`, `AXFloatingWindow`, `AXSystemFloatingWindow`, `AXSheet` and `AXDrawer` — sheets and drawers are attached to a parent window and cannot be positioned independently at all. The test is a **deny-list, never an allow-list**: many apps leave the subrole unset or report something bespoke, and refusing to tile those would silently break tiling for an entire app rather than for one stray panel, a failure the user cannot diagnose. A missing, empty or unrecognized subrole stays tileable, and `AXUnknown` is deliberately excluded from the list — it means "the app did not classify this", which is ambiguous rather than disqualifying, and the layer-0 test already discards the overlays that usually carry it. Verified against live windows: of four probe windows reaching the layer-0 gate, the `AXDialog` and `AXFloatingWindow` ones are now skipped and the document windows still tile.

@@ -4,25 +4,25 @@ Run after installing (from `Scene.app`) or after a local Xcode build. All tests 
 
 ## Prerequisites
 
-- Scene is installed at `/Applications/Scene.app` (or running under Xcode ⌘R).
-- Accessibility permission is cleared for a fresh run — remove Scene from **System Settings → Privacy & Security → Accessibility** before **P1**.
+- Setpiece is installed at `/Applications/Scene.app` (or running under Xcode ⌘R).
+- Accessibility permission is cleared for a fresh run — remove Setpiece from **System Settings → Privacy & Security → Accessibility** before **P1**.
 - Optional: external display for **P9**, Cursor / VS Code / Slack for **P8**.
 
 ## Scenarios
 
 ### P1 — First-launch onboarding
 
-- [ ] Launch Scene with no AX permission.
+- [ ] Launch Setpiece with no AX permission.
 - [ ] Menu bar icon appears (`rectangle.3.group`).
 - [ ] Clicking the icon shows only **Grant Accessibility Access…** + **Quit**.
 - [ ] Clicking **Grant Accessibility Access…** opens a standalone onboarding window.
 - [ ] Clicking **Open System Settings** jumps to the Accessibility pane.
-- [ ] After toggling Scene on, the onboarding window closes within 2 s and the menu switches to 7 presets.
+- [ ] After toggling Setpiece on, the onboarding window closes within 2 s and the menu switches to 7 presets.
 
 ### P2 — Halves (menu)
 
 - [ ] Open 3 windows (any apps).
-- [ ] Click Scene icon → **Halves**.
+- [ ] Click Setpiece icon → **Halves**.
 - [ ] Top 2 windows by z-order split the screen 50/50.
 - [ ] 3rd window is minimized.
 - [ ] Neither window overlaps the menu bar or Dock.
@@ -45,14 +45,14 @@ Run after installing (from `Scene.app`) or after a local Xcode build. All tests 
 
 - [ ] Hide or close all app windows.
 - [ ] Press **⌘⌃2**:
-  - If notification permission is granted: macOS banner shows `Scene — No windows to arrange`.
+  - If notification permission is granted: macOS banner shows `Setpiece — No windows to arrange`.
   - If denied: menu bar icon dims briefly and its tooltip changes for 3 s.
 
 ### P7 — Permission revoke + restore
 
-- [ ] With Scene running, toggle Scene **OFF** in System Settings → Accessibility.
+- [ ] With Setpiece running, toggle Setpiece **OFF** in System Settings → Accessibility.
 - [ ] Within 2 s: menu reverts to **Grant Accessibility Access…**; hotkeys stop responding.
-- [ ] Toggle Scene back on → menu returns to the 7 presets within 2 s.
+- [ ] Toggle Setpiece back on → menu returns to the 7 presets within 2 s.
 
 ### P8 — Electron tolerance
 
@@ -88,7 +88,7 @@ Run after installing (from `Scene.app`) or after a local Xcode build. All tests 
 | P9 | | |
 | P10 | | |
 
-## Known quirks (not Scene bugs)
+## Known quirks (not Setpiece bugs)
 
 - **Apple System Settings** has a hard minimum size and ignores AX size requests below it. Position still snaps correctly.
 - Electron apps may settle ±1–4 px off even after the tolerance retry; this is within spec.
@@ -134,10 +134,10 @@ Run in this order after `swift test` passes locally (114 tests expected).
 11. Open Settings → Interaction tab → toggle "Enable drag-to-swap" off → drag placed window → no preview, no swap
 12. Restore toggle; set threshold slider to 80pt → drag 50pt → no swap; drag 100pt → swap fires
 13. Fire another layout (⌘⌃1) while a drag preview is showing → preview hides cleanly, new observer set installed
-14. Revoke AX permission (System Settings → Privacy → Accessibility → uncheck Scene) → onboarding reappears; verify Console shows observer group `stop` log line
+14. Revoke AX permission (System Settings → Privacy → Accessibility → uncheck Setpiece) → onboarding reappears; verify Console shows observer group `stop` log line
 15. Re-grant AX permission → fire layout → drag-to-swap works again
 16. Open Stage Manager → fire layout → drag-to-swap still works on visible windows
-17. Quit Scene → no leaked AXObservers (Activity Monitor sample: no AXObserverRef retain-count growth across 10 layout fires)
+17. Quit Setpiece → no leaked AXObservers (Activity Monitor sample: no AXObserverRef retain-count growth across 10 layout fires)
 
 Expected: all 17 pass. Record any failures on the V0.3 release issue.
 
@@ -169,10 +169,10 @@ Build & launch: `xcodebuild -project SceneApp/SceneApp.xcodeproj -scheme SceneAp
 9. **Calendar trigger** — add `.calendarEvent("Standup")` → grant Calendar permission (first add triggers the system sheet via `calendarPermissionRequester`) → create a test calendar event titled "Daily Standup" starting in 3 minutes → Workspace activates within 60–90 seconds. If you deny permission, the editor row shows an orange `trigger.calendar.denied_hint` pointing at System Settings.
 10. **Cooldown** — fire same Workspace twice via trigger within 30 s → second fire skipped (manual fire via menu bar / hotkey bypasses cooldown).
 11. **Layout reference broken** — delete a layout that a Workspace references → Workspaces tab list row shows red warning icon + `workspace.missing_layout` label; activation surfaces a "%@ references a deleted layout" notification.
-12. **Multilingual (zh-HK)** — System Settings → Language → Hong Kong Chinese → quit + relaunch Scene → all UI in 粵語 (情境 / 啟動 / 撳 / 觸發 / 排列 / 快速鍵, etc.); no English fallbacks on Settings tabs or menu bar.
-13. **Locale fallback (fr)** — switch system to French → Scene UI falls back to English (development-language fallback; no missing-key crashes, no blank labels).
+12. **Multilingual (zh-HK)** — System Settings → Language → Hong Kong Chinese → quit + relaunch Setpiece → all UI in 粵語 (情境 / 啟動 / 撳 / 觸發 / 排列 / 快速鍵, etc.); no English fallbacks on Settings tabs or menu bar.
+13. **Locale fallback (fr)** — switch system to French → Setpiece UI falls back to English (development-language fallback; no missing-key crashes, no blank labels).
 14. **Menu bar restructure** — Workspaces section above Layouts; active Workspace has ✓ checkmark + bold name; both sections show `LayoutThumbnail` renders.
-15. **Unsaved-work protection** — configure a Workspace with `appsToQuit: ["com.apple.TextEdit"]`; open TextEdit with unsaved changes; activate the Workspace; TextEdit's native save dialog appears; after 5 s timeout, Scene shows notification "Unable to quit all apps: TextEdit" (NOT force-killed; document survives).
+15. **Unsaved-work protection** — configure a Workspace with `appsToQuit: ["com.apple.TextEdit"]`; open TextEdit with unsaved changes; activate the Workspace; TextEdit's native save dialog appears; after 5 s timeout, Setpiece shows notification "Unable to quit all apps: TextEdit" (NOT force-killed; document survives).
 
 ### V0.4 Recording results
 
@@ -213,7 +213,7 @@ defaults delete com.hillman.SceneApp hasShownFirstLaunchWelcomeV1 2>/dev/null; t
 - [ ] **Quit during welcome** (cmd-Q before dismissing): relaunch does NOT re-show welcome — flag was set on show, not on dismiss (deliberate).
 - [ ] **Re-open from About tab**: Settings → About → "Show welcome screen again" shows the welcome. Dismiss. Relaunch — no welcome. Flag stays set.
 - [ ] **Locale coverage**: switch System Settings → Language to zh-HK, reset flag, relaunch — welcome uses Cantonese (粵語) copy. Repeat for zh-TW.
-- [ ] **Illustration animation**: Scene icon ring pulses, arrow bounces subtly. No perceptible performance impact.
+- [ ] **Illustration animation**: Setpiece icon ring pulses, arrow bounces subtly. No perceptible performance impact.
 
 ---
 
@@ -245,7 +245,7 @@ bundle suffix and routes everything (layouts.json / settings.json /
 workspaces.json / diagnostics/) into the parallel folder.
 
 Hotkey collision: the seeded layout chords (⌘⌃1-9,0) are global and will
-collide if both apps are running at once. Quit production Scene before
+collide if both apps are running at once. Quit production Setpiece before
 launching testing:
 
 ```sh
@@ -320,9 +320,9 @@ After a fresh `rm -rf` of `~/Library/Application Support/Scene-testing/diagnosti
 
 - [ ] Settings → About → "Export Diagnostics for Bug Report" opens NSSavePanel with default filename `scene-diagnostics-YYYYMMDD-HHMMSS.zip`. Save to ~/Downloads.
 - [ ] **After save, Finder activates and the saved `.zip` is selected** (so the user can drag it into the GitHub issue without hunting for it).
-- [ ] **Default browser opens to** `https://github.com/ChiFungHillmanChan/scene-macos/issues/new` with:
+- [ ] **Default browser opens to** `https://github.com/ChiFungHillmanChan/setpiece/issues/new` with:
   - Title pre-filled: `Bug: ` (cursor positioned for user to type)
-  - Body pre-filled with `Scene version`, `macOS` version string, and `Diagnostic hash ID`
+  - Body pre-filled with `Setpiece version`, `macOS` version string, and `Diagnostic hash ID`
   - Labels applied: `bug,diagnostics`
   - Reminder section asking the user to drag the `.zip` into the issue
 - [ ] Drag the zip from the Finder window into the issue body — GitHub accepts the upload and shows an attachment link.
@@ -368,7 +368,7 @@ cat ~/Library/Application\ Support/Scene-testing/settings.json
 
 ### H. Localization spot-check
 
-Switch System Settings → Language to zh-HK. Reopen Scene Settings → About:
+Switch System Settings → Language to zh-HK. Reopen Setpiece Settings → About:
 
 - [ ] "Diagnostics" section title reads `診斷紀錄` in Cantonese.
 - [ ] Toggle label reads `開啟診斷紀錄`. Help text uses 粵語 (撳/嘅/係/啲/喺).
@@ -398,7 +398,7 @@ Switch System Settings → Language to zh-HK. Reopen Scene Settings → About:
 
 Manual verification — run after each `xcodebuild` of the SceneApp target. No `swift test` coverage; this checklist is the gate.
 
-1. **Cold launch is OFF.** Quit Scene if running, relaunch. Confirm the menu bar icon is `rectangle.3.group` (the un-paused glyph) and the Free Mode row in the menu shows no leading checkmark.
+1. **Cold launch is OFF.** Quit Setpiece if running, relaunch. Confirm the menu bar icon is `rectangle.3.group` (the un-paused glyph) and the Free Mode row in the menu shows no leading checkmark.
 2. **Hotkey fires when OFF.** Press ⌘⌃1. A layout fires on the active screen.
 3. **Toggle ON via menu.** Open the menu, click "Free Mode". Verify:
    - The Free Mode row gains a leading ✓.
@@ -414,7 +414,7 @@ Manual verification — run after each `xcodebuild` of the SceneApp target. No `
    - The menu bar icon reverts to `rectangle.3.group`.
 8. **Hotkey fires after toggling OFF.** Press ⌘⌃1. A layout fires normally.
 9. **Drag-swap works after toggling OFF.** Re-fire a layout (so observers re-attach to the new placed set), drag a window near a slot edge. Snap occurs.
-10. **Free Mode does NOT survive relaunch.** With Free Mode ON, ⌘Q the app, relaunch. Confirm Scene comes back with Free Mode OFF.
+10. **Free Mode does NOT survive relaunch.** With Free Mode ON, ⌘Q the app, relaunch. Confirm Setpiece comes back with Free Mode OFF.
 
 ## V0.7.0 — Automation Surface (2026-05)
 
@@ -436,7 +436,7 @@ Manual smoke checklist for the URL scheme + AppIntents shipped in v0.7.
 
 ### Shortcuts.app (macOS 14.1+)
 
-- [ ] All 5 Scene actions visible in Shortcuts.app right-panel under "Scene".
+- [ ] All 5 Setpiece actions visible in Shortcuts.app right-panel under "Setpiece".
 - [ ] "Activate Workspace" parameter dropdown lists current workspaces.
 - [ ] "Apply Layout" parameter dropdown lists current layouts.
 - [ ] "List Workspaces" returns the array; chaining into "Quick Look" displays it.
@@ -444,9 +444,9 @@ Manual smoke checklist for the URL scheme + AppIntents shipped in v0.7.
 
 ### Siri / Spotlight
 
-- [ ] Spotlight: typing "Activate Scene workspace Coding" surfaces the intent.
-- [ ] Siri voice: "Hey Siri, activate Scene workspace Coding" fires Coding.
-- [ ] Siri voice: "Hey Siri, toggle Scene Free Mode" toggles it.
+- [ ] Spotlight: typing "Activate Setpiece workspace Coding" surfaces the intent.
+- [ ] Siri voice: "Hey Siri, activate Setpiece workspace Coding" fires Coding.
+- [ ] Siri voice: "Hey Siri, toggle Setpiece Free Mode" toggles it.
 
 ### Localization (zh-HK)
 

@@ -182,11 +182,23 @@ final class UpdateInstaller: ObservableObject {
         echo "Mounting DMG…"
         MOUNT_OUT=$(hdiutil attach "$DMG" -nobrowse -noverify -noautoopen)
         MOUNT=$(echo "$MOUNT_OUT" | grep '/Volumes/' | awk '{for(i=3;i<=NF;i++)printf "%s ",$i;print ""}' | sed 's/ *$//' | head -1)
-        if [ -z "$MOUNT" ] || [ ! -d "$MOUNT/Scene.app" ]; then
-            echo "ERROR: failed to mount DMG or Scene.app missing in mount"
+        if [ -z "$MOUNT" ]; then
+            echo "ERROR: failed to mount DMG"
+            exit 1
+        fi
+        # Find whatever .app the DMG carries rather than hard-coding a name.
+        # Versions up to 0.7.6 looked for "Scene.app" literally, which made the
+        # bundle filename un-renameable: a DMG shipping any other name would
+        # abort every installed updater in the field. This makes a future
+        # bundle rename a one-release change instead of a breaking one.
+        SRC_APP=$(find "$MOUNT" -maxdepth 1 -name "*.app" -print -quit)
+        if [ -z "$SRC_APP" ] || [ ! -d "$SRC_APP" ]; then
+            echo "ERROR: no .app found in mounted DMG at $MOUNT"
+            hdiutil detach "$MOUNT" -force >/dev/null 2>&1 || true
             exit 1
         fi
         echo "  Mounted at: $MOUNT"
+        echo "  Source app: $SRC_APP"
 
         # Backup the old install in case ditto fails partway. /tmp is a tmpfs
         # so this costs no real disk; cleaned up on success.
@@ -202,7 +214,7 @@ final class UpdateInstaller: ObservableObject {
         # com.apple.quarantine xattr that would otherwise trigger a Gatekeeper
         # "downloaded from internet" re-prompt on first launch.
         echo "Replacing app with ditto --noqtn…"
-        if ! ditto --noqtn "$MOUNT/Scene.app" "$APP_DEST"; then
+        if ! ditto --noqtn "$SRC_APP" "$APP_DEST"; then
             echo "ERROR: ditto failed; rolling back"
             rm -rf "$APP_DEST"
             mv "$BACKUP" "$APP_DEST"

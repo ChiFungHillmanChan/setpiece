@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in Scene behaves differently from how it should.
+description: Something in Setpiece behaves differently from how it should.
 labels: ["bug"]
 body:
   - type: markdown
@@ -7,16 +7,16 @@ body:
       value: |
         Thanks for taking the time. Before filing, please search the existing issues
         **including closed ones** — several known macOS quirks are documented there and
-        closed as "not a Scene bug".
+        closed as "not a Setpiece bug".
 
         **Security bugs do not belong in a public issue.** Use the private advisory
-        route in [SECURITY.md](https://github.com/ChiFungHillmanChan/scene-macos/blob/main/SECURITY.md)
+        route in [SECURITY.md](https://github.com/ChiFungHillmanChan/setpiece/blob/main/SECURITY.md)
         instead.
 
   - type: input
     id: version
     attributes:
-      label: Scene version
+      label: Setpiece version
       description: Settings → About.
       placeholder: "0.7.6"
     validations:

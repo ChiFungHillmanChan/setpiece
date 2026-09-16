@@ -53,19 +53,19 @@ account, or acting as an appointed representative at an online or offline event.
 
 For this project, community spaces means the GitHub repository — issues, pull requests,
 discussions, code review and commit messages — the Homebrew tap, and any other channel where
-Scene is officially represented.
+Setpiece is officially represented.
 
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the
 community leaders responsible for enforcement at **hillmanchan709@gmail.com**, with
-`[Scene conduct]` in the subject. All complaints will be reviewed and investigated promptly and
+`[Setpiece conduct]` in the subject. All complaints will be reviewed and investigated promptly and
 fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any
 incident.
 
-Scene is maintained by one person in Hong Kong (UTC+8). Reports are read personally and kept
+Setpiece is maintained by one person in Hong Kong (UTC+8). Reports are read personally and kept
 confidential; expect an acknowledgement within 72 hours. If the report concerns the maintainer,
 you may also use GitHub's own [report abuse](https://github.com/contact/report-abuse) channel,
 which is independent of this project.

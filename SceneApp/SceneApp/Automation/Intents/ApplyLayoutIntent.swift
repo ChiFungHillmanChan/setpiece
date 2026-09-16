@@ -4,7 +4,7 @@ import SceneCore
 
 struct ApplyLayoutIntent: AppIntent {
     static var title: LocalizedStringResource = "Apply Layout"
-    static var description = IntentDescription("Apply a Scene layout to windows on the active screen.")
+    static var description = IntentDescription("Apply a Setpiece layout to windows on the active screen.")
     static var openAppWhenRun: Bool = true
 
     @Parameter(title: "Layout")
@@ -16,7 +16,7 @@ struct ApplyLayoutIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         guard let dispatcher = (NSApp.delegate as? AppDelegate)?.automationDispatcher else {
-            return .result(dialog: "Scene is not ready.")
+            return .result(dialog: "Setpiece is not ready.")
         }
         let outcome = await dispatcher.dispatchFromIntent(
             .applyLayout(id: .uuid(layout.id), force: force, screen: .underMouse)
@@ -29,9 +29,9 @@ struct ApplyLayoutIntent: AppIntent {
         case .ok:
             return IntentDialog("Applied layout \(layoutName).")
         case .blockedByFreeMode:
-            return IntentDialog("Scene is in Free Mode. Toggle the Force option to override.")
+            return IntentDialog("Setpiece is in Free Mode. Toggle the Force option to override.")
         case .blockedByMissingAX:
-            return IntentDialog("Scene needs Accessibility permission.")
+            return IntentDialog("Setpiece needs Accessibility permission.")
         case .notFoundLayout(let n), .notFoundWorkspace(let n), .invalidArgument(let n):
             return IntentDialog("Could not apply: \(n).")
         case .okWithValue:

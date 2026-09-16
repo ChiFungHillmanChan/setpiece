@@ -1,11 +1,11 @@
 blank_issues_enabled: true
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/ChiFungHillmanChan/scene-macos/security/advisories/new
+    url: https://github.com/ChiFungHillmanChan/setpiece/security/advisories/new
     about: Report privately through a GitHub security advisory — never in a public issue.
   - name: Installation and permission problems
-    url: https://github.com/ChiFungHillmanChan/scene-macos/blob/main/docs/INSTALL.md
-    about: Gatekeeper, and the one-time Accessibility grant — including why the toggle can look ON while Scene still says it is off.
+    url: https://github.com/ChiFungHillmanChan/setpiece/blob/main/docs/INSTALL.md
+    about: Gatekeeper, and the one-time Accessibility grant — including why the toggle can look ON while Setpiece still says it is off.
   - name: Troubleshooting and FAQ
-    url: https://github.com/ChiFungHillmanChan/scene-macos/wiki
-    about: Known macOS quirks that are not Scene bugs, and answers to common questions.
+    url: https://github.com/ChiFungHillmanChan/setpiece/wiki
+    about: Known macOS quirks that are not Setpiece bugs, and answers to common questions.

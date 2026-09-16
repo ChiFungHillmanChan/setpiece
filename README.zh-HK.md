@@ -1,20 +1,24 @@
-# Scene
+# Setpiece
 
 > 撳一下。Window 入位、App 啟動、Focus 模式 kick in。好似 [Rectangle](https://rectangleapp.com) 嘅 snap layout 咁，但係多埋**情境（Workspaces）**將 app + layout + Focus mode 一齊 bundle 起，加上**自動觸發** — 接駁 monitor、夾啱時間、撞正 calendar event 都會自己 fire。
 
 免費、開源 macOS menu bar 視窗管理工具。純 Swift 寫，零外部 dependency，Apple notarized。需要 macOS 14（Sonoma）或以上。Universal binary — Apple Silicon 同 Intel 都行到。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-blue)](https://www.apple.com/macos/) [![Universal](https://img.shields.io/badge/binary-universal-brightgreen)](https://github.com/ChiFungHillmanChan/scene-macos/releases/latest) [![Latest release](https://img.shields.io/github/v/release/ChiFungHillmanChan/scene-macos)](https://github.com/ChiFungHillmanChan/scene-macos/releases/latest) [![GitHub stars](https://img.shields.io/github/stars/ChiFungHillmanChan/scene-macos?style=flat)](https://github.com/ChiFungHillmanChan/scene-macos/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-blue)](https://www.apple.com/macos/) [![Universal](https://img.shields.io/badge/binary-universal-brightgreen)](https://github.com/ChiFungHillmanChan/setpiece/releases/latest) [![Latest release](https://img.shields.io/github/v/release/ChiFungHillmanChan/setpiece)](https://github.com/ChiFungHillmanChan/setpiece/releases/latest) [![GitHub stars](https://img.shields.io/github/stars/ChiFungHillmanChan/setpiece?style=flat)](https://github.com/ChiFungHillmanChan/setpiece/stargazers)
 
-![Scene — 喺 menu bar 揀個 layout，成枱窗即刻入位](docs/media/scene-demo.gif)
+![Setpiece — 喺 menu bar 揀個 layout，成枱窗即刻入位](docs/media/scene-demo.gif)
 
 > English version: [README.md](README.md)
 
-## 點解揀 Scene？
+> **Setpiece 喺 v0.7.6 之前叫做 Scene。** 如果你已經裝咗，安裝本身完全唔受影響 —
+> 同一個 Accessibility 授權、同一批 layout 同 workspace，而 `scene://` URL 會同新嘅
+> `setpiece://` 一齊繼續用。指向呢個 repository 嘅舊連結會永久轉址過嚟。
 
-呢個紅海入面，Scene 嘅 differentiator：
+## 點解揀 Setpiece？
 
-|                                                        | Scene         | [Rectangle](https://rectangleapp.com) | [Magnet](https://magnet.crowdcafe.com) | [Loop](https://github.com/MrKai77/Loop) | [Moom](https://manytricks.com/moom) |
+呢個紅海入面，Setpiece 嘅 differentiator：
+
+|                                                        | Setpiece         | [Rectangle](https://rectangleapp.com) | [Magnet](https://magnet.crowdcafe.com) | [Loop](https://github.com/MrKai77/Loop) | [Moom](https://manytricks.com/moom) |
 | ------------------------------------------------------ | :-----------: | :-----------------------------------: | :------------------------------------: | :-------------------------------------: | :---------------------------------: |
 | 售價                                                   | 免費          | 免費                                  | $7.99                                  | 免費                                    | $10                                 |
 | 開源                                                   | 係            | 係                                    | 唔係                                   | 係                                      | 唔係                                |
@@ -25,7 +29,7 @@
 | 拖 window 換位                                         | ✓             | —                                     | —                                      | —                                       | —                                   |
 | 繁體中文（HK / TW）                                    | ✓             | —                                     | —                                      | —                                       | —                                   |
 
-如果你淨係要 snap-to-edge 嘅 tiling，Rectangle 已經夠用。如果你想撳一下就切換成個情境 — apps、layout、Focus mode 加上自動觸發 — 嗰個就係 Scene。
+如果你淨係要 snap-to-edge 嘅 tiling，Rectangle 已經夠用。如果你想撳一下就切換成個情境 — apps、layout、Focus mode 加上自動觸發 — 嗰個就係 Setpiece。
 
 ## 安裝
 
@@ -35,49 +39,49 @@
 brew install --cask chifunghillmanchan/tap/scene
 ```
 
-自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Scene 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Scene 就得。
+自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Setpiece 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Setpiece 就得。
 
-**或者直接下載 DMG**：**[Scene-0.7.6.dmg](https://github.com/ChiFungHillmanChan/scene-macos/releases/download/v0.7.6/Scene-0.7.6.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
+**或者直接下載 DMG**：**[Scene-0.7.6.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.7.6/Scene-0.7.6.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
 
-所有版本：[Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
+所有版本：[Releases page](https://github.com/ChiFungHillmanChan/setpiece/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
 
 ## 示範片
 
 **情境（Workspaces）** — 將 layout、要開嘅 app 同 Focus mode bundle 埋一齊，撳一下搞掂：
 
-![Scene Workspaces — 一鋪過將 layout、apps 同 Focus mode bundle 埋一齊](docs/media/scene-workspaces.png)
+![Setpiece Workspaces — 一鋪過將 layout、apps 同 Focus mode bundle 埋一齊](docs/media/scene-workspaces.png)
 
 **Layout 編輯器** — 拖 seam 就整到任何形狀嘅 tile 排列：
 
-![Scene Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)
+![Setpiece Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)
 
 ▶ [睇完整 30 秒示範片](docs/media/scene-marketing.mp4)（MP4，13 MB）
 
 ## v0.7.6 嘅新功能
 
-**對話框同浮動面板唔會再食咗一格。** Scene 以前將一個 app 喺螢幕上擁有嘅每一個窗都當成可以排，入面包括佢嘅偏好設定對話框、儲存 sheet、inspector 同浮動面板。開其中一個就會令成個 layout 重新洗牌，將一個真窗推去最小化嗰堆 — 開個「顯示簡介」就足以搞亂一個三分排版。而家 Scene 會讀每個窗嘅 accessibility subrole，跳過唔係俾用家自己擺位嗰啲。呢個判斷用嘅係「排除清單」而唔係「允許清單」：好多 app 根本冇填 subrole，或者填啲自訂嘢，如果淨係認標準嗰隻，就會靜靜雞令成個 app 都排唔到 — 咁比起排多咗一個面板嚴重好多。所以認唔出嘅一律照排。
+**對話框同浮動面板唔會再食咗一格。** Setpiece 以前將一個 app 喺螢幕上擁有嘅每一個窗都當成可以排，入面包括佢嘅偏好設定對話框、儲存 sheet、inspector 同浮動面板。開其中一個就會令成個 layout 重新洗牌，將一個真窗推去最小化嗰堆 — 開個「顯示簡介」就足以搞亂一個三分排版。而家 Setpiece 會讀每個窗嘅 accessibility subrole，跳過唔係俾用家自己擺位嗰啲。呢個判斷用嘅係「排除清單」而唔係「允許清單」：好多 app 根本冇填 subrole，或者填啲自訂嘢，如果淨係認標準嗰隻，就會靜靜雞令成個 app 都排唔到 — 咁比起排多咗一個面板嚴重好多。所以認唔出嘅一律照排。
 
 **啲窗貼得返底邊。** v0.7.4 為咗唔俾 Dock 拖住 layout 走，喺每個螢幕都預留咗 Dock 嘅厚度，因為 macOS 淨係會喺 Dock 而家嗰個螢幕留位，而 Dock 會跟住你個滑鼠走。代價係冇 Dock 嗰個螢幕底部會有一條死位。而家 **設定 → 互動 → Dock 空間** 可以熄咗個預留，啲窗就貼實底邊 — 代價就係冇咗嗰份「重新套用唔會郁」嘅穩定。預設仍然係開，單螢幕嘅 Mac 開唔開都一樣。
 
-**新版寫嘅設定檔唔會再令 Scene 開唔到。** 行過新版 Scene 之後 `settings.json` 會升級；跟住返去舊版，舊版會唔認個檔案然後喺啟動時直接死咗，亦都冇任何提示話你知點解。而家 Scene 讀到「未來版本」嘅檔案會寬鬆處理 — 攞佢識得嘅設定，其餘用預設 — 而且唔會改寫個檔案，所以返去新版嗰陣啲設定仍然完好。
+**新版寫嘅設定檔唔會再令 Setpiece 開唔到。** 行過新版 Setpiece 之後 `settings.json` 會升級；跟住返去舊版，舊版會唔認個檔案然後喺啟動時直接死咗，亦都冇任何提示話你知點解。而家 Setpiece 讀到「未來版本」嘅檔案會寬鬆處理 — 攞佢識得嘅設定，其餘用預設 — 而且唔會改寫個檔案，所以返去新版嗰陣啲設定仍然完好。
 
-**Scene 會問你攞一次 GitHub star。** 當你真正成功套用咗二十次 layout 之後，menu bar 面板會出一行。無論你揀邊樣，佢都唔會再出現。
+**Setpiece 會問你攞一次 GitHub star。** 當你真正成功套用咗二十次 layout 之後，menu bar 面板會出一行。無論你揀邊樣，佢都唔會再出現。
 
 完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md).
 
 ## v0.7.5 嘅新功能
 
-**macOS 26（Tahoe）設定視窗嘅制返晒嚟。** Layouts 嗰版嘅 **+**、**+ Custom**、刪除、還原做預設同 **Restore Default Presets** 全部唔見咗；Workspaces 嗰版嘅 **New**、**Duplicate**、**Delete** 都係。你仲可以改返啲已經有嘅 layout，但係喺設定入面新增、複製、刪除通通做唔到。原因係 v0.7.2 加嘅成個窗透明效果：嗰層毛玻璃底係一個 AppKit container，而 SwiftUI 個 view 係揼咗入去入面 — 而 hosting controller 淨係喺佢自己就係個窗嘅內容嗰陣先會將 toolbar 交畀個窗，包多咗一層就乜都唔交。而家嗰層毛玻璃改咗做 SwiftUI 嘅背景圖層，所以塊玻璃樣一模一樣，啲制亦都返晒嚟。macOS 14 同 15 一直都冇事。多謝 [@nphxexp-create](https://github.com/nphxexp-create) 報料（[#4](https://github.com/ChiFungHillmanChan/scene-macos/issues/4)）。
+**macOS 26（Tahoe）設定視窗嘅制返晒嚟。** Layouts 嗰版嘅 **+**、**+ Custom**、刪除、還原做預設同 **Restore Default Presets** 全部唔見咗；Workspaces 嗰版嘅 **New**、**Duplicate**、**Delete** 都係。你仲可以改返啲已經有嘅 layout，但係喺設定入面新增、複製、刪除通通做唔到。原因係 v0.7.2 加嘅成個窗透明效果：嗰層毛玻璃底係一個 AppKit container，而 SwiftUI 個 view 係揼咗入去入面 — 而 hosting controller 淨係喺佢自己就係個窗嘅內容嗰陣先會將 toolbar 交畀個窗，包多咗一層就乜都唔交。而家嗰層毛玻璃改咗做 SwiftUI 嘅背景圖層，所以塊玻璃樣一模一樣，啲制亦都返晒嚟。macOS 14 同 15 一直都冇事。多謝 [@nphxexp-create](https://github.com/nphxexp-create) 報料（[#4](https://github.com/ChiFungHillmanChan/setpiece/issues/4)）。
 
 完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## v0.7.4 嘅新功能
 
-**Dock 唔會再拖住你個 layout 走** — 接多過一部 mon 嘅時候，Dock 會跟住你隻滑鼠跳，而 macOS 淨係喺 Dock 當下嗰部 mon 度留返位。Scene 就係排入呢個留返嘅範圍，所以你將 Dock 移去另一部 mon 再撳同一個 layout，全部 window 就會照 Dock 個高度郁一次同縮一次。而家 Scene 喺每一部 mon 都留返 Dock 嘅厚度，layout 嘅目標位置淨係睇你部部 mon 點擺 — 無論 Dock 遊咗去邊，再撳都唔會郁。代價：冇 Dock 嗰部 mon 都要留返嗰條位。如果你開咗 Dock 自動收埋，就完全冇代價；淨係得一部 mon 嘅話更加完全冇影響。仲有，泊喺 Dock 上面嘅 window 而家都會計入 layout，唔會再當睇唔到。
+**Dock 唔會再拖住你個 layout 走** — 接多過一部 mon 嘅時候，Dock 會跟住你隻滑鼠跳，而 macOS 淨係喺 Dock 當下嗰部 mon 度留返位。Setpiece 就係排入呢個留返嘅範圍，所以你將 Dock 移去另一部 mon 再撳同一個 layout，全部 window 就會照 Dock 個高度郁一次同縮一次。而家 Setpiece 喺每一部 mon 都留返 Dock 嘅厚度，layout 嘅目標位置淨係睇你部部 mon 點擺 — 無論 Dock 遊咗去邊，再撳都唔會郁。代價：冇 Dock 嗰部 mon 都要留返嗰條位。如果你開咗 Dock 自動收埋，就完全冇代價；淨係得一部 mon 嘅話更加完全冇影響。仲有，泊喺 Dock 上面嘅 window 而家都會計入 layout，唔會再當睇唔到。
 
 **menu bar 個 panel 會喺你撳咗嘅 layout 打剔** — 生效嗰個 layout 右邊會有個剔，個名會變粗體，唔使數 window 都知而家行緊邊個 layout。有冇打剔都好，hotkey 嘅鍵位都會對齊。
 
-**由好舊嘅版本更新，會一次過跳到最新** — Scene 以前問 GitHub 攞 `releases/latest`，聽落好似係「最新版本」，其實係「按個 tag 指住嗰個 commit 嘅日期排出嚟最近嗰個 release」。如果有個 hotfix 係由舊 commit 度切出嚟，呢個 endpoint 就會交返個已經被取代嘅 release 畀你 — 落後好多版嘅用家會收到舊版，裝完重開又收到下一版，一版一版咁爬。而家 Scene 攞成個 release list 返嚟自己揀最高版本，draft 同 prerelease 一律跳過。Tests: 371 → 394。
+**由好舊嘅版本更新，會一次過跳到最新** — Setpiece 以前問 GitHub 攞 `releases/latest`，聽落好似係「最新版本」，其實係「按個 tag 指住嗰個 commit 嘅日期排出嚟最近嗰個 release」。如果有個 hotfix 係由舊 commit 度切出嚟，呢個 endpoint 就會交返個已經被取代嘅 release 畀你 — 落後好多版嘅用家會收到舊版，裝完重開又收到下一版，一版一版咁爬。而家 Setpiece 攞成個 release list 返嚟自己揀最高版本，draft 同 prerelease 一律跳過。Tests: 371 → 394。
 
 完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md)。
 
@@ -125,8 +129,8 @@ brew install --cask chifunghillmanchan/tap/scene
 ### 用 Xcode build
 
 ```bash
-git clone https://github.com/ChiFungHillmanChan/scene-macos.git
-cd scene-macos
+git clone https://github.com/ChiFungHillmanChan/setpiece.git
+cd setpiece
 open SceneApp/SceneApp.xcodeproj
 ```
 
@@ -152,10 +156,10 @@ swift test
 
 ## 用法
 
-1. 第一次 launch，Scene 會問 **Accessibility 授權**。喺 System Settings → Privacy & Security → Accessibility 開咗佢。
-2. Click menu bar 嘅 Scene icon（`rectangle.3.group`）→ 會見到 10 個 layout preset 同 4 個 workspace。
+1. 第一次 launch，Setpiece 會問 **Accessibility 授權**。喺 System Settings → Privacy & Security → Accessibility 開咗佢。
+2. Click menu bar 嘅 Setpiece icon（`rectangle.3.group`）→ 會見到 10 個 layout preset 同 4 個 workspace。
 3. Click 任何 layout preset，或者撳 ⌘⌃1 – ⌘⌃0（⌘⌃0 = 第 10 個）。Workspace 撳 ⌘⌥1 – ⌘⌥4。
-4. Quit 用 menu 嘅 **Quit Scene**。
+4. Quit 用 menu 嘅 **Quit Setpiece**。
 
 ### Default hotkey 表
 
@@ -185,7 +189,7 @@ Workspace 默認 hotkey：
 
 ## 自動化（v0.7+）
 
-Scene 提供兩個自動化入口，任何工具都可以叫 Scene 做嘢：
+Setpiece 提供兩個自動化入口，任何工具都可以叫 Setpiece 做嘢：
 
 ### URL scheme
 
@@ -200,7 +204,7 @@ Terminal、Raycast script command、Alfred file action、Stream Deck「Open URL�
 
 ### Shortcuts.app + Siri（macOS 14.1+）
 
-Scene 喺 Shortcuts.app 註冊咗 5 個 actions（喺「Scene」分類入面）：
+Setpiece 喺 Shortcuts.app 註冊咗 5 個 actions（喺「Setpiece」分類入面）：
 
 - **Activate Workspace** — 揀一個情境啟動
 - **Apply Layout** — 套用佈局喺當前螢幕
@@ -210,11 +214,11 @@ Scene 喺 Shortcuts.app 註冊咗 5 個 actions（喺「Scene」分類入面）�
 
 呢啲 actions 會跟住 iCloud sync 去 iPhone / iPad / Apple Watch 嘅 Shortcuts，仲可以用 Siri：
 
-- 「Hey Siri, activate Scene workspace Coding」
-- 「Hey Siri, apply Scene layout Halves」
-- 「Hey Siri, toggle Scene Free Mode」
+- 「Hey Siri, activate Setpiece workspace Coding」
+- 「Hey Siri, apply Setpiece layout Halves」
+- 「Hey Siri, toggle Setpiece Free Mode」
 
-> AppIntents 要 macOS 14.1+。URL scheme 喺 Scene 支援嘅所有 macOS 版本（14.0+）都用得。
+> AppIntents 要 macOS 14.1+。URL scheme 喺 Setpiece 支援嘅所有 macOS 版本（14.0+）都用得。
 
 ### Edge case 行為
 
@@ -230,7 +234,7 @@ Scene 喺 Shortcuts.app 註冊咗 5 個 actions（喺「Scene」分類入面）�
 ## 架構
 
 ```
-scene-macos/
+setpiece/
 ├── Package.swift
 ├── Sources/SceneCore/          # 純邏輯，唔使 Xcode unit test 得
 │   ├── AX/                     # Accessibility API wrapper
@@ -278,7 +282,7 @@ scene-macos/
 
 `swift test` 由 command line 跑得，唔使 Xcode；只有最後 `.app` build 先要。
 
-詳細架構 + 進階文檔：[Wiki（繁體中文）](https://github.com/ChiFungHillmanChan/scene-macos/wiki/Home-zh-HK)
+詳細架構 + 進階文檔：[Wiki（繁體中文）](https://github.com/ChiFungHillmanChan/setpiece/wiki/Home-zh-HK)
 
 ## 設定持久化
 

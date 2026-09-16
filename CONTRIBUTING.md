@@ -1,6 +1,6 @@
-# Contributing to Scene
+# Contributing to Setpiece
 
-Thanks for looking. Scene is maintained by one person in Hong Kong (UTC+8), unfunded, in
+Thanks for looking. Setpiece is maintained by one person in Hong Kong (UTC+8), unfunded, in
 spare time. That single fact shapes everything below — contributions are genuinely welcome,
 but the project can only absorb them at one reviewer's speed, so this guide exists to keep
 your effort from being wasted.
@@ -17,7 +17,7 @@ Not everything useful is a patch:
 
 - **Report bugs precisely.** A reproducible multi-display bug report is worth more than most
   patches — those are the hardest defects to find alone, because they need hardware.
-- **Improve the translations.** Scene ships English, 繁中（香港）and 繁中（台灣）. Native-speaker
+- **Improve the translations.** Setpiece ships English, 繁中（香港）and 繁中（台灣）. Native-speaker
   corrections are always accepted, and a fix to one awkward string is a perfectly good first
   contribution.
 - **Answer someone else's issue.** Half of them are "how do I…", and you may already know.
@@ -27,11 +27,11 @@ Not everything useful is a patch:
 ## Reporting a bug
 
 Search the existing issues first, **including closed ones** — several known macOS quirks are
-documented there and closed as "not a Scene bug".
+documented there and closed as "not a Setpiece bug".
 
 Then open an issue with:
 
-- **Scene version** — Settings → About.
+- **Setpiece version** — Settings → About.
 - **macOS version and chip** (Apple Silicon or Intel).
 - **Your display setup** — how many displays, their arrangement, scaling, and which one the
   pointer was on. A surprising share of layout bugs are multi-display bugs, and this line is
@@ -55,7 +55,7 @@ A good request leads with the use case, not the implementation — "I want my ed
 terminal to swap sides when I plug in at the office" tells me more than "add a swap-sides
 button". The use case sometimes turns out to be reachable with what already ships.
 
-Scene says no fairly often, and the biases behind that are worth knowing up front. It intends
+Setpiece says no fairly often, and the biases behind that are worth knowing up front. It intends
 to stay a small menu bar app that does layouts and workspaces well: no plugin system, no
 accounts, no cloud sync, no telemetry, and no external dependencies.
 
@@ -85,11 +85,11 @@ at once; and changes that cut across the architecture boundaries below.
 ## Development setup
 
 **Prerequisites:** macOS 14+, Xcode 16+, Swift 5.9+ (bundled with Xcode). No package manager
-step — Scene has zero external dependencies, by design.
+step — Setpiece has zero external dependencies, by design.
 
 ```bash
-git clone https://github.com/ChiFungHillmanChan/scene-macos.git
-cd scene-macos
+git clone https://github.com/ChiFungHillmanChan/setpiece.git
+cd setpiece
 
 swift build      # compiles SceneCore, the framework-neutral logic library
 swift test       # runs the full SceneCore unit suite, no Xcode needed
@@ -110,13 +110,13 @@ Two things that will cost you an hour if nobody warns you:
 **Accessibility permission dies on every rebuild.** macOS binds the AX grant to the binary's
 code signature hash, so each local build is a different app as far as TCC is concerned. The
 toggle in System Settings will still *look* on while `AXIsProcessTrusted()` returns false —
-Scene will behave as if it has no permission. Fix it with either:
+Setpiece will behave as if it has no permission. Fix it with either:
 
 ```bash
 tccutil reset Accessibility com.hillman.SceneApp    # then relaunch and re-grant
 ```
 
-or by toggling Scene off and on in **System Settings → Privacy & Security → Accessibility**.
+or by toggling Setpiece off and on in **System Settings → Privacy & Security → Accessibility**.
 
 ## Architecture rules a PR must respect
 
@@ -232,7 +232,7 @@ Already covered by `.gitignore`; don't force-add past it:
 
 ## License
 
-By contributing to Scene, you agree that your contributions will be licensed under the project's
+By contributing to Setpiece, you agree that your contributions will be licensed under the project's
 [MIT License](LICENSE). There is no CLA and no copyright assignment — you keep your copyright,
 and the license is what lets the project ship it.
 

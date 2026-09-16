@@ -4,7 +4,7 @@ import SceneCore
 
 struct SetFreeModeIntent: AppIntent {
     static var title: LocalizedStringResource = "Set Free Mode"
-    static var description = IntentDescription("Explicitly set Scene Free Mode on or off.")
+    static var description = IntentDescription("Explicitly set Setpiece Free Mode on or off.")
     static var openAppWhenRun: Bool = false
 
     @Parameter(title: "Enabled")
@@ -13,7 +13,7 @@ struct SetFreeModeIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         guard let dispatcher = (NSApp.delegate as? AppDelegate)?.automationDispatcher else {
-            return .result(dialog: "Scene is not ready.")
+            return .result(dialog: "Setpiece is not ready.")
         }
         let outcome = await dispatcher.dispatchFromIntent(.setFreeMode(enabled: enabled))
         switch outcome {

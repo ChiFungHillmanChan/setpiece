@@ -4,6 +4,16 @@ Scene 嘅完整版本史，最新嘅 release 喺最頂。
 
 要 download binary，去 [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases)。
 
+## 已改名：Scene 變成 Setpiece
+
+呢個 app 一直到 v0.7.6 都叫做 **Scene**。下面所有內容都係用舊名寫嘅，而且原樣保留 —
+改寫過去只會令歷史更加難讀，唔會更清楚。
+
+已經裝咗嘅安裝完全唔受影響。Bundle identifier 仍然係 `com.hillman.SceneApp`，
+所以你嘅 Accessibility 授權唔會斷；你嘅 layout、hotkey 同 workspace 仍然住喺
+`~/Library/Application Support/Scene`；而 `scene://` URL 會同新嘅 `setpiece://`
+一齊永久保留。變嘅只係顯示出嚟嘅名。
+
 ## V0.7.6 — 更乾淨嘅窗口過濾 + Dock 空間控制
 
 - **對話框、sheet、inspector 同浮動面板唔會再被排版。** `AXWindowEnumerator` 以前收晒所有 layer-0 而 AX frame 對得上 `CGWindowList` 範圍嘅窗，即係一個 app 擁有嘅每一個窗。開個偏好設定對話框或者「顯示簡介」就會食咗一格、令所有真窗重新洗牌、將最後一個推去 `toMinimize`。新嘅 `WindowSubrole` 會讀 `kAXSubroleAttribute`，拒絕 `AXDialog`、`AXSystemDialog`、`AXFloatingWindow`、`AXSystemFloatingWindow`、`AXSheet` 同 `AXDrawer` — sheet 同 drawer 係附喺母窗上面，根本冇得獨立擺位。呢個判斷用**排除清單，唔用允許清單**：好多 app 根本冇填 subrole 或者填啲自訂嘢，如果唔排嗰啲，就會靜靜雞令成個 app 都排唔到，而唔係淨係多咗一個面板 — 前者用家完全查唔到原因。冇填、空白、認唔出嘅一律照排，而 `AXUnknown` 特登唔放入清單：佢嘅意思係「個 app 冇講呢個係乜」，係含糊唔係唔合資格，而且 layer-0 嗰層已經隔走咗通常帶住佢嘅 overlay。已用真實窗口驗證：四個到達 layer-0 關卡嘅測試窗入面，`AXDialog` 同 `AXFloatingWindow` 嗰兩個而家被隔走，文件窗照排。

@@ -1,6 +1,6 @@
-# 貢獻 Scene
+# 貢獻 Setpiece
 
-感謝你看到這裡。Scene 由一個人在香港（UTC+8）維護，沒有資助，利用餘暇開發。以下所有內容都源自這個事
+感謝你看到這裡。Setpiece 由一個人在香港（UTC+8）維護，沒有資助，利用餘暇開發。以下所有內容都源自這個事
 實 — 我們真心歡迎貢獻，但所有工作只能以一位 reviewer 的速度消化，所以這份指南存在的目的，就是不想浪費
 你的心力。
 
@@ -19,7 +19,7 @@
 
 - **準確地回報 bug。** 一份能夠重現的多螢幕 bug report，價值高於大部分 patch — 這類缺陷最難獨力找出
   來，因為需要相應的硬體才碰得到。
-- **改善翻譯。** Scene 提供英文、繁體中文（香港）與繁體中文（台灣）。母語使用者的修正永遠歡迎，修好一
+- **改善翻譯。** Setpiece 提供英文、繁體中文（香港）與繁體中文（台灣）。母語使用者的修正永遠歡迎，修好一
   句不通順的字串已經是很好的第一次貢獻。
 - **協助回覆其他人的 issue。** 其中一半是「該怎麼做⋯⋯」，你可能已經知道答案。
 - **幫忙把它告訴別人。** 一顆 star、一篇文章、一段影片，或是跟身邊仍在用手拖拉視窗的同事提一句。對一個
@@ -27,12 +27,12 @@
 
 ## 回報 bug
 
-**請先搜尋現有 issue，包括已關閉的** — 其中記錄了數個已知的 macOS 行為，並以「並非 Scene 的 bug」為理由
+**請先搜尋現有 issue，包括已關閉的** — 其中記錄了數個已知的 macOS 行為，並以「並非 Setpiece 的 bug」為理由
 關閉。
 
 接著開一個 issue，內容包含：
 
-- **Scene 版本** — 在 Settings → About 可以找到。
+- **Setpiece 版本** — 在 Settings → About 可以找到。
 - **macOS 版本與晶片**（Apple Silicon 或 Intel）。
 - **你的螢幕配置** — 有幾部顯示器、如何排列、縮放比例，以及當時游標位於哪一部。相當大比例的 layout bug
   其實是多螢幕的問題，而這一行資訊通常就是讓它得以重現的關鍵。
@@ -54,7 +54,7 @@
 右對調」比「請加一個左右對調的按鈕」提供的資訊多得多。有時把使用情境講清楚之後，會發現現有功能已經做
 得到。
 
-Scene 婉拒需求的比例不低，背後的取捨值得先說明：它希望維持為一個小巧、把 layout 與 workspace 做好的
+Setpiece 婉拒需求的比例不低，背後的取捨值得先說明：它希望維持為一個小巧、把 layout 與 workspace 做好的
 menu bar app。沒有外掛系統、沒有帳戶、沒有雲端同步、沒有遙測，也沒有外部相依套件。
 
 ## Pull request
@@ -79,12 +79,12 @@ locale 的工作量；而你花了整個週末的成果最後被婉拒，對雙�
 
 ## 開發環境
 
-**需求：** macOS 14+、Xcode 16+、Swift 5.9+（隨 Xcode 提供）。沒有套件管理步驟 — Scene 刻意維持零外部
+**需求：** macOS 14+、Xcode 16+、Swift 5.9+（隨 Xcode 提供）。沒有套件管理步驟 — Setpiece 刻意維持零外部
 相依套件。
 
 ```bash
-git clone https://github.com/ChiFungHillmanChan/scene-macos.git
-cd scene-macos
+git clone https://github.com/ChiFungHillmanChan/setpiece.git
+cd setpiece
 
 swift build      # 編譯 SceneCore，即 framework-neutral 的邏輯 library
 swift test       # 執行 SceneCore 的完整單元測試，不需要 Xcode
@@ -104,13 +104,13 @@ xcodebuild -project SceneApp/SceneApp.xcodeproj -scheme SceneApp \
 
 **每次重新建置後，Accessibility 權限都會失效。** macOS 將 AX 授權綁定在執行檔的程式碼簽章雜湊
 （cdhash）上，因此每次本機建置對 TCC 而言都是另一個 App。System Settings 中的開關**看起來仍然是開啟
-的**，但 `AXIsProcessTrusted()` 會回傳 false — Scene 的行為會像是完全沒有權限。解決方式二擇一：
+的**，但 `AXIsProcessTrusted()` 會回傳 false — Setpiece 的行為會像是完全沒有權限。解決方式二擇一：
 
 ```bash
 tccutil reset Accessibility com.hillman.SceneApp    # 然後重新啟動並重新授權
 ```
 
-或是在 **System Settings → Privacy & Security → Accessibility** 中將 Scene 關閉再開啟。
+或是在 **System Settings → Privacy & Security → Accessibility** 中將 Setpiece 關閉再開啟。
 
 ## PR 必須遵守的架構規則
 
@@ -219,7 +219,7 @@ ci: add SceneCore and SceneApp build checks on PRs
 
 ## 授權
 
-向 Scene 提交貢獻，即表示你同意你的貢獻以本專案的 [MIT License](LICENSE) 授權。本專案沒有 CLA，也不要
+向 Setpiece 提交貢獻，即表示你同意你的貢獻以本專案的 [MIT License](LICENSE) 授權。本專案沒有 CLA，也不要
 求著作權轉讓 — 著作權仍然屬於你，授權條款只是讓本專案得以發布它。
 
 ## 行為準則

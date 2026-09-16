@@ -2,25 +2,577 @@
   "sourceLanguage": "en",
   "strings": {
     "": {},
+    "Activate Workspace": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activate Workspace"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟動情境"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟動情境"
+          }
+        }
+      }
+    },
+    "Activate a Setpiece Workspace — launch its apps, apply its layout, set its Focus mode.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activate a Setpiece Workspace — launch its apps, apply its layout, set its Focus mode."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟動情境——開啟相關 app、套用佈局、設定 Focus mode。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟動情境——開啟相關 app、套用佈局、設定 Focus mode。"
+          }
+        }
+      }
+    },
+    "Apply Layout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply Layout"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "套用佈局"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "套用佈局"
+          }
+        }
+      }
+    },
+    "Apply a Setpiece layout to windows on the active screen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply a Setpiece layout to windows on the active screen."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "將指定佈局套用喺當前螢幕嘅視窗。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "將指定佈局套用至目前螢幕的視窗。"
+          }
+        }
+      }
+    },
+    "Enabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enabled"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用"
+          }
+        }
+      }
+    },
+    "Explicitly set Setpiece Free Mode on or off.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explicitly set Setpiece Free Mode on or off."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "明確將 Free Mode 設為開或關。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "明確將 Free Mode 設為開啟或關閉。"
+          }
+        }
+      }
+    },
+    "Force (override Free Mode)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Force (override Free Mode)"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "強制（無視 Free Mode）"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "強制（忽略 Free Mode）"
+          }
+        }
+      }
+    },
+    "Layout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layout"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "佈局"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "佈局"
+          }
+        }
+      }
+    },
+    "List Workspaces": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List Workspaces"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "列出情境"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "列出情境"
+          }
+        }
+      }
+    },
+    "Return the names of all configured Setpiece Workspaces.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Return the names of all configured Setpiece Workspaces."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返回所有已設定嘅情境名稱。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返回所有已設定情境的名稱。"
+          }
+        }
+      }
+    },
+    "Set Free Mode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set Free Mode"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定 Free Mode"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定 Free Mode"
+          }
+        }
+      }
+    },
+    "Toggle Free Mode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle Free Mode"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切換 Free Mode"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切換 Free Mode"
+          }
+        }
+      }
+    },
+    "Toggle Setpiece Free Mode — pauses or resumes all automatic Setpiece behavior.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle Setpiece Free Mode — pauses or resumes all automatic Setpiece behavior."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切換 Free Mode——暫停或恢復所有自動執行嘅功能。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "切換 Free Mode——暫停或恢復所有自動執行的功能。"
+          }
+        }
+      }
+    },
+    "Workspace": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workspace"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "情境"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "情境"
+          }
+        }
+      }
+    },
     "about.app_name": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene"
+            "value": "Setpiece"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene"
+            "value": "Setpiece"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene"
+            "value": "Setpiece"
+          }
+        }
+      }
+    },
+    "about.diagnostics.confirm.disable.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disabling will delete all current diagnostics on this Mac."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閂咗會將呢部 Mac 上面所有現有嘅診斷紀錄全部刪走。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停用後將會刪除這部 Mac 上所有現有的診斷紀錄。"
+          }
+        }
+      }
+    },
+    "about.diagnostics.confirm.disable.cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        }
+      }
+    },
+    "about.diagnostics.confirm.disable.ok": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disable and Delete"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閂咗並刪晒"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停用並刪除"
+          }
+        }
+      }
+    },
+    "about.diagnostics.confirm.disable.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop logging and delete?"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止紀錄同埋刪晒？"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止紀錄並刪除？"
+          }
+        }
+      }
+    },
+    "about.diagnostics.export.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Diagnostics for Bug Report"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出診斷紀錄畀 bug 報告用"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出診斷紀錄供問題回報"
+          }
+        }
+      }
+    },
+    "about.diagnostics.export.disabled.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable diagnostic logging first."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要先開咗診斷紀錄。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先啟用診斷紀錄。"
+          }
+        }
+      }
+    },
+    "about.diagnostics.export.exporting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporting…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出緊⋯"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "匯出中⋯"
+          }
+        }
+      }
+    },
+    "about.diagnostics.section.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diagnostics"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "診斷紀錄"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "診斷紀錄"
+          }
+        }
+      }
+    },
+    "about.diagnostics.toggle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable diagnostic logging"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟診斷紀錄"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用診斷紀錄"
+          }
+        }
+      }
+    },
+    "about.diagnostics.toggle.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs orchestration events locally for bug reports. No data leaves your Mac unless you export."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "喺本機紀錄低運作事件以便日後報 bug。除非你自己 export，否則啲資料唔會離開你部 Mac。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在本機紀錄運作事件以便日後回報問題。除非你主動匯出，否則資料不會離開你的 Mac。"
           }
         }
       }
@@ -48,84 +600,142 @@
         }
       }
     },
-    "about.diagnostics.section.title": {
+    "automation.notify.blocked_by_free_mode": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Diagnostics" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "診斷紀錄" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "診斷紀錄" } }
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece is in Free Mode. Add ?force=1 to override."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece 而家喺 Free Mode。加 ?force=1 強制執行。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece 目前處於 Free Mode。加上 ?force=1 強制執行。"
+          }
+        }
       }
     },
-    "about.diagnostics.toggle": {
+    "automation.notify.blocked_by_missing_ax": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Enable diagnostic logging" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "開啟診斷紀錄" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "啟用診斷紀錄" } }
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece needs Accessibility permission to fire automations."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece 要 Accessibility 權限先可以執行自動化。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece 需要 Accessibility 權限才能執行自動化。"
+          }
+        }
       }
     },
-    "about.diagnostics.toggle.help": {
+    "automation.notify.invalid_argument": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Logs orchestration events locally for bug reports. No data leaves your Mac unless you export." } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "喺本機紀錄低運作事件以便日後報 bug。除非你自己 export，否則啲資料唔會離開你部 Mac。" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "在本機紀錄運作事件以便日後回報問題。除非你主動匯出，否則資料不會離開你的 Mac。" } }
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid automation argument: %@"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動化參數錯誤：%@"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動化參數錯誤：%@"
+          }
+        }
       }
     },
-    "about.diagnostics.export.button": {
+    "automation.notify.layout_not_found": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Export Diagnostics for Bug Report" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "匯出診斷紀錄畀 bug 報告用" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "匯出診斷紀錄供問題回報" } }
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No layout named \"%@\""
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搵唔到名叫「%@」嘅佈局"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到名稱為「%@」的佈局"
+          }
+        }
       }
     },
-    "about.diagnostics.export.exporting": {
+    "automation.notify.title": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Exporting…" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "匯出緊⋯" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "匯出中⋯" } }
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece"
+          }
+        }
       }
     },
-    "about.diagnostics.export.disabled.help": {
+    "automation.notify.workspace_not_found": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Enable diagnostic logging first." } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "要先開咗診斷紀錄。" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "請先啟用診斷紀錄。" } }
-      }
-    },
-    "about.diagnostics.confirm.disable.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Stop logging and delete?" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "停止紀錄同埋刪晒？" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "停止紀錄並刪除？" } }
-      }
-    },
-    "about.diagnostics.confirm.disable.body": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Disabling will delete all current diagnostics on this Mac." } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "閂咗會將呢部 Mac 上面所有現有嘅診斷紀錄全部刪走。" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "停用後將會刪除這部 Mac 上所有現有的診斷紀錄。" } }
-      }
-    },
-    "about.diagnostics.confirm.disable.ok": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Disable and Delete" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "閂咗並刪晒" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "停用並刪除" } }
-      }
-    },
-    "about.diagnostics.confirm.disable.cancel": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Cancel" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "取消" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "取消" } }
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No workspace named \"%@\""
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搵唔到名叫「%@」嘅情境"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到名稱為「%@」的情境"
+          }
+        }
       }
     },
     "common.error": {
@@ -519,25 +1129,25 @@
         }
       }
     },
-    "interaction.dock.section": {
+    "interaction.dock.hint": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dock space"
+            "value": "On by default. macOS only reserves room for the Dock on the display it currently sits on, and the Dock follows your pointer between displays — so with this off, re-applying the same layout can shift every window by the Dock's height. Turning it off lets windows reach the bottom edge of a display the Dock is not on, at the cost of that stability. Single-display Macs are unaffected either way."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dock 空間"
+            "value": "預設開。macOS 淨係會喺 Dock 而家嗰個螢幕留位，而 Dock 會跟住你個滑鼠喺螢幕之間走 — 所以熄咗之後，重新套用同一個 layout 可能會令每個窗都移咗 Dock 咁高。熄咗佢，啲窗就可以貼到冇 Dock 嗰個螢幕嘅底邊，代價係冇咗嗰份穩定。單螢幕嘅 Mac 開唔開都一樣。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dock 空間"
+            "value": "預設開啟。macOS 只會在 Dock 目前所在的螢幕保留空間，而 Dock 會跟著滑鼠在螢幕之間移動 — 因此關閉後，重新套用同一個版面可能會讓每個視窗都位移 Dock 的高度。關閉後視窗就能貼到沒有 Dock 的那個螢幕的底部邊緣，代價是失去那份穩定性。單螢幕的 Mac 不受影響。"
           }
         }
       }
@@ -565,25 +1175,25 @@
         }
       }
     },
-    "interaction.dock.hint": {
+    "interaction.dock.section": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "On by default. macOS only reserves room for the Dock on the display it currently sits on, and the Dock follows your pointer between displays — so with this off, re-applying the same layout can shift every window by the Dock's height. Turning it off lets windows reach the bottom edge of a display the Dock is not on, at the cost of that stability. Single-display Macs are unaffected either way."
+            "value": "Dock space"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "預設開。macOS 淨係會喺 Dock 而家嗰個螢幕留位，而 Dock 會跟住你個滑鼠喺螢幕之間走 — 所以熄咗之後，重新套用同一個 layout 可能會令每個窗都移咗 Dock 咁高。熄咗佢，啲窗就可以貼到冇 Dock 嗰個螢幕嘅底邊，代價係冇咗嗰份穩定。單螢幕嘅 Mac 開唔開都一樣。"
+            "value": "Dock 空間"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "預設開啟。macOS 只會在 Dock 目前所在的螢幕保留空間，而 Dock 會跟著滑鼠在螢幕之間移動 — 因此關閉後，重新套用同一個版面可能會讓每個視窗都位移 Dock 的高度。關閉後視窗就能貼到沒有 Dock 的那個螢幕的底部邊緣，代價是失去那份穩定性。單螢幕的 Mac 不受影響。"
+            "value": "Dock 空間"
           }
         }
       }
@@ -749,6 +1359,144 @@
         }
       }
     },
+    "layouts.custom.canvas_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click a slot to split or delete it. Drag a seam to adjust proportions."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撳任何一個格就可以拆或者刪除。揸住隔隙拖曳可以調比例。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "點選任一格即可分割或刪除。拖曳分隔線調整比例。"
+          }
+        }
+      }
+    },
+    "layouts.custom.delete_slot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete this slot"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除呢格"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刪除此格"
+          }
+        }
+      }
+    },
+    "layouts.custom.leaf_menu_help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click for options"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撳嚟睇選項"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "點選以顯示選項"
+          }
+        }
+      }
+    },
+    "layouts.custom.slot_count": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld slots"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 個格"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 個格位"
+          }
+        }
+      }
+    },
+    "layouts.custom.split_horizontal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split horizontally"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "橫向拆開"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "水平分割"
+          }
+        }
+      }
+    },
+    "layouts.custom.split_vertical": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split vertically"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "縱向拆開"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "垂直分割"
+          }
+        }
+      }
+    },
     "layouts.detail.empty": {
       "extractionState": "manual",
       "localizations": {
@@ -841,6 +1589,52 @@
         }
       }
     },
+    "layouts.new.custom.default_name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom Layout"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自訂排列"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自訂排列"
+          }
+        }
+      }
+    },
+    "layouts.new.custom.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a custom canvas layout"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新增一個自訂嘅畫布排列"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新增一個自訂畫布排列"
+          }
+        }
+      }
+    },
     "layouts.new.default_name": {
       "extractionState": "manual",
       "localizations": {
@@ -883,190 +1677,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "新增一個以範本為基礎的排列"
-          }
-        }
-      }
-    },
-    "layouts.new.custom.help": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add a custom canvas layout"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "新增一個自訂嘅畫布排列"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "新增一個自訂畫布排列"
-          }
-        }
-      }
-    },
-    "layouts.new.custom.default_name": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Custom Layout"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自訂排列"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自訂排列"
-          }
-        }
-      }
-    },
-    "layouts.custom.slot_count": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld slots"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 個格"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 個格位"
-          }
-        }
-      }
-    },
-    "layouts.custom.canvas_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Click a slot to split or delete it. Drag a seam to adjust proportions."
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "撳任何一個格就可以拆或者刪除。揸住隔隙拖曳可以調比例。"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "點選任一格即可分割或刪除。拖曳分隔線調整比例。"
-          }
-        }
-      }
-    },
-    "layouts.custom.split_horizontal": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Split horizontally"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "橫向拆開"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "水平分割"
-          }
-        }
-      }
-    },
-    "layouts.custom.split_vertical": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Split vertically"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "縱向拆開"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "垂直分割"
-          }
-        }
-      }
-    },
-    "layouts.custom.delete_slot": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete this slot"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刪除呢格"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刪除此格"
-          }
-        }
-      }
-    },
-    "layouts.custom.leaf_menu_help": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Click for options"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "撳嚟睇選項"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "點選以顯示選項"
           }
         }
       }
@@ -1531,6 +2141,29 @@
         }
       }
     },
+    "menu.free_mode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free Mode"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閒置模式"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自由模式"
+          }
+        }
+      }
+    },
     "menu.grant_accessibility": {
       "extractionState": "manual",
       "localizations": {
@@ -1560,42 +2193,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quit Scene"
+            "value": "Quit Setpiece"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "結束 Scene"
+            "value": "結束 Setpiece"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "結束 Scene"
-          }
-        }
-      }
-    },
-    "menu.free_mode": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Free Mode"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "閒置模式"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自由模式"
+            "value": "結束 Setpiece"
           }
         }
       }
@@ -1652,7 +2262,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enjoying Scene? Star it on GitHub"
+            "value": "Enjoying Setpiece? Star it on GitHub"
           }
         },
         "zh-HK": {
@@ -1715,213 +2325,6 @@
         }
       }
     },
-    "update.install.alert.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Install Scene v%@?"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "安裝 Scene v%@？"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "安裝 Scene v%@？"
-          }
-        }
-      }
-    },
-    "update.install.alert.body": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scene will quit, install the update, and relaunch automatically. Your workspaces, layouts, settings, and Accessibility permission are preserved."
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scene 會 quit、自動裝新版本、然後重開。你嘅 workspaces、layouts、設定，連埋 Accessibility 授權都會保留。"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scene 將會結束、自動安裝新版本、然後重新啟動。您的 workspaces、layouts、設定，以及 Accessibility 授權都會保留。"
-          }
-        }
-      }
-    },
-    "update.install.alert.install_and_restart": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Install and Restart"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "安裝並重開"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "安裝並重新啟動"
-          }
-        }
-      }
-    },
-    "update.install.alert.release_notes": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Release Notes…"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "睇 Release Notes…"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "查看更新說明…"
-          }
-        }
-      }
-    },
-    "update.install.alert.later": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Later"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "遲啲先"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "稍後"
-          }
-        }
-      }
-    },
-    "update.installer.downloading": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Downloading Scene v%@…"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "下載緊 Scene v%@…"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在下載 Scene v%@…"
-          }
-        }
-      }
-    },
-    "update.installer.verifying": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verifying signature…"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "核對簽名…"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在驗證簽名…"
-          }
-        }
-      }
-    },
-    "update.installer.installing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Installing…"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "安裝緊…"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在安裝…"
-          }
-        }
-      }
-    },
-    "update.installer.failed.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Update failed"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "更新失敗"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "更新失敗"
-          }
-        }
-      }
-    },
     "menu.workspaces.empty": {
       "extractionState": "manual",
       "localizations": {
@@ -1974,19 +2377,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "To resize and rearrange your windows, Scene needs permission to control other apps.\n\nClick below to open System Settings, then enable Scene under Privacy & Security → Accessibility.\n\nAlready granted? After each update, toggle Scene OFF then ON to refresh the grant."
+            "value": "To resize and rearrange your windows, Setpiece needs permission to control other apps.\n\nClick below to open System Settings, then enable Setpiece under Privacy & Security → Accessibility.\n\nAlready granted? After each update, toggle Setpiece OFF then ON to refresh the grant."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "要重新調整同排視窗，Scene 要有權限控制其他 App。\n\n撳下面嘅掣開「系統設定」，喺「私隱與保安 → 輔助使用」度打開 Scene。\n\n已經畀咗權限？每次升級 Scene 之後，撳 toggle OFF 再撳 ON 先會認到新版本。"
+            "value": "要重新調整同排視窗，Setpiece 要有權限控制其他 App。\n\n撳下面嘅掣開「系統設定」，喺「私隱與保安 → 輔助使用」度打開 Setpiece。\n\n已經畀咗權限？每次升級 Setpiece 之後，撳 toggle OFF 再撳 ON 先會認到新版本。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "為了調整並重新排列視窗，Scene 需要控制其他 App 的權限。\n\n請按下方按鈕開啟「系統設定」，並在「隱私權與安全性 → 輔助使用」中啟用 Scene。\n\n已經授權？每次更新 Scene 後，請把開關切到 OFF 再切回 ON 以重新確認。"
+            "value": "為了調整並重新排列視窗，Setpiece 需要控制其他 App 的權限。\n\n請按下方按鈕開啟「系統設定」，並在「隱私權與安全性 → 輔助使用」中啟用 Setpiece。\n\n已經授權？每次更新 Setpiece 後，請把開關切到 OFF 再切回 ON 以重新確認。"
           }
         }
       }
@@ -2014,48 +2417,25 @@
         }
       }
     },
-    "onboarding.accessibility.open_settings": {
+    "onboarding.accessibility.command_copied": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open System Settings"
+            "value": "Copied"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "開啟系統設定"
+            "value": "已複製"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "開啟系統設定"
-          }
-        }
-      }
-    },
-    "onboarding.accessibility.still_not_detected.body": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "If you upgraded from Scene v0.4.3 or earlier, macOS may require you to re-authorize Accessibility because Scene is now notarized by Apple (a different signature lineage). This is a one-time step — future v0.5.0+ updates will preserve your grant automatically. Reset with the command below, then relaunch Scene and re-authorize."
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "如果你由 Scene v0.4.3 或更早版本升級上嚟，macOS 可能要求你重新授權輔助使用，因為 Scene 已經由 Apple notarize（簽名方式唔同咗）。呢個係一次性步驟 — 以後 v0.5.0+ 嘅更新會自動保留授權。用下面嘅指令 reset，然後重啟 Scene 再重新授權。"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "如果你從 Scene v0.4.3 或更早版本升級而來，macOS 可能要求你重新授權輔助使用，因為 Scene 現已由 Apple notarize（簽名方式不同）。這是一次性步驟 — 未來 v0.5.0+ 的更新會自動保留授權。用下方指令重設，再重新啟動 Scene 並重新授權。"
+            "value": "已複製"
           }
         }
       }
@@ -2083,25 +2463,25 @@
         }
       }
     },
-    "onboarding.accessibility.command_copied": {
+    "onboarding.accessibility.open_settings": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Copied"
+            "value": "Open System Settings"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "已複製"
+            "value": "開啟系統設定"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "已複製"
+            "value": "開啟系統設定"
           }
         }
       }
@@ -2112,19 +2492,42 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paste into Terminal (⌘Space → type “Terminal”), press Return, then quit Scene and reopen."
+            "value": "Paste into Terminal (⌘Space → type “Terminal”), press Return, then quit Setpiece and reopen."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "貼到 Terminal（⌘Space 然後打「Terminal」），撳 Return，然後 Quit Scene 再開返。"
+            "value": "貼到 Terminal（⌘Space 然後打「Terminal」），撳 Return，然後 Quit Setpiece 再開返。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "貼到 Terminal（⌘Space 輸入「Terminal」），按 Return，然後結束 Scene 並重新打開。"
+            "value": "貼到 Terminal（⌘Space 輸入「Terminal」），按 Return，然後結束 Setpiece 並重新打開。"
+          }
+        }
+      }
+    },
+    "onboarding.accessibility.still_not_detected.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you upgraded from v0.4.3 or earlier (when this app was called Scene), macOS may require you to re-authorize Accessibility because Setpiece is now notarized by Apple (a different signature lineage). This is a one-time step — future v0.5.0+ updates will preserve your grant automatically. Reset with the command below, then relaunch Setpiece and re-authorize."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果你由 Setpiece v0.4.3 或更早版本升級上嚟，macOS 可能要求你重新授權輔助使用，因為 Setpiece 已經由 Apple notarize（簽名方式唔同咗）。呢個係一次性步驟 — 以後 v0.5.0+ 嘅更新會自動保留授權。用下面嘅指令 reset，然後重啟 Setpiece 再重新授權。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果你從 Setpiece v0.4.3 或更早版本升級而來，macOS 可能要求你重新授權輔助使用，因為 Setpiece 現已由 Apple notarize（簽名方式不同）。這是一次性步驟 — 未來 v0.5.0+ 的更新會自動保留授權。用下方指令重設，再重新啟動 Setpiece 並重新授權。"
           }
         }
       }
@@ -2158,19 +2561,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene needs Accessibility access"
+            "value": "Setpiece needs Accessibility access"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 要有輔助使用權限"
+            "value": "Setpiece 要有輔助使用權限"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 需要輔助使用權限"
+            "value": "Setpiece 需要輔助使用權限"
           }
         }
       }
@@ -2181,19 +2584,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene needs calendar access to fire calendar-based Workspace triggers."
+            "value": "Setpiece needs calendar access to fire calendar-based Workspace triggers."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 需要存取日曆先可以喺事件開始時自動啟動情境。"
+            "value": "Setpiece 需要存取日曆先可以喺事件開始時自動啟動情境。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 需要存取行事曆,才能在事件開始時觸發工作空間。"
+            "value": "Setpiece 需要存取行事曆,才能在事件開始時觸發工作空間。"
           }
         }
       }
@@ -2480,19 +2883,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene Settings"
+            "value": "Setpiece Settings"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 設定"
+            "value": "Setpiece 設定"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 設定"
+            "value": "Setpiece 設定"
           }
         }
       }
@@ -2572,19 +2975,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene needs Calendar access to use this trigger. Grant in System Settings."
+            "value": "Setpiece needs Calendar access to use this trigger. Grant in System Settings."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 要日曆權限先用到呢種觸發。去系統設定度開畀佢。"
+            "value": "Setpiece 要日曆權限先用到呢種觸發。去系統設定度開畀佢。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 需要行事曆權限才能使用此觸發。請於系統設定授權。"
+            "value": "Setpiece 需要行事曆權限才能使用此觸發。請於系統設定授權。"
           }
         }
       }
@@ -2888,6 +3291,213 @@
         }
       }
     },
+    "update.install.alert.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece will quit, install the update, and relaunch automatically. Your workspaces, layouts, settings, and Accessibility permission are preserved."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece 會 quit、自動裝新版本、然後重開。你嘅 workspaces、layouts、設定，連埋 Accessibility 授權都會保留。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setpiece 將會結束、自動安裝新版本、然後重新啟動。您的 workspaces、layouts、設定，以及 Accessibility 授權都會保留。"
+          }
+        }
+      }
+    },
+    "update.install.alert.install_and_restart": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install and Restart"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安裝並重開"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安裝並重新啟動"
+          }
+        }
+      }
+    },
+    "update.install.alert.later": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Later"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遲啲先"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稍後"
+          }
+        }
+      }
+    },
+    "update.install.alert.release_notes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Release Notes…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "睇 Release Notes…"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看更新說明…"
+          }
+        }
+      }
+    },
+    "update.install.alert.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install Setpiece v%@?"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安裝 Setpiece v%@？"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安裝 Setpiece v%@？"
+          }
+        }
+      }
+    },
+    "update.installer.downloading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloading Setpiece v%@…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下載緊 Setpiece v%@…"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在下載 Setpiece v%@…"
+          }
+        }
+      }
+    },
+    "update.installer.failed.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update failed"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新失敗"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新失敗"
+          }
+        }
+      }
+    },
+    "update.installer.installing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installing…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安裝緊…"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在安裝…"
+          }
+        }
+      }
+    },
+    "update.installer.verifying": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifying signature…"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "核對簽名…"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在驗證簽名…"
+          }
+        }
+      }
+    },
     "weekday.fri.short": {
       "extractionState": "manual",
       "localizations": {
@@ -3055,19 +3665,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene is now running in your menu bar. Click the icon anytime to launch a workspace or fire a layout — or use a hotkey like ⌘⌃1."
+            "value": "Setpiece is now running in your menu bar. Click the icon anytime to launch a workspace or fire a layout — or use a hotkey like ⌘⌃1."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 而家喺你嘅 menu bar 度運行緊。撳個 icon 就可以啟動 workspace 或者 fire layout，又或者用 ⌘⌃1 咁嘅 hotkey。"
+            "value": "Setpiece 而家喺你嘅 menu bar 度運行緊。撳個 icon 就可以啟動 workspace 或者 fire layout，又或者用 ⌘⌃1 咁嘅 hotkey。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 目前在您的選單列中執行。點擊圖示即可啟動 workspace 或套用 layout，也可使用 ⌘⌃1 之類的快捷鍵。"
+            "value": "Setpiece 目前在您的選單列中執行。點擊圖示即可啟動 workspace 或套用 layout，也可使用 ⌘⌃1 之類的快捷鍵。"
           }
         }
       }
@@ -3124,19 +3734,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene is here"
+            "value": "Setpiece is here"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 喺呢度"
+            "value": "Setpiece 喺呢度"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene 在這裡"
+            "value": "Setpiece 在這裡"
           }
         }
       }
@@ -3147,19 +3757,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Welcome to Scene"
+            "value": "Welcome to Setpiece"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "歡迎用 Scene"
+            "value": "歡迎用 Setpiece"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "歡迎使用 Scene"
+            "value": "歡迎使用 Setpiece"
           }
         }
       }
@@ -3193,19 +3803,65 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene"
+            "value": "Setpiece"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene"
+            "value": "Setpiece"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene"
+            "value": "Setpiece"
+          }
+        }
+      }
+    },
+    "workspace.apply_failed.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't apply %@'s layout — check Accessibility permission or open windows"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "套唔到 %@ 嘅排列 — 睇吓輔助使用權限或者開咗窗未"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法套用 %@ 的排列 — 請檢查輔助使用權限或視窗是否已開啟"
+          }
+        }
+      }
+    },
+    "workspace.apply_failed.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workspace activation incomplete"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "情境未完全啟動"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作空間未完全啟動"
           }
         }
       }
@@ -3358,6 +4014,75 @@
         }
       }
     },
+    "workspace.editor.displays.default": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預設"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預設"
+          }
+        }
+      }
+    },
+    "workspace.editor.displays.disconnected": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(disconnected)"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（已斷開）"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（已斷開）"
+          }
+        }
+      }
+    },
+    "workspace.editor.displays.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect an external display to assign different layouts per screen."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接駁外置顯示器就可以為每個螢幕設定唔同佈局。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連接外接顯示器即可為每個螢幕指定不同版面。"
+          }
+        }
+      }
+    },
     "workspace.editor.enforcement": {
       "extractionState": "manual",
       "localizations": {
@@ -3386,7 +4111,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scene switches Desktop, launches pinned apps, and applies the layout without hiding or quitting other apps."
+            "value": "Setpiece switches Desktop, launches pinned apps, and applies the layout without hiding or quitting other apps."
           }
         }
       }
@@ -3408,7 +4133,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "While this Workspace is active, Scene hides apps pinned only to another Workspace."
+            "value": "While this Workspace is active, Setpiece hides apps pinned only to another Workspace."
           }
         }
       }
@@ -3430,7 +4155,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pinned apps are saved and launched with this Workspace, but Scene does not enforce where other apps belong."
+            "value": "Pinned apps are saved and launched with this Workspace, but Setpiece does not enforce where other apps belong."
           }
         }
       }
@@ -3452,7 +4177,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "While this Workspace is active, Scene gently asks apps pinned only to another Workspace to quit."
+            "value": "While this Workspace is active, Setpiece gently asks apps pinned only to another Workspace to quit."
           }
         }
       }
@@ -3509,19 +4234,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Create matching Shortcuts in the Shortcuts app. Scene will run them on activation / deactivation."
+            "value": "Create matching Shortcuts in the Shortcuts app. Setpiece will run them on activation / deactivation."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "去 Shortcuts App 整對應嘅捷徑；Scene 會喺切換時行佢。"
+            "value": "去 Shortcuts App 整對應嘅捷徑；Setpiece 會喺切換時行佢。"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "請在「捷徑」App 建立對應的捷徑;Scene 會在切換時執行。"
+            "value": "請在「捷徑」App 建立對應的捷徑;Setpiece 會在切換時執行。"
           }
         }
       }
@@ -3793,26 +4518,22 @@
     "workspace.editor.saved": {
       "extractionState": "manual",
       "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Saved" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "已儲存" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "已儲存" } }
-      }
-    },
-    "workspace.editor.unsaved": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": { "stringUnit": { "state": "translated", "value": "Unsaved changes" } },
-        "zh-HK": { "stringUnit": { "state": "translated", "value": "有未儲存嘅改動" } },
-        "zh-TW": { "stringUnit": { "state": "translated", "value": "有未儲存的變更" } }
-      }
-    },
-    "workspace.editor.section.persistent": {
-      "extractionState": "manual",
-      "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Persistent Workspace"
+            "value": "Saved"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存"
           }
         }
       }
@@ -3886,75 +4607,6 @@
         }
       }
     },
-    "workspace.editor.displays.default": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Default"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "預設"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "預設"
-          }
-        }
-      }
-    },
-    "workspace.editor.displays.disconnected": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "(disconnected)"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "（已斷開）"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "（已斷開）"
-          }
-        }
-      }
-    },
-    "workspace.editor.displays.hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Connect an external display to assign different layouts per screen."
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "接駁外置顯示器就可以為每個螢幕設定唔同佈局。"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "連接外接顯示器即可為每個螢幕指定不同版面。"
-          }
-        }
-      }
-    },
     "workspace.editor.section.focus": {
       "extractionState": "manual",
       "localizations": {
@@ -3974,6 +4626,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "專注模式"
+          }
+        }
+      }
+    },
+    "workspace.editor.section.persistent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Persistent Workspace"
           }
         }
       }
@@ -4001,48 +4664,25 @@
         }
       }
     },
-    "workspace.apply_failed.body": {
+    "workspace.editor.unsaved": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Couldn't apply %@'s layout — check Accessibility permission or open windows"
+            "value": "Unsaved changes"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "套唔到 %@ 嘅排列 — 睇吓輔助使用權限或者開咗窗未"
+            "value": "有未儲存嘅改動"
           }
         },
         "zh-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "無法套用 %@ 的排列 — 請檢查輔助使用權限或視窗是否已開啟"
-          }
-        }
-      }
-    },
-    "workspace.apply_failed.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Workspace activation incomplete"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "情境未完全啟動"
-          }
-        },
-        "zh-TW": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "工作空間未完全啟動"
+            "value": "有未儲存的變更"
           }
         }
       }
@@ -4250,466 +4890,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "請先建立排列 — 工作空間必須有排列才能建立"
-          }
-        }
-      }
-    },
-    "automation.notify.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene"
-          }
-        }
-      }
-    },
-    "automation.notify.workspace_not_found" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No workspace named \"%@\""
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搵唔到名叫「%@」嘅情境"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找不到名稱為「%@」的情境"
-          }
-        }
-      }
-    },
-    "automation.notify.layout_not_found" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No layout named \"%@\""
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搵唔到名叫「%@」嘅佈局"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找不到名稱為「%@」的佈局"
-          }
-        }
-      }
-    },
-    "automation.notify.blocked_by_free_mode" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene is in Free Mode. Add ?force=1 to override."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene 而家喺 Free Mode。加 ?force=1 強制執行。"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene 目前處於 Free Mode。加上 ?force=1 強制執行。"
-          }
-        }
-      }
-    },
-    "automation.notify.blocked_by_missing_ax" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene needs Accessibility permission to fire automations."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene 要 Accessibility 權限先可以執行自動化。"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scene 需要 Accessibility 權限才能執行自動化。"
-          }
-        }
-      }
-    },
-    "automation.notify.invalid_argument" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invalid automation argument: %@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動化參數錯誤：%@"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動化參數錯誤：%@"
-          }
-        }
-      }
-    },
-    "Apply Layout" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apply Layout"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "套用佈局"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "套用佈局"
-          }
-        }
-      }
-    },
-    "Apply a Scene layout to windows on the active screen." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apply a Scene layout to windows on the active screen."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "將指定佈局套用喺當前螢幕嘅視窗。"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "將指定佈局套用至目前螢幕的視窗。"
-          }
-        }
-      }
-    },
-    "Layout" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Layout"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "佈局"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "佈局"
-          }
-        }
-      }
-    },
-    "Force (override Free Mode)" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Force (override Free Mode)"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "強制（無視 Free Mode）"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "強制（忽略 Free Mode）"
-          }
-        }
-      }
-    },
-    "Activate Workspace" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activate Workspace"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟動情境"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟動情境"
-          }
-        }
-      }
-    },
-    "Activate a Scene Workspace — launch its apps, apply its layout, set its Focus mode." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activate a Scene Workspace — launch its apps, apply its layout, set its Focus mode."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟動情境——開啟相關 app、套用佈局、設定 Focus mode。"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟動情境——開啟相關 app、套用佈局、設定 Focus mode。"
-          }
-        }
-      }
-    },
-    "Workspace" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Workspace"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "情境"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "情境"
-          }
-        }
-      }
-    },
-    "List Workspaces" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "List Workspaces"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "列出情境"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "列出情境"
-          }
-        }
-      }
-    },
-    "Return the names of all configured Scene Workspaces." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Return the names of all configured Scene Workspaces."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "返回所有已設定嘅情境名稱。"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "返回所有已設定情境的名稱。"
-          }
-        }
-      }
-    },
-    "Toggle Free Mode" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toggle Free Mode"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換 Free Mode"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換 Free Mode"
-          }
-        }
-      }
-    },
-    "Toggle Scene Free Mode — pauses or resumes all automatic Scene behavior." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toggle Scene Free Mode — pauses or resumes all automatic Scene behavior."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換 Free Mode——暫停或恢復所有自動執行嘅功能。"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換 Free Mode——暫停或恢復所有自動執行的功能。"
-          }
-        }
-      }
-    },
-    "Set Free Mode" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set Free Mode"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定 Free Mode"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定 Free Mode"
-          }
-        }
-      }
-    },
-    "Explicitly set Scene Free Mode on or off." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explicitly set Scene Free Mode on or off."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "明確將 Free Mode 設為開或關。"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "明確將 Free Mode 設為開啟或關閉。"
-          }
-        }
-      }
-    },
-    "Enabled" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enabled"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用"
-          }
-        },
-        "zh-TW" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用"
           }
         }
       }

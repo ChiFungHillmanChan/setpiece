@@ -2,10 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- The bundle on disk stays Scene.app and the bundle id stays
+	     com.hillman.SceneApp: TCC anchors the Accessibility grant to the
+	     signature and identifier, and the updater shipped in v0.7.6 and
+	     earlier looks for Scene.app by name inside the mounted DMG.
+	     CFBundleDisplayName is what users actually see. -->
+	<key>CFBundleDisplayName</key>
+	<string>Setpiece</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Scene uses your calendar to activate Workspaces automatically when matching events begin.</string>
+	<string>Setpiece uses your calendar to activate Workspaces automatically when matching events begin.</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -24,7 +31,12 @@
 			<string>com.hillman.SceneApp.url</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<!-- scene:// stays first and stays forever: every Shortcut,
+				     Raycast script and bookmark already built against it must
+				     keep working. setpiece:// is an addition, not a
+				     replacement. -->
 				<string>scene</string>
+				<string>setpiece</string>
 			</array>
 		</dict>
 	</array>

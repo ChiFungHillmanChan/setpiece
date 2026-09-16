@@ -2,7 +2,7 @@ import AppIntents
 import AppKit
 import SceneCore
 
-/// Wraps a Scene custom layout so AppIntents can prompt for one in
+/// Wraps a Setpiece custom layout so AppIntents can prompt for one in
 /// Shortcuts.app and pass it through `ApplyLayoutIntent`.
 struct LayoutEntity: AppEntity {
     static var typeDisplayRepresentation: TypeDisplayRepresentation = "Layout"

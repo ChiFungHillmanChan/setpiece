@@ -7,12 +7,20 @@ public enum URLRoutingError: Error, Equatable, Sendable {
 }
 
 public enum URLRouter {
+    /// `scene` is the original and is never removed. See `parse`.
+    public static let acceptedSchemes: Set<String> = ["scene", "setpiece"]
+
     /// Parses a `scene://...` URL into an `AutomationCommand`.
     /// Pure: no I/O, no store reads. ID-or-name disambiguation
     /// (UUID parse vs case-insensitive name lookup) happens later
     /// in `Coordinator` which has the stores.
     public static func parse(_ url: URL) -> Result<AutomationCommand, URLRoutingError> {
-        guard url.scheme?.lowercased() == "scene" else {
+        // Both schemes are permanent. `scene://` predates the rename and is
+        // baked into Shortcuts, Raycast scripts and bookmarks that Setpiece
+        // cannot see, let alone migrate; dropping it would silently break
+        // automations users built months ago.
+        guard let scheme = url.scheme?.lowercased(),
+              Self.acceptedSchemes.contains(scheme) else {
             return .failure(.unsupportedScheme)
         }
         guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),

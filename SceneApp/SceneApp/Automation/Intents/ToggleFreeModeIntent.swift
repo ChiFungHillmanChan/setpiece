@@ -4,13 +4,13 @@ import SceneCore
 
 struct ToggleFreeModeIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle Free Mode"
-    static var description = IntentDescription("Toggle Scene Free Mode — pauses or resumes all automatic Scene behavior.")
+    static var description = IntentDescription("Toggle Setpiece Free Mode — pauses or resumes all automatic Setpiece behavior.")
     static var openAppWhenRun: Bool = false
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         guard let dispatcher = (NSApp.delegate as? AppDelegate)?.automationDispatcher else {
-            return .result(dialog: "Scene is not ready.")
+            return .result(dialog: "Setpiece is not ready.")
         }
         let outcome = await dispatcher.dispatchFromIntent(.toggleFreeMode)
         let isOn = (NSApp.delegate as? AppDelegate)?.coordinator.freeMode ?? false

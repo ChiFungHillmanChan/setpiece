@@ -44,16 +44,16 @@
 官方電子郵件地址、透過官方社群媒體帳號發文，或以指定代表的身分出席線上或線下活動。
 
 就本專案而言，社群空間係指 GitHub 儲存庫 — 包括 issue、pull request、discussion、程式碼審閱與 commit
-訊息 — Homebrew tap，以及任何其他正式代表 Scene 的管道。
+訊息 — Homebrew tap，以及任何其他正式代表 Setpiece 的管道。
 
 ## 執行方式
 
 如遇辱罵、騷擾或其他不可接受的行為，可向負責執行的社群領導者通報，電子郵件
-**hillmanchan709@gmail.com**，並於主旨加上 `[Scene conduct]`。所有申訴都會得到迅速且公正的檢視與調查。
+**hillmanchan709@gmail.com**，並於主旨加上 `[Setpiece conduct]`。所有申訴都會得到迅速且公正的檢視與調查。
 
 所有社群領導者均有義務尊重通報者的隱私與安全。
 
-Scene 由一個人在香港（UTC+8）維護。通報內容由本人親自閱讀並予以保密，一般會在 72 小時內回覆確認。若通
+Setpiece 由一個人在香港（UTC+8）維護。通報內容由本人親自閱讀並予以保密，一般會在 72 小時內回覆確認。若通
 報事項涉及維護者本人，你亦可使用 GitHub 自身的
 [濫用行為檢舉](https://github.com/contact/report-abuse) 管道，該管道獨立於本專案之外。
 
