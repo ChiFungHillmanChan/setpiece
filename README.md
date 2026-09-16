@@ -171,7 +171,7 @@ The layout logic lives in `SceneCore`, a Swift package that works without Xcode:
 swift test
 ```
 
-433 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
+438 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
 
 ## Usage
 
@@ -256,21 +256,26 @@ The actions iCloud-sync to Shortcuts on iPhone, iPad, and Apple Watch. Voice com
 setpiece/
 ├── Package.swift
 ├── Sources/SceneCore/          # pure logic, unit-testable without Xcode
-│   ├── AX/                     # Accessibility API wrappers
+│   ├── AX/                     # Accessibility API wrappers, WindowSubrole
 │   ├── Animation/              # Clock, FrameInterpolator, AnimationRunner
-│   ├── Display/                # screen picker
-│   ├── Interaction/            # HotkeyManager, DragSwapController,
+│   ├── Automation/             # URLRouter (scene:// + setpiece://), AutomationCommand
+│   ├── Diagnostics/            # privacy-first diagnostic writer + sanitizer
+│   ├── Display/                # screen picker, TilingFrame
+│   ├── Interaction/            # HotkeyManager, DragSwapController, SeamResizeController,
 │   │                           #   WindowAnimationSink, WindowMoveObserving
-│   ├── Layout/                 # Slot, Layout, LayoutEngine, Plan, Geometry,
+│   ├── Layout/                 # Slot, Layout, LayoutEngine, Plan, Geometry, LayoutNode,
 │   │                           #   LayoutTemplate, CustomLayout, PresetSeeds, LayoutStore
 │   ├── Settings/               # AnimationConfig, HotkeyBinding, DragSwapConfig,
-│   │                           #   SettingsStore, Cancellable
+│   │                           #   SettingsStore, StarPromptState, Cancellable
 │   └── Workspace/              # Workspace, WorkspaceTrigger, WorkspaceSeeds,
 │                               #   WorkspaceStore, FocusModeReference
-├── Tests/SceneCoreTests/       # 433 XCTest cases
+├── Tests/SceneCoreTests/       # 438 XCTest cases
 ├── SceneApp/                   # Xcode project — menu bar shell + settings window
 │   └── SceneApp/
 │       ├── Animation/                 # WindowAnimator (CVDisplayLink + AX bridge)
+│       ├── Automation/                # AutomationDispatcher + Intents/ (AppIntents)
+│       ├── Diagnostics/               # DiagnosticController
+│       ├── FirstLaunch/               # welcome window
 │       ├── Interaction/               # AXMoveObserverGroup, AXWindowLookup,
 │       │                              #   DragSwapAnimationSink
 │       ├── Resources/                 # Localizable.xcstrings, InfoPlist.xcstrings
@@ -280,7 +285,7 @@ setpiece/
 │       │                              #   + WorkspaceEditorView + WorkspaceTriggerEditor
 │       │                              #   + AppPickerView + HotkeyCaptureView
 │       ├── Stores/                    # LayoutStoreViewModel, SettingsStoreViewModel,
-│       │                              #   WorkspaceStoreViewModel
+│       │                              #   WorkspaceStoreViewModel, StarPromptTracker
 │       ├── Workspace/                 # AppLauncher, FocusController, WorkspaceActivator
 │       │   └── Triggers/              #   MonitorTriggerWatcher, TimeTriggerScheduler,
 │       │                              #   CalendarTriggerWatcher, TriggerSupervisor
@@ -290,14 +295,23 @@ setpiece/
 │       ├── MenuBarContentView.swift
 │       ├── OnboardingView.swift
 │       ├── OnboardingWindowController.swift
+│       ├── UpdateChecker.swift        # picks the highest version, not GitHub's "latest"
+│       ├── UpdateInstaller.swift      # verify Team ID, then swap the bundle in place
 │       └── NotificationHelper.swift
+├── .github/
+│   ├── ISSUE_TEMPLATE/                # bug + feature forms, security contact links
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── workflows/                     # CI: swift test + SceneApp build on every PR
+├── CONTRIBUTING.md                    # + CONTRIBUTING.zh-HK.md
+├── SECURITY.md                        # private advisory route, highest-concern areas
+├── CODE_OF_CONDUCT.md                 # + CODE_OF_CONDUCT.zh-HK.md
 └── docs/
     ├── INSTALL.md                     # end-user install walkthrough
-    ├── TESTING.md                     # manual smoke-test checklist (V0.1–V0.5)
-    └── media/                         # demo video + screenshots
+    ├── TESTING.md                     # manual smoke-test checklist
+    └── media/                         # demo GIF, video + screenshots
 ```
 
-The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 433 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
+The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 438 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
 
 ## Persistence
 
@@ -314,12 +328,14 @@ Delete this folder to reset to factory state.
 
 ## Roadmap
 
-- **Per-display layouts** — apply different presets to each monitor independently.
+Already shipped, so not on this list: **per-display layouts** (v0.6 — a Workspace can assign a different layout to each screen) and the **free-form canvas layout editor** (v0.5.7 — drag the seams to build any tile shape).
+
 - **Pattern learning** — observe manual window arrangements and suggest presets ("you usually split 70/30 in the afternoon — save?").
 - **AI / natural-language input** — type "cursor left, chrome right" → LLM → layout JSON.
 - **Per-app rules** — e.g., "always put Slack in slot 4".
 - **Launch-at-Login** UI.
-- **Free-form canvas-drag** layout editor (the EpycZones approach).
+- **More trigger types** — CoreLocation, Wi-Fi network, audio device, Bluetooth.
+- **Mac App Store** submission (currently Developer ID + notarized only).
 
 ## License
 

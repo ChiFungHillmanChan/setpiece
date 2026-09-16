@@ -171,7 +171,7 @@ Layout / animation / store / hotkey / drag-swap / seam reflow / 自訂 tree / �
 swift test
 ```
 
-433 個 unit test 覆蓋 layout 數學、window-to-slot mapping、animation 狀態機、JSON persistence、hotkey 衝突、drag-to-swap 邏輯、seam reflow、自訂 layout tree round-trip、診斷 writer + sanitizer、update nudge 嘅 semver 比較、edge case。
+438 個 unit test 覆蓋 layout 數學、window-to-slot mapping、animation 狀態機、JSON persistence、hotkey 衝突、drag-to-swap 邏輯、seam reflow、自訂 layout tree round-trip、診斷 writer + sanitizer、update nudge 嘅 semver 比較、edge case。
 
 ## 用法
 
@@ -256,18 +256,20 @@ Setpiece 喺 Shortcuts.app 註冊咗 5 個 actions（喺「Setpiece」分類入�
 setpiece/
 ├── Package.swift
 ├── Sources/SceneCore/          # 純邏輯，唔使 Xcode unit test 得
-│   ├── AX/                     # Accessibility API wrapper
+│   ├── AX/                     # Accessibility API wrapper、WindowSubrole
 │   ├── Animation/              # Clock, FrameInterpolator, AnimationRunner
-│   ├── Display/                # screen picker
-│   ├── Interaction/            # HotkeyManager, DragSwapController,
+│   ├── Automation/             # URLRouter（scene:// + setpiece://）、AutomationCommand
+│   ├── Diagnostics/            # 私隱優先嘅診斷 writer + sanitizer
+│   ├── Display/                # screen picker、TilingFrame
+│   ├── Interaction/            # HotkeyManager, DragSwapController, SeamResizeController,
 │   │                           #   WindowAnimationSink, WindowMoveObserving
-│   ├── Layout/                 # Slot, Layout, LayoutEngine, Plan, Geometry,
+│   ├── Layout/                 # Slot, Layout, LayoutEngine, Plan, Geometry, LayoutNode,
 │   │                           #   LayoutTemplate, CustomLayout, PresetSeeds, LayoutStore
 │   ├── Settings/               # AnimationConfig, HotkeyBinding, DragSwapConfig,
-│   │                           #   SettingsStore, Cancellable
+│   │                           #   SettingsStore, StarPromptState, Cancellable
 │   └── Workspace/              # Workspace, WorkspaceTrigger, WorkspaceSeeds,
 │                               #   WorkspaceStore, FocusModeReference
-├── Tests/SceneCoreTests/       # 433 個 XCTest case
+├── Tests/SceneCoreTests/       # 438 個 XCTest case
 ├── SceneApp/                   # Xcode project — menu bar shell + 設定視窗
 │   └── SceneApp/
 │       ├── Animation/          # WindowAnimator（CVDisplayLink + AX bridge）
@@ -297,7 +299,7 @@ setpiece/
     └── media/                  # 示範片 + screenshots
 ```
 
-故意分層：**`SceneCore` 完全 framework-neutral** — 冇 SwiftUI、冇 Combine、冇 ObservableObject。所有 hard logic（AX call、layout 數學、animation 狀態機、store CRUD、drag-to-swap、seam reflow、診斷）住喺度，433 個 unit test 覆蓋。**`SceneApp` 係薄殼**，只負責 SwiftUI binding、AppKit lifecycle，同埋 framework-neutral library 做唔到嘅 AppKit/AX bridge（`WindowAnimator`、`AXMoveObserverGroup`、`AXWindowLookup`、`DragSwapAnimationSink`）。SceneCore 用 closure-based observation 同 SceneApp 通訊（`@MainActor class FooStoreViewModel: ObservableObject` 做 adapter）。
+故意分層：**`SceneCore` 完全 framework-neutral** — 冇 SwiftUI、冇 Combine、冇 ObservableObject。所有 hard logic（AX call、layout 數學、animation 狀態機、store CRUD、drag-to-swap、seam reflow、診斷）住喺度，438 個 unit test 覆蓋。**`SceneApp` 係薄殼**，只負責 SwiftUI binding、AppKit lifecycle，同埋 framework-neutral library 做唔到嘅 AppKit/AX bridge（`WindowAnimator`、`AXMoveObserverGroup`、`AXWindowLookup`、`DragSwapAnimationSink`）。SceneCore 用 closure-based observation 同 SceneApp 通訊（`@MainActor class FooStoreViewModel: ObservableObject` 做 adapter）。
 
 `swift test` 由 command line 跑得，唔使 Xcode；只有最後 `.app` build 先要。
 
@@ -318,12 +320,14 @@ setpiece/
 
 ## 路線圖
 
-- **Per-display layouts** — 唔同 monitor apply 唔同 preset。
+已經出咗，所以唔喺呢張單度：**per-display layouts**（v0.6 — 一個 Workspace 可以為每個螢幕指派唔同 layout）同**自由形狀 canvas layout 編輯器**（v0.5.7 — 拖 seam 就砌到任何 tile 形狀）。
+
 - **Pattern learning** — 觀察用家手動拖 window 嘅 pattern，建議「下午 2-5pm 通常 Cursor 70 + Chrome 30，要唔要 save 做 preset？」。
 - **AI / 自然語言 input** — 打「cursor 左 chrome 右」→ LLM → layout JSON。
 - **Per-app rule** — 例如「Slack 永遠入 slot 4」。
 - **Launch at Login** UI。
-- **Free-form canvas drag** layout editor（EpycZones 嗰種）。
+- **更多觸發類型** — CoreLocation、Wi-Fi 網絡、音訊裝置、藍牙。
+- **Mac App Store** 上架（目前只有 Developer ID + notarized）。
 
 ## License
 
