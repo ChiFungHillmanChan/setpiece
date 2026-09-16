@@ -10,7 +10,7 @@ A free, open-source macOS menu bar window manager. Native Swift, zero dependenci
 
 > 繁體中文版本：[README.zh-HK.md](README.zh-HK.md)
 
-> **Setpiece was called Scene until v0.7.6.** If you already have it installed, nothing
+> **Setpiece was called Scene until v0.8.0.** If you already have it installed, nothing
 > about your install changes — same Accessibility grant, same layouts and workspaces, and
 > `scene://` URLs keep working alongside the new `setpiece://`. Old links to this
 > repository redirect here permanently.
@@ -48,7 +48,7 @@ so an existing install keeps upgrading without any action.
 
 Quarantine is stripped automatically — no "cannot be verified" prompt. On first launch, grant Accessibility in **System Settings → Privacy & Security → Accessibility**.
 
-**Or download the DMG directly**: **[Scene-0.7.6.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.7.6/Scene-0.7.6.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
+**Or download the DMG directly**: **[Scene-0.8.0.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.0/Scene-0.8.0.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
 
 All versions: [Releases page](https://github.com/ChiFungHillmanChan/setpiece/releases) · DMG users, see [`docs/INSTALL.md`](docs/INSTALL.md) for the one-time Gatekeeper + Accessibility-permission steps.
 
@@ -63,6 +63,20 @@ All versions: [Releases page](https://github.com/ChiFungHillmanChan/setpiece/rel
 ![Setpiece Layouts editor — drag seams to design any tile shape](docs/media/scene-layouts.png)
 
 ▶ [Watch the full 30-second demo](docs/media/scene-marketing.mp4) (MP4, 13 MB)
+
+## What's new in v0.8.0
+
+**Scene is now Setpiece.** That is the whole release — no layout, hotkey, workspace or update behaviour changed.
+
+Nothing about your install changes either, and that was the constraint the rename was built around. The bundle identifier is still `com.hillman.SceneApp`, so macOS keeps your Accessibility grant exactly as it is; you will not be asked to re-authorize. Your layouts, workspaces, hotkeys and settings stay where they are in `~/Library/Application Support/Scene`. The app on disk is still `Scene.app`, because every updater already in the field looks for that filename inside the DMG. And `scene://` URLs keep working, permanently, alongside the new `setpiece://` — any Shortcut, Raycast script or bookmark you built against the old scheme is safe.
+
+What changes is the name you see: the menu bar, the Settings window, the Accessibility row in System Settings.
+
+**Why now.** The old name collided with SwiftUI's own `Scene` type, which meant a Swift project called Scene was effectively invisible in search next to Apple's documentation. Renaming was going to get more expensive with every release, and only six people had taken v0.7.6 when this was cut — so this was the cheapest moment it will ever be, and nearly everyone upgrading will see exactly one name change rather than two.
+
+**One thing under the hood.** The in-app updater no longer hard-codes the bundle filename; it takes whichever `.app` the mounted DMG carries. That is what would let the bundle itself be renamed a release from now, instead of breaking updates for everyone.
+
+For the full version history, see [`CHANGELOG.md`](CHANGELOG.md).
 
 ## What's new in v0.7.6
 
@@ -144,7 +158,7 @@ In Xcode, select the `SceneApp` scheme and press ⌘R. The app runs as a menu ba
 ### Build a distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.7.6    # produces dist/Scene-0.7.6.dmg (universal, notarized)
+./scripts/build-dmg.sh 0.8.0    # produces dist/Scene-0.8.0.dmg (universal, notarized)
 ```
 
 This builds a universal (arm64 + x86_64) binary, Developer ID-signs it, submits it to Apple for notarization, and packages it into a DMG with an `Applications` drop shortcut. Both Apple Silicon and Intel Macs install from the same DMG. Set `SKIP_NOTARY=1` for a local ad-hoc build that skips the Apple notary submission (useful while iterating on DMG layout).

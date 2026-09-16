@@ -4,6 +4,16 @@ All notable changes to Scene. Newest releases are listed first.
 
 For binaries, see the [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases).
 
+## V0.8.0 — Scene is now Setpiece
+
+- **The app is renamed, and nothing that identifies an existing install changed.** The bundle identifier stays `com.hillman.SceneApp` (TCC anchors the Accessibility grant to the identifier and signature, so a new one would silently revoke permission for every user at once — and because macOS keeps showing the toggle as ON while `AXIsProcessTrusted` returns false, they would experience it as "the app stopped working"). Application Support stays `Scene`, so layouts, workspaces and settings are found where they already are. What users see is `CFBundleDisplayName`, now `Setpiece`.
+- **The bundle on disk stays `Scene.app`, deliberately.** Every updater shipped up to v0.7.6 looks for `"$MOUNT/Scene.app"` by name, so a DMG carrying any other filename would abort in-app updates for the entire install base. `UpdateInstaller` now takes whichever `.app` the mounted DMG carries instead of hard-coding the name — which is what makes a real bundle rename a one-release change later rather than a breaking one now.
+- **`scene://` keeps working, permanently, alongside the new `setpiece://`.** Shortcuts, Raycast scripts and bookmarks built against the old scheme cannot be seen or migrated from inside the app, so the new scheme is an addition and never a replacement. Five `URLRouterSchemeTests` cases pin both, and were checked against the pre-rename router first — three fail there, so they discriminate rather than pass vacuously.
+- **Scope of the text change.** 30 English strings and 20 in each Chinese locale, plus five AppIntents descriptions whose English sentence *is* the catalog key — renaming the value without the key would have orphaned the lookup. The Accessibility upgrade hint still names Scene, because v0.4.3 really was called that and rewriting the past would misdirect the reader. 152 product references and 38 repository URLs across the docs. `SceneCore`, `SceneApp`, `Scene.app`, `Scene-testing`, `scene://` and `Support/Scene` were verified to have identical occurrence counts before and after.
+- **Repository renamed `scene-macos` → `setpiece`,** and the Homebrew cask token `scene` → `setpiece` with `cask_renames.json` mapping the old one, so `brew upgrade` keeps resolving for anyone already installed. Both former repository names still redirect for the web URL, the releases API the shipped updater polls, and release-asset downloads — all verified.
+- **Install docs now cover `brew trust`.** Unrelated to the rename: Homebrew 7 refuses to load a cask from an untrusted third-party tap and raises rather than prompting, so the old one-line instruction fails with `Refusing to load cask … from untrusted tap` and gives no hint of the fix. Found while testing the cask rename against Homebrew 7.0.1.
+- **Tests: 433 → 438.** Universal (arm64 + x86_64), macOS 14+, Apple notarized.
+
 ## Renamed: Scene is now Setpiece
 
 The app was called **Scene** through v0.7.6. Everything below that line was

@@ -4,6 +4,16 @@ Scene 嘅完整版本史，最新嘅 release 喺最頂。
 
 要 download binary，去 [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases)。
 
+## V0.8.0 — Scene 改名做 Setpiece
+
+- **App 改咗名，而任何用嚟識別現有安裝嘅嘢都冇變。** Bundle identifier 仍然係 `com.hillman.SceneApp`（TCC 係綁住 identifier 同簽名嚟記住 Accessibility 授權，換一個就等於一次過靜靜雞收回所有用家嘅權限 — 而且 macOS 會繼續顯示個掣係 ON 但 `AXIsProcessTrusted` 返 false，用家嘅體感係「個 app 壞咗」）。Application Support 仍然係 `Scene`，所以 layout、workspace 同設定照樣喺原位搵到。用家見到嘅係 `CFBundleDisplayName`，而家係 `Setpiece`。
+- **磁碟上個 bundle 特登保持 `Scene.app`。** 直到 v0.7.6 為止出街嘅每一個 updater 都係喺 DMG 入面按名搵 `"$MOUNT/Scene.app"`，所以 DMG 入面換咗檔名，就會令成個用戶群嘅 app 內更新中止。`UpdateInstaller` 而家改成攞 DMG 入面嗰個 `.app`（唔理佢叫乜）而唔再寫死檔名 — 呢個令到將來真正改 bundle 名變成一個版本就做得到嘅事，而唔係而家就搞爛嘢。
+- **`scene://` 永久保留，同新嘅 `setpiece://` 並存。** 用舊 scheme 砌嘅 Shortcut、Raycast script 同書籤，app 由內部係睇唔到亦搬唔到，所以新 scheme 係增加而唔係取代。五個 `URLRouterSchemeTests` 釘住兩個 scheme，而且特登攞改名之前嗰個 router 驗過 — 有三個喺嗰度會紅，證明啲 test 真係捉到嘢，唔係空轉。
+- **文字改動嘅範圍。** 30 個英文字串、每個中文 locale 各 20 個，另加五個 AppIntents 描述 —— 佢哋嘅英文句子本身**就係** catalog key，只改值唔改 key 就會令查找斷晒。Accessibility 升級提示仍然寫住 Scene，因為 v0.4.3 真係叫 Scene，改寫過去只會誤導讀者。文件方面 152 個產品名、38 條 repository URL。`SceneCore`、`SceneApp`、`Scene.app`、`Scene-testing`、`scene://`、`Support/Scene` 全部驗證過改名前後出現次數完全一致。
+- **Repository 由 `scene-macos` 改做 `setpiece`**，Homebrew cask token 由 `scene` 改做 `setpiece`，並用 `cask_renames.json` 對映舊 token，所以已經裝咗嘅人 `brew upgrade` 照樣解析得到。兩個舊 repository 名嘅網頁、已出街 updater 會 poll 嘅 releases API、同 release asset 下載，全部仍然 redirect — 已驗證。
+- **安裝說明補咗 `brew trust`。** 同改名無關：Homebrew 7 唔會載入未 trust 嘅第三方 tap 入面嘅 cask，而且係直接報錯唔會問你，所以舊嗰行單行指令會失敗並顯示 `Refusing to load cask … from untrusted tap`，而且完全冇提示點解決。喺 Homebrew 7.0.1 上測試 cask 改名時發現。
+- **Tests：433 → 438。** Universal（arm64 + x86_64），macOS 14+，Apple notarized。
+
 ## 已改名：Scene 變成 Setpiece
 
 呢個 app 一直到 v0.7.6 都叫做 **Scene**。下面所有內容都係用舊名寫嘅，而且原樣保留 —

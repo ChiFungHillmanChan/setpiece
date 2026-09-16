@@ -10,7 +10,7 @@
 
 > English version: [README.md](README.md)
 
-> **Setpiece 喺 v0.7.6 之前叫做 Scene。** 如果你已經裝咗，安裝本身完全唔受影響 —
+> **Setpiece 喺 v0.8.0 之前叫做 Scene。** 如果你已經裝咗，安裝本身完全唔受影響 —
 > 同一個 Accessibility 授權、同一批 layout 同 workspace，而 `scene://` URL 會同新嘅
 > `setpiece://` 一齊繼續用。指向呢個 repository 嘅舊連結會永久轉址過嚟。
 
@@ -46,7 +46,7 @@ Homebrew 7 唔會載入你未 trust 過嘅 tap 入面嘅 cask，而且佢係直�
 
 自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Setpiece 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Setpiece 就得。
 
-**或者直接下載 DMG**：**[Scene-0.7.6.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.7.6/Scene-0.7.6.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
+**或者直接下載 DMG**：**[Scene-0.8.0.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.0/Scene-0.8.0.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
 
 所有版本：[Releases page](https://github.com/ChiFungHillmanChan/setpiece/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
 
@@ -61,6 +61,20 @@ Homebrew 7 唔會載入你未 trust 過嘅 tap 入面嘅 cask，而且佢係直�
 ![Setpiece Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)
 
 ▶ [睇完整 30 秒示範片](docs/media/scene-marketing.mp4)（MP4，13 MB）
+
+## v0.8.0 嘅新功能
+
+**Scene 而家叫 Setpiece。** 成個版本就係咁多 — layout、hotkey、workspace、更新行為一律冇變。
+
+你嘅安裝一樣乜都冇變，而呢個正正就係改名時圍住嚟做嘅限制。Bundle identifier 仍然係 `com.hillman.SceneApp`，所以 macOS 會保住你嘅 Accessibility 授權，唔會叫你重新授權。你嘅 layout、workspace、hotkey 同設定照舊喺 `~/Library/Application Support/Scene`。磁碟上個 app 仍然係 `Scene.app`，因為已經喺用家手上嘅 updater 全部都係喺 DMG 入面搵呢個檔名。而 `scene://` URL 會同新嘅 `setpiece://` 一齊永久保留 — 你用舊 scheme 砌嘅任何 Shortcut、Raycast script 或者書籤都安全。
+
+變嘅係你見到嘅名：menu bar、設定視窗、系統設定入面 Accessibility 嗰一行。
+
+**點解揀而家。** 舊名同 SwiftUI 自己個 `Scene` type 撞晒，即係話一個叫 Scene 嘅 Swift 專案，喺搜尋結果入面被 Apple 嘅官方文件完全蓋過。改名每出多一個版本就貴一分，而切呢個版本嗰陣 v0.7.6 得六個人下載咗 — 所以呢一刻係最平嘅時機，而且絕大部分人升級時只會見到一次改名，唔係兩次。
+
+**底層改咗一樣嘢。** App 內嘅更新器唔再寫死 bundle 檔名，而係攞 DMG 入面嗰個 `.app`，唔理佢叫乜。呢個就係令到下一個版本之後有得真正改 bundle 名、而唔會爛晒所有人更新嘅關鍵。
+
+完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## v0.7.6 嘅新功能
 
@@ -144,7 +158,7 @@ Xcode 揀 `SceneApp` scheme → ⌘R。App 以 menu bar extra 形式行（冇 Do
 ### Build distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.7.6    # 出 dist/Scene-0.7.6.dmg（universal + notarized）
+./scripts/build-dmg.sh 0.8.0    # 出 dist/Scene-0.8.0.dmg（universal + notarized）
 ```
 
 Build universal（arm64 + x86_64）binary，Developer ID sign，submit 去 Apple notary，pack 入 DMG 連 `Applications` drop shortcut。Apple Silicon 同 Intel Mac 用同一個 DMG。如果想 local iterate DMG layout，set `SKIP_NOTARY=1` 會 skip Apple notary submission，改用 ad-hoc sign。

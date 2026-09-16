@@ -69,8 +69,16 @@ echo "==> Building universal Release binary (arm64 + x86_64)…"
 # optimizer (-O / -Osize) crashes with an ICE in the SIL pipeline when the
 # deployment target is pre-26 (e.g. 14.0). Debug (-Onone) builds fine. Binary
 # size impact on a 1.4MB menu bar app is negligible; runtime cost is
-# imperceptible since Scene is mostly I/O-bound on AX / AppKit. Remove this
-# override once Apple ships a fixed Swift toolchain.
+# imperceptible since Setpiece is mostly I/O-bound on AX / AppKit.
+#
+# Xcode 27.0 (27A266a) builds Release at -O cleanly: verified against this
+# project at deployment target 14.0, universal, ** BUILD SUCCEEDED ** with no
+# ICE. So this override can go. It is deliberately NOT removed in 0.8.0:
+# that release exists to change a name and nothing else, and changing
+# optimization level changes codegen, so bundling them would make any
+# regression ambiguous. The optimized binary also measured 3.2MB against
+# 120KB here, a delta worth understanding before shipping. Do it on its own
+# in a later release, and check the app actually launches.
 xcodebuild \
     -project "$PROJECT" \
     -scheme "$SCHEME" \
