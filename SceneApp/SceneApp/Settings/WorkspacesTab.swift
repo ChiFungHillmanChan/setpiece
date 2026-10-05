@@ -1,8 +1,8 @@
 import SwiftUI
 import SceneCore
 
-/// Settings → Workspaces tab. NavigationSplitView with a list of workspaces on
-/// the left and the detail editor on the right. Toolbar exposes "+ New",
+/// Settings → Workspaces tab. HSplitView with a list of workspaces on the left
+/// and the detail editor on the right. Toolbar exposes "+ New",
 /// "Duplicate" and "Delete" (V0.5.5 — was previously inline-swipe via
 /// `List.onDelete`, but on macOS NavigationSplitView the swipe gesture is
 /// barely discoverable, so users believed seeded workspaces couldn't be
@@ -11,6 +11,12 @@ import SceneCore
 /// §5 guard: "+ New" is disabled when no layouts exist, and `newWorkspace()`
 /// has a defensive `guard let firstLayout` fallback so we never synthesize a
 /// dangling `layoutID`.
+///
+/// Must not be a `NavigationSplitView`: this view is already the detail column
+/// of `SettingsRoot`'s split view, and on macOS 27 a nested one sends the
+/// window into an endless Update Constraints loop when Settings first opens on
+/// this tab. AppKit throws, the window freezes, and the app crashes. Same
+/// `HSplitView` shape as `LayoutsTab`, which never had the problem.
 struct WorkspacesTab: View {
     @ObservedObject var workspaceStore: WorkspaceStoreViewModel
     @ObservedObject var layoutStore: LayoutStoreViewModel
@@ -19,7 +25,7 @@ struct WorkspacesTab: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        NavigationSplitView {
+        HSplitView {
             List(selection: $selectedID) {
                 ForEach(workspaceStore.workspaces) { workspace in
                     Row(workspace: workspace, layoutStore: layoutStore)
@@ -37,47 +43,55 @@ struct WorkspacesTab: View {
                     }
                 }
             }
-            .navigationSplitViewColumnWidth(min: 200, ideal: 240)
+            .frame(minWidth: 200, idealWidth: 240)
             .modifier(WorkspaceListTopInset())
-            .toolbar {
-                ToolbarItemGroup {
-                    Button(action: newWorkspace) {
-                        Label("workspaces.new", systemImage: "plus")
-                    }
-                    .disabled(layoutStore.layouts.isEmpty)
-                    .help(layoutStore.layouts.isEmpty
-                          ? "workspaces.new.disabled.hint"
-                          : "workspaces.new")
 
-                    Button(action: duplicateSelected) {
-                        Label("workspaces.duplicate", systemImage: "plus.square.on.square")
-                    }
-                    .disabled(selectedID == nil)
-
-                    Button(action: deleteSelected) {
-                        Image(systemName: "trash")
-                    }
-                    .disabled(selectedID == nil)
+            detailPane
+                .frame(minWidth: 320)
+        }
+        .toolbar {
+            ToolbarItemGroup {
+                Button(action: newWorkspace) {
+                    Label("workspaces.new", systemImage: "plus")
                 }
-            }
-        } detail: {
-            if let id = selectedID,
-               let workspace = workspaceStore.workspaces.first(where: { $0.id == id }) {
-                WorkspaceEditorView(
-                    workspace: workspace,
-                    workspaceStore: workspaceStore,
-                    layoutStore: layoutStore,
-                    calendarPermissionRequester: calendarPermissionRequester
-                )
-                .id(workspace.id)  // force re-init when selection changes so @State draft resets
-            } else {
-                Text("workspaces.detail.empty").foregroundStyle(.secondary)
+                .disabled(layoutStore.layouts.isEmpty)
+                .help(layoutStore.layouts.isEmpty
+                      ? "workspaces.new.disabled.hint"
+                      : "workspaces.new")
+
+                Button(action: duplicateSelected) {
+                    Label("workspaces.duplicate", systemImage: "plus.square.on.square")
+                }
+                .disabled(selectedID == nil)
+
+                Button(action: deleteSelected) {
+                    Image(systemName: "trash")
+                }
+                .disabled(selectedID == nil)
             }
         }
         .alert("common.error", isPresented: .constant(errorMessage != nil)) {
             Button("common.ok") { errorMessage = nil }
         } message: {
             Text(errorMessage ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private var detailPane: some View {
+        if let id = selectedID,
+           let workspace = workspaceStore.workspaces.first(where: { $0.id == id }) {
+            WorkspaceEditorView(
+                workspace: workspace,
+                workspaceStore: workspaceStore,
+                layoutStore: layoutStore,
+                calendarPermissionRequester: calendarPermissionRequester
+            )
+            .id(workspace.id)  // force re-init when selection changes so @State draft resets
+        } else {
+            Text("workspaces.detail.empty")
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
