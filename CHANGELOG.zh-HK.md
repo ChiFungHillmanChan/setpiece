@@ -4,6 +4,14 @@ Scene 嘅完整版本史，最新嘅 release 喺最頂。
 
 要 download binary，去 [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases)。
 
+## V0.8.1 — macOS 27 上面設定視窗開得返
+
+- **開設定唔會再凍結兼閃退。** 喺 macOS 27.0.1 用 v0.8.0，設定視窗一出現就凍結，過幾秒個 process 就以 `NSGenericException` 死咗：*"The window has been marked as needing another Update Constraints in Window pass, but it has already had more Update Constraints in Window passes than there are views in the window."* 次次開都係咁，因為設定一開就係 Workspaces 嗰版。
+- **原因：一個 `NavigationSplitView` 揼咗喺另一個入面。** `WorkspacesTab` 本身係一個 `NavigationSplitView`，而佢又擺咗喺 `SettingsRoot` 嗰個嘅 detail column 入面。個窗第一次排版嗰陣，入面嗰個 split 嘅 SwiftUI column 不停報一個新嘅最細尺寸（`SplitViewChildController.hostingView(_:didUpdateMinSize:)`），而每報一次都會喺排版途中令 root hosting view 嘅 constraint 失效，於是成個 pass 永遠停唔落嚟。喺真 build 入面逐樣排除過：同一個窗如果一開係 Layouts（喺同一個 detail column 入面嘅 `HSplitView`）或者 About 就開得正常；熄咗 macOS 26 嘅 title bar 樣式就照樣死。開咗個窗之後先轉去 Workspaces、拉大拉細、閂咗再開，全部都冇死過 — 個 bug 要喺第一次排版嗰陣已經有嗰個巢狀 split 先會出現。
+- **修正：`WorkspacesTab` 改用 `HSplitView`，同 `LayoutsTab` 一樣嘅砌法。** Toolbar（New / Duplicate / Delete）由入面嗰個 sidebar column 搬咗去個 split view 度，同 Layouts 一樣；因為 hosting controller 仍然係個窗嘅 root，toolbar 照樣橋接得到去視窗 toolbar（見 V0.7.5）。Column 闊度實際上冇變：喺預設 760 × 540 嘅窗，editor 嗰格改之前同改之後都係 304 pt 闊。
+- **喺真 app 驗證過，唔係淨係 build 到。** 改之前：Debug build 開 2 次死 2 次，出咗街嗰個 v0.8.0 都一樣。改之後：Debug 3 次、Release（用 `build-dmg.sh` 嘅 flag）2 次，全部開得正常。真滑鼠撳過每一個 sidebar 分頁、一行 workspace（editor 會開）同 toolbar 啲掣（會 enable）。淨係喺 macOS 27.0.1 測過。
+- Tests：438，冇變。SceneCore 冇改過。Universal（arm64 + x86_64），macOS 14+，Apple notarized。
+
 ## V0.8.0 — Scene 改名做 Setpiece
 
 - **App 改咗名，而任何用嚟識別現有安裝嘅嘢都冇變。** Bundle identifier 仍然係 `com.hillman.SceneApp`（TCC 係綁住 identifier 同簽名嚟記住 Accessibility 授權，換一個就等於一次過靜靜雞收回所有用家嘅權限 — 而且 macOS 會繼續顯示個掣係 ON 但 `AXIsProcessTrusted` 返 false，用家嘅體感係「個 app 壞咗」）。Application Support 仍然係 `Scene`，所以 layout、workspace 同設定照樣喺原位搵到。用家見到嘅係 `CFBundleDisplayName`，而家係 `Setpiece`。

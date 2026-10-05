@@ -48,7 +48,7 @@ so an existing install keeps upgrading without any action.
 
 Quarantine is stripped automatically — no "cannot be verified" prompt. On first launch, grant Accessibility in **System Settings → Privacy & Security → Accessibility**.
 
-**Or download the DMG directly**: **[Scene-0.8.0.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.0/Scene-0.8.0.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
+**Or download the DMG directly**: **[Scene-0.8.1.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.1/Scene-0.8.1.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
 
 All versions: [Releases page](https://github.com/ChiFungHillmanChan/setpiece/releases) · DMG users, see [`docs/INSTALL.md`](docs/INSTALL.md) for the one-time Gatekeeper + Accessibility-permission steps.
 
@@ -63,6 +63,16 @@ All versions: [Releases page](https://github.com/ChiFungHillmanChan/setpiece/rel
 ![Setpiece Layouts editor — drag seams to design any tile shape](docs/media/scene-layouts.png)
 
 ▶ [Watch the full 30-second demo](docs/media/scene-marketing.mp4) (MP4, 13 MB)
+
+## What's new in v0.8.1
+
+**Settings opens again on macOS 27.** On v0.8.0, opening Settings froze the window — nothing in it could be clicked — and a few seconds later macOS reported that Setpiece quit unexpectedly. It happened every time, because Settings always opens on the Workspaces tab.
+
+The cause was layout, not your data. The Workspaces tab was a split view nested inside the Settings window's own split view, and on macOS 27 the two kept resizing each other: every layout pass changed the inner one's minimum size, which forced another pass, until AppKit gave up and threw. The Workspaces tab is now built the same way as the Layouts tab, which never had the problem. It looks and works the same.
+
+**To get it:** click **Update available** in the menu bar. The updater lives in the menu bar panel, not in Settings, so it works even while Settings is crashing.
+
+For the full version history, see [`CHANGELOG.md`](CHANGELOG.md).
 
 ## What's new in v0.8.0
 
@@ -158,7 +168,7 @@ In Xcode, select the `SceneApp` scheme and press ⌘R. The app runs as a menu ba
 ### Build a distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.8.0    # produces dist/Scene-0.8.0.dmg (universal, notarized)
+./scripts/build-dmg.sh 0.8.1    # produces dist/Scene-0.8.1.dmg (universal, notarized)
 ```
 
 This builds a universal (arm64 + x86_64) binary, Developer ID-signs it, submits it to Apple for notarization, and packages it into a DMG with an `Applications` drop shortcut. Both Apple Silicon and Intel Macs install from the same DMG. Set `SKIP_NOTARY=1` for a local ad-hoc build that skips the Apple notary submission (useful while iterating on DMG layout).

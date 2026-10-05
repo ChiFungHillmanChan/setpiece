@@ -46,7 +46,7 @@ Homebrew 7 唔會載入你未 trust 過嘅 tap 入面嘅 cask，而且佢係直�
 
 自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Setpiece 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Setpiece 就得。
 
-**或者直接下載 DMG**：**[Scene-0.8.0.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.0/Scene-0.8.0.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
+**或者直接下載 DMG**：**[Scene-0.8.1.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.1/Scene-0.8.1.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
 
 所有版本：[Releases page](https://github.com/ChiFungHillmanChan/setpiece/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
 
@@ -61,6 +61,16 @@ Homebrew 7 唔會載入你未 trust 過嘅 tap 入面嘅 cask，而且佢係直�
 ![Setpiece Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)
 
 ▶ [睇完整 30 秒示範片](docs/media/scene-marketing.mp4)（MP4，13 MB）
+
+## v0.8.1 嘅新功能
+
+**macOS 27 上面設定視窗開得返。** 喺 v0.8.0，一開設定個窗就會凍結 — 入面乜都撳唔到 — 過幾秒 macOS 就話 Setpiece 意外結束。次次都係咁，因為設定一開就係 Workspaces 嗰版。
+
+問題出喺排版，同你啲資料無關。Workspaces 嗰版係一個 split view，揼咗喺設定視窗自己嗰個 split view 入面；喺 macOS 27，兩個不停互相調大細：每做一次排版，入面嗰個嘅最細尺寸就變一次，於是又要再排多次，直到 AppKit 放棄、掟 exception。而家 Workspaces 嗰版改咗同 Layouts 嗰版一樣嘅砌法，Layouts 嗰版從來冇呢個問題。外觀同用法都冇變。
+
+**點樣更新：** 喺 menu bar 撳 **Update available**。更新器喺 menu bar 面板度，唔喺設定入面，所以就算設定一開就死都照樣用到。
+
+完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## v0.8.0 嘅新功能
 
@@ -158,7 +168,7 @@ Xcode 揀 `SceneApp` scheme → ⌘R。App 以 menu bar extra 形式行（冇 Do
 ### Build distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.8.0    # 出 dist/Scene-0.8.0.dmg（universal + notarized）
+./scripts/build-dmg.sh 0.8.1    # 出 dist/Scene-0.8.1.dmg（universal + notarized）
 ```
 
 Build universal（arm64 + x86_64）binary，Developer ID sign，submit 去 Apple notary，pack 入 DMG 連 `Applications` drop shortcut。Apple Silicon 同 Intel Mac 用同一個 DMG。如果想 local iterate DMG layout，set `SKIP_NOTARY=1` 會 skip Apple notary submission，改用 ad-hoc sign。
