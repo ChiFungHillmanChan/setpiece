@@ -60,7 +60,8 @@ public final class SeamResizeController {
         }
     }
 
-    private let contextProvider: () -> Context?
+    /// Resolves the layout that holds the given window (one per display).
+    private let contextProvider: (CGWindowID) -> Context?
     private let config: () -> DragSwapConfig
     private let modifierFlagsProbe: () -> NSEvent.ModifierFlags
     private let mouseButtonsProbe: () -> Int
@@ -72,7 +73,7 @@ public final class SeamResizeController {
 
     @MainActor
     public init(
-        contextProvider: @escaping () -> Context?,
+        contextProvider: @escaping (CGWindowID) -> Context?,
         config: @escaping () -> DragSwapConfig = { .default },
         modifierFlagsProbe: @escaping () -> NSEvent.ModifierFlags = { NSEvent.modifierFlags },
         mouseButtonsProbe: @escaping () -> Int = { NSEvent.pressedMouseButtons },
@@ -123,7 +124,7 @@ public final class SeamResizeController {
         // writes, so this short-circuits cleanly before any bookkeeping.
         guard mouseButtonsProbe() & 0b1 != 0 else { return }
 
-        guard let ctx = contextProvider() else { return }
+        guard let ctx = contextProvider(windowID) else { return }
         guard let slotIdx = ctx.windowToSlotIdx[windowID] else { return }
         guard isSupportedTemplate(ctx.template) else { return }
 

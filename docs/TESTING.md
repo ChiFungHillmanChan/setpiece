@@ -273,7 +273,7 @@ rm -rf ~/Library/Application\ Support/Scene-testing
 ### A. SceneCore unit tests
 
 ```sh
-cd /Users/hillmanchan/Desktop/macbook-resizer
+cd "$(git rev-parse --show-toplevel)"
 swift test
 # expect: 317+ tests passing — privacy contract, ring buffer, writer race
 # test, gunzip round-trip via /usr/bin/gunzip, sanitizer property check

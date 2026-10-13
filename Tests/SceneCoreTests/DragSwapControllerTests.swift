@@ -25,6 +25,9 @@ final class DragSwapControllerTests: XCTestCase {
 
     func makeScreen() -> NSScreen { NSScreen.screens[0] }
 
+    /// Inside `vf`, which the tests use as the layout's display frame.
+    let pointerOnScreen = CGPoint(x: 500, y: 400)
+
     final class RecordingSink: WindowAnimationSink {
         struct Call { let windowID: CGWindowID; let target: CGRect }
         var calls: [Call] = []
@@ -49,14 +52,16 @@ final class DragSwapControllerTests: XCTestCase {
             layout: layout,
             screen: screen,
             windows: windows,
-            windowToSlotIdx: map
+            windowToSlotIdx: map,
+            screenFrame: vf
         )
         let controller = DragSwapController(
-            contextProvider: { ctx },
+            contextProvider: { _ in ctx },
             config: { config },
             animationSink: sink,
             modifierFlagsProbe: { modifierFlags },
             mouseButtonsProbe: { pressedButtons },
+            pointerLocationProbe: { self.pointerOnScreen },
             visibleFrameOverride: { _ in self.vf }
         )
         return (controller, sink)
@@ -277,14 +282,16 @@ final class DragSwapControllerTests: XCTestCase {
             layout: makeLayout(),
             screen: makeScreen(),
             windows: [wA, wB],
-            windowToSlotIdx: [1: 0, 2: 1]
+            windowToSlotIdx: [1: 0, 2: 1],
+            screenFrame: vf
         )
         let controller = DragSwapController(
-            contextProvider: { ctx },
+            contextProvider: { _ in ctx },
             config: { .default },
             animationSink: sink,
             modifierFlagsProbe: { [] },
             mouseButtonsProbe: { pressed.value },
+            pointerLocationProbe: { self.pointerOnScreen },
             visibleFrameOverride: { _ in self.vf }
         )
 
@@ -327,12 +334,13 @@ final class DragSwapControllerTests: XCTestCase {
         var map: [CGWindowID: Int] = [1: 0, 2: 1]
         let sink = RecordingSink()
         let controller = DragSwapController(
-            contextProvider: {
+            contextProvider: { _ in
                 DragSwapController.Context(
                     layout: self.makeLayout(),
                     screen: self.makeScreen(),
                     windows: [wA, wB],
-                    windowToSlotIdx: map
+                    windowToSlotIdx: map,
+                    screenFrame: self.vf
                 )
             },
             config: { .default },
@@ -340,6 +348,7 @@ final class DragSwapControllerTests: XCTestCase {
             onSwap: { updates in for (id, slot) in updates { map[id] = slot } },
             modifierFlagsProbe: { [] },
             mouseButtonsProbe: { 0b1 },
+            pointerLocationProbe: { self.pointerOnScreen },
             visibleFrameOverride: { _ in self.vf }
         )
 
@@ -415,5 +424,181 @@ final class DragSwapControllerTests: XCTestCase {
         controller.cancelDrag()
 
         XCTAssertEqual(sink.calls.count, 0)
+    }
+
+    // MARK: - Multiple displays
+
+    final class PointerBox { var value: CGPoint; init(_ v: CGPoint) { value = v } }
+
+    /// Mirrors the Coordinator: each display keeps its own layout snapshot and
+    /// the provider resolves whichever one holds the dragged window.
+    func makeTwoDisplayController(
+        displayA: DragSwapController.Context,
+        displayB: DragSwapController.Context,
+        pointer: PointerBox,
+        left: @escaping (Set<CGWindowID>) -> Void = { _ in },
+        swapped: @escaping ([CGWindowID: Int]) -> Void = { _ in }
+    ) -> (DragSwapController, RecordingSink) {
+        let sink = RecordingSink()
+        let controller = DragSwapController(
+            contextProvider: { id in
+                if displayA.windowToSlotIdx[id] != nil { return displayA }
+                if displayB.windowToSlotIdx[id] != nil { return displayB }
+                return nil
+            },
+            config: { .default },
+            animationSink: sink,
+            onSwap: swapped,
+            onWindowsLeftLayout: left,
+            modifierFlagsProbe: { [] },
+            mouseButtonsProbe: { 0b1 },
+            pointerLocationProbe: { pointer.value },
+            visibleFrameOverride: { _ in self.vf }
+        )
+        return (controller, sink)
+    }
+
+    /// Field bug: a layout applied on display B used to replace display A's
+    /// snapshot, so drag-swap went dead on A. With per-display contexts a swap
+    /// on B touches only B's windows, and A keeps working.
+    func testTwoDisplaysAreIsolated() {
+        let a0 = MockWindow(id: 1, frame: slot0Rect), a1 = MockWindow(id: 2, frame: slot1Rect)
+        let b0 = MockWindow(id: 3, frame: slot0Rect), b1 = MockWindow(id: 4, frame: slot1Rect)
+        let ctxA = DragSwapController.Context(layout: makeLayout(), screen: makeScreen(),
+                                              windows: [a0, a1], windowToSlotIdx: [1: 0, 2: 1], screenFrame: vf)
+        let ctxB = DragSwapController.Context(layout: makeLayout(), screen: makeScreen(),
+                                              windows: [b0, b1], windowToSlotIdx: [3: 0, 4: 1], screenFrame: vf)
+        var swaps: [[CGWindowID: Int]] = []
+        let (controller, sink) = makeTwoDisplayController(
+            displayA: ctxA, displayB: ctxB, pointer: PointerBox(pointerOnScreen),
+            swapped: { swaps.append($0) }
+        )
+
+        controller.handleWindowMoved(windowID: 3, currentFrame: slot0Rect)
+        controller.handleWindowMoved(windowID: 3, currentFrame: slot0Rect.offsetBy(dx: 400, dy: 0))
+        controller.simulateMouseUp()
+
+        XCTAssertEqual(b0.frame, slot1Rect)
+        XCTAssertEqual(sink.calls.map(\.windowID), [4])
+        XCTAssertEqual(a0.setFrameCallCount + a1.setFrameCallCount, 0, "display A untouched")
+        XCTAssertEqual(swaps, [[3: 1, 4: 0]])
+
+        // And display A still swaps afterwards.
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect)
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect.offsetBy(dx: 400, dy: 0))
+        controller.simulateMouseUp()
+        XCTAssertEqual(a0.frame, slot1Rect)
+        XCTAssertEqual(sink.calls.last?.windowID, 2)
+    }
+
+    /// Releasing with the pointer on another display hands the window to that
+    /// display (macOS moves it there). Snapping it into a slot here fought
+    /// that move and left the window half on each screen. It must be left
+    /// alone and reported as gone from this layout.
+    func testDropOnAnotherDisplayLeavesTheWindowAloneAndReportsIt() {
+        let wA = MockWindow(id: 1, frame: slot0Rect), wB = MockWindow(id: 2, frame: slot1Rect)
+        let ctx = DragSwapController.Context(layout: makeLayout(), screen: makeScreen(),
+                                             windows: [wA, wB], windowToSlotIdx: [1: 0, 2: 1], screenFrame: vf)
+        let pointer = PointerBox(pointerOnScreen)
+        var left: [Set<CGWindowID>] = []
+        let (controller, sink) = makeTwoDisplayController(
+            displayA: ctx, displayB: ctx, pointer: pointer, left: { left.append($0) }
+        )
+
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect)
+        // Window centre is still over slot 1, but the pointer is past the
+        // display's right edge.
+        pointer.value = CGPoint(x: 1100, y: 400)
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect.offsetBy(dx: 400, dy: 0))
+        XCTAssertNil(controller._testActiveDrag, "no swap preview once the pointer has left the display")
+        controller.simulateMouseUp()
+
+        XCTAssertEqual(wA.setFrameCallCount, 0)
+        XCTAssertEqual(sink.calls.count, 0)
+        XCTAssertEqual(left, [[1]])
+    }
+
+    /// Dragging back onto the layout's display re-arms the swap.
+    func testPointerReturningToTheDisplayRearmsTheSwap() {
+        let wA = MockWindow(id: 1, frame: slot0Rect), wB = MockWindow(id: 2, frame: slot1Rect)
+        let ctx = DragSwapController.Context(layout: makeLayout(), screen: makeScreen(),
+                                             windows: [wA, wB], windowToSlotIdx: [1: 0, 2: 1], screenFrame: vf)
+        let pointer = PointerBox(CGPoint(x: 1100, y: 400))
+        var left: [Set<CGWindowID>] = []
+        let (controller, sink) = makeTwoDisplayController(
+            displayA: ctx, displayB: ctx, pointer: pointer, left: { left.append($0) }
+        )
+
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect)
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect.offsetBy(dx: 400, dy: 0))
+        pointer.value = CGPoint(x: 750, y: 400)
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect.offsetBy(dx: 401, dy: 0))
+        controller.simulateMouseUp()
+
+        XCTAssertEqual(wA.frame, slot1Rect)
+        XCTAssertEqual(sink.calls.map(\.windowID), [2])
+        XCTAssertTrue(left.isEmpty)
+    }
+
+    /// Field bug: a window the user had already moved to the other display was
+    /// still recorded in its old slot, so swapping into that slot dragged it
+    /// back across. A displaced window that is no longer on this display is
+    /// not part of the swap — the slot counts as empty.
+    func testDisplacedWindowThatLeftTheDisplayIsNotPulledBack() {
+        let wA = MockWindow(id: 1, frame: slot0Rect)
+        let gone = MockWindow(id: 2, frame: CGRect(x: 1500, y: 0, width: 500, height: 800))
+        let ctx = DragSwapController.Context(layout: makeLayout(), screen: makeScreen(),
+                                             windows: [wA, gone], windowToSlotIdx: [1: 0, 2: 1], screenFrame: vf)
+        var left: [Set<CGWindowID>] = []
+        var swaps: [[CGWindowID: Int]] = []
+        let (controller, sink) = makeTwoDisplayController(
+            displayA: ctx, displayB: ctx, pointer: PointerBox(pointerOnScreen),
+            left: { left.append($0) }, swapped: { swaps.append($0) }
+        )
+
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect)
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect.offsetBy(dx: 400, dy: 0))
+        controller.simulateMouseUp()
+
+        XCTAssertEqual(wA.frame, slot1Rect)
+        XCTAssertEqual(gone.setFrameCallCount, 0)
+        XCTAssertEqual(sink.calls.count, 0, "the window on the other display must not be animated back")
+        XCTAssertEqual(left, [[2]])
+        XCTAssertEqual(swaps, [[1: 1]])
+    }
+
+    func testProviderIsAskedAboutTheDraggedWindow() {
+        let wA = MockWindow(id: 7, frame: slot0Rect)
+        var asked: [CGWindowID] = []
+        let controller = DragSwapController(
+            contextProvider: { id in asked.append(id); return nil },
+            mouseButtonsProbe: { 0b1 },
+            pointerLocationProbe: { self.pointerOnScreen },
+            visibleFrameOverride: { _ in self.vf }
+        )
+        controller.handleWindowMoved(windowID: 7, currentFrame: slot0Rect)
+        controller.handleWindowMoved(windowID: 7, currentFrame: slot0Rect.offsetBy(dx: 400, dy: 0))
+        XCTAssertEqual(Set(asked), [wA.id])
+    }
+
+    /// With the pointer on a display's top row (dragging into the menu bar),
+    /// AppKit reports `y == frame.maxY`, which `CGRect.contains` excludes. That
+    /// must still count as on the display, or the window would be released.
+    func testPointerOnTheTopEdgeCountsAsOnTheDisplay() {
+        let wA = MockWindow(id: 1, frame: slot0Rect), wB = MockWindow(id: 2, frame: slot1Rect)
+        let ctx = DragSwapController.Context(layout: makeLayout(), screen: makeScreen(),
+                                             windows: [wA, wB], windowToSlotIdx: [1: 0, 2: 1], screenFrame: vf)
+        var left: [Set<CGWindowID>] = []
+        let (controller, sink) = makeTwoDisplayController(
+            displayA: ctx, displayB: ctx, pointer: PointerBox(CGPoint(x: 750, y: vf.maxY)),
+            left: { left.append($0) }
+        )
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect)
+        controller.handleWindowMoved(windowID: 1, currentFrame: slot0Rect.offsetBy(dx: 400, dy: 0))
+        controller.simulateMouseUp()
+
+        XCTAssertEqual(wA.frame, slot1Rect)
+        XCTAssertEqual(sink.calls.map(\.windowID), [2])
+        XCTAssertTrue(left.isEmpty)
     }
 }

@@ -66,6 +66,29 @@ final class DockReserveTests: XCTestCase {
         )
     }
 
+    // MARK: - re-apply candidates
+
+    /// Every frame a display could have been tiled into as the Dock roams:
+    /// with the Dock's strip reserved and without it. The Dockless display B
+    /// is currently flush, but a layout applied while the Dock sat on it is
+    /// 70pt shorter at the bottom.
+    func testStickyCandidatesCoverTheDisplayWithAndWithoutTheDock() {
+        let (own, all) = dockOnA
+        let candidates = TilingFrame.stickyCandidates(frame: frameB, ownInsets: own, allInsets: all)
+        XCTAssertEqual(Set(candidates.map(\.minY)), [frameB.minY, frameB.minY + dock])
+        XCTAssertEqual(candidates.count, 2, "identical rects are listed once")
+    }
+
+    /// Same from the side holding the Dock: its frame once the Dock leaves.
+    func testStickyCandidatesForTheDocksOwnDisplayIncludeTheDocklessFrame() {
+        let a = insets(frameA, vf(frameA, dockAtBottom: true))
+        let b = insets(frameB, vf(frameB, dockAtBottom: false))
+        let candidates = TilingFrame.stickyCandidates(frame: frameA, ownInsets: a, allInsets: [a, b])
+        XCTAssertEqual(Set(candidates.map(\.minY)), [frameA.minY, frameA.minY + dock])
+        XCTAssertTrue(candidates.allSatisfy { $0.maxY == frameA.maxY - menuBar },
+                      "the menu bar is never part of any candidate")
+    }
+
     // MARK: - single display
 
     /// On one display the unified maximum is that screen's own inset, so the
@@ -96,8 +119,10 @@ final class DockReserveSettingsTests: XCTestCase {
         }
     }
 
-    func testDefaultsToReservingOnAllDisplays() throws {
-        XCTAssertTrue(try SettingsStore(fileURL: fileURL).dockReserveAllDisplays)
+    /// V0.8.2: a fresh install reserves the Dock only on the display it is
+    /// actually on, so a Dockless display uses its full height.
+    func testDefaultsToReservingOnlyWhereTheDockIs() throws {
+        XCTAssertFalse(try SettingsStore(fileURL: fileURL).dockReserveAllDisplays)
     }
 
     func testSetterPersistsAcrossReload() throws {
@@ -116,9 +141,41 @@ final class DockReserveSettingsTests: XCTestCase {
         token.cancel()
     }
 
-    /// Someone upgrading from V0.7.5 must keep the stable-tiling behaviour they
-    /// already have; the escape hatch is opt-in, never opt-out.
-    func testV3FileMigratesWithReserveStillOn() throws {
+    /// V0.8.2 moves every upgrader to the new behaviour. Re-apply no longer
+    /// depends on the unified reserve to stay put (`LayoutEngine` matches
+    /// windows against the Dock-reserved frame too), so the dead strip it
+    /// cost on Dockless displays bought nothing.
+    func testV4FileMigratesToReservingOnlyWhereTheDockIs() throws {
+        let v4 = """
+        {"version":4,
+         "animation":{"enabled":true,"durationMs":250,"easing":"easeOut"},
+         "dragSwap":{"enabled":true,"distanceThresholdPt":30},
+         "diagnosticsEnabled":true,
+         "dockReserveAllDisplays":true}
+        """
+        try Data(v4.utf8).write(to: fileURL)
+        let store = try SettingsStore(fileURL: fileURL)
+        XCTAssertFalse(store.dockReserveAllDisplays)
+        let probe = try JSONSerialization.jsonObject(with: Data(contentsOf: fileURL)) as! [String: Any]
+        XCTAssertEqual(probe["version"] as? Int, SettingsStore.currentVersion)
+        XCTAssertEqual(probe["dockReserveAllDisplays"] as? Bool, false)
+    }
+
+    /// Once on v5, turning the reserve back on is the user's own choice and
+    /// must survive a relaunch.
+    func testV5FileKeepsAnExplicitReserveChoice() throws {
+        let v5 = """
+        {"version":5,
+         "animation":{"enabled":true,"durationMs":250,"easing":"easeOut"},
+         "dragSwap":{"enabled":true,"distanceThresholdPt":30},
+         "diagnosticsEnabled":true,
+         "dockReserveAllDisplays":true}
+        """
+        try Data(v5.utf8).write(to: fileURL)
+        XCTAssertTrue(try SettingsStore(fileURL: fileURL).dockReserveAllDisplays)
+    }
+
+    func testV3FileMigratesToReservingOnlyWhereTheDockIs() throws {
         let v3 = """
         {"version":3,
          "animation":{"enabled":true,"durationMs":250,"easing":"easeOut"},
@@ -127,7 +184,7 @@ final class DockReserveSettingsTests: XCTestCase {
         """
         try Data(v3.utf8).write(to: fileURL)
         let store = try SettingsStore(fileURL: fileURL)
-        XCTAssertTrue(store.dockReserveAllDisplays)
+        XCTAssertFalse(store.dockReserveAllDisplays)
         // and the migration must have rewritten the file at the new version
         let probe = try JSONSerialization.jsonObject(with: Data(contentsOf: fileURL)) as! [String: Any]
         XCTAssertEqual(probe["version"] as? Int, SettingsStore.currentVersion)
@@ -213,6 +270,6 @@ final class SettingsForwardCompatibilityTests: XCTestCase {
         let store = try SettingsStore(fileURL: fileURL)
         XCTAssertEqual(store.dragSwap, DragSwapConfig.default)
         XCTAssertTrue(store.diagnosticsEnabled)
-        XCTAssertTrue(store.dockReserveAllDisplays)
+        XCTAssertFalse(store.dockReserveAllDisplays)
     }
 }

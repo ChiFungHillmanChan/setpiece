@@ -8,25 +8,38 @@ public enum LayoutEngine {
     /// windows fill the remaining slots in z-order; leftovers get minimized.
     /// A sticky window's placement targets the slot's exact rect, so
     /// sub-tolerance drift self-heals on re-apply.
+    ///
+    /// `alternateFrames` are other rects the same layout may have been tiled
+    /// into earlier — in practice this display with and without the Dock's
+    /// strip (`TilingFrame.stickyCandidates`). A window matching a slot in any
+    /// of them keeps that slot and is stretched to `visibleFrame`'s rect, so a
+    /// re-apply after the Dock hops displays never reshuffles windows. Matches
+    /// against `visibleFrame` itself are claimed first.
     public static func plan(
         windows: [any WindowRef],
         visibleFrame: CGRect,
         layout: Layout,
-        stickyTolerance: CGFloat = 10
+        stickyTolerance: CGFloat = 10,
+        alternateFrames: [CGRect] = []
     ) -> Plan {
         let slotRects = layout.slots.map { $0.absoluteRect(in: visibleFrame) }
+        let matchFrames = [visibleFrame] + alternateFrames.filter { $0 != visibleFrame }
 
-        // Sticky pass — z-order priority when two windows sit on the same rect.
+        // Sticky pass — primary frame first, then alternates; z-order priority
+        // when two windows sit on the same rect.
         var slotToWindow: [Int: any WindowRef] = [:]
         var stickyIDs = Set<CGWindowID>()
-        for window in windows {
-            let claimed = slotRects.indices.first { idx in
-                slotToWindow[idx] == nil &&
-                rectsApproxEqual(window.frame, slotRects[idx], tolerance: stickyTolerance)
-            }
-            if let idx = claimed {
-                slotToWindow[idx] = window
-                stickyIDs.insert(window.id)
+        for frame in matchFrames {
+            let rects = layout.slots.map { $0.absoluteRect(in: frame) }
+            for window in windows where !stickyIDs.contains(window.id) {
+                let claimed = rects.indices.first { idx in
+                    slotToWindow[idx] == nil &&
+                    rectsApproxEqual(window.frame, rects[idx], tolerance: stickyTolerance)
+                }
+                if let idx = claimed {
+                    slotToWindow[idx] = window
+                    stickyIDs.insert(window.id)
+                }
             }
         }
 

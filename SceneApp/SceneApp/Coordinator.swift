@@ -64,15 +64,11 @@ final class Coordinator: ObservableObject {
     /// `kAXResizedNotification`, short-circuits for unsupported templates.
     private lazy var seamResizeController: SeamResizeController = makeSeamResizeController()
     private var escMonitor: Any?
-    private var lastPlacedWindows: [any SceneWindowRef] = []
-    private var lastAppliedLayout: Layout?
-    /// V0.6: snapshot the full `CustomLayout` applied most recently so
-    /// `SeamResizeController` can read `template` + `slotProportions` off it
-    /// each event (the derived `Layout.slots` alone can't be reversed back to
-    /// proportions without template context).
-    private var lastAppliedCustomLayout: CustomLayout?
-    private var lastScreen: NSScreen?
-    private var lastWindowToSlotIdx: [CGWindowID: Int] = [:]
+
+    /// Each display's last layout fire, for drag-swap and seam reflow. Per
+    /// display, so applying a layout on display B no longer switches drag-swap
+    /// off on display A — the field bug where A "went into free mode".
+    private let placements = PlacementRegistry()
     /// Tracks the last `applyLayout` fire. When the user re-fires the same
     /// layout within `repeatFireWindow`, we defer enumeration by
     /// `repeatFireSettleMs` so a newly-opened OS window has time to register
@@ -258,17 +254,21 @@ final class Coordinator: ObservableObject {
                     secsSinceLastChange: nil
                 )
             )))
-            // `TilingFrame`, not `screen.visibleFrame` — the Dock hops between
-            // displays with the pointer, so `visibleFrame` would hand us a rect
-            // ~70pt different on a re-apply and shift every window. See
-            // `TilingFrame` for the full reasoning.
+            // `TilingFrame`, not raw `screen.visibleFrame`: it applies the
+            // Dock-reserve setting. The Dock hops between displays with the
+            // pointer, so the frame a window was tiled into may differ from
+            // today's by the Dock's thickness; `stickyCandidates` lets the
+            // plan recognise windows tiled under either frame, so a re-apply
+            // stretches them in place instead of reshuffling.
+            let tilingFrame = TilingFrame.forScreen(
+                screen,
+                reserveDockOnAllDisplays: settingsStore.dockReserveAllDisplays
+            )
             let plan = LayoutEngine.plan(
                 windows: windows,
-                visibleFrame: TilingFrame.forScreen(
-                    screen,
-                    reserveDockOnAllDisplays: settingsStore.dockReserveAllDisplays
-                ),
-                layout: custom.toLayout()
+                visibleFrame: tilingFrame,
+                layout: custom.toLayout(),
+                alternateFrames: TilingFrame.stickyCandidates(for: screen)
             )
             let cfg = settingsStore.animation
             let shouldAnimate = cfg.enabled && windows.count <= 6
@@ -292,7 +292,8 @@ final class Coordinator: ObservableObject {
                 }
             }
             log.info("applied \(custom.name, privacy: .public) animated=\(shouldAnimate)")
-            rebuildDragSwapObservers(plan: plan, windows: windows, layout: custom.toLayout(), customLayout: custom, screen: screen)
+            rebuildDragSwapObservers(plan: plan, windows: windows, layout: custom.toLayout(),
+                                     customLayout: custom, screen: screen, tilingFrame: tilingFrame)
             activeLayoutID = custom.id
             // Only landed layouts count — a permission failure or an AX throw
             // exits above without reaching here.
@@ -454,18 +455,37 @@ final class Coordinator: ObservableObject {
 
     // MARK: - Drag-to-swap lifecycle
 
+    /// The live `NSScreen` for a display. Resolved at use time rather than
+    /// stored: AppKit hands out new `NSScreen` objects when the arrangement
+    /// changes, and an old one can report a stale frame.
+    private func liveScreen(_ displayID: CGDirectDisplayID) -> NSScreen? {
+        NSScreen.screens.first { EnvironmentCapture.displayID(of: $0) == displayID }
+    }
+
+    /// The rect a drag on `screen` measures slots against: the one its layout
+    /// was tiled into, so the snap lands where its neighbours already are. If
+    /// the display itself has moved or changed size since, that rect is stale
+    /// and today's tiling frame is used instead.
+    private func dragFrame(for screen: NSScreen) -> CGRect {
+        if let snap = placements.snapshots[EnvironmentCapture.displayID(of: screen)],
+           snap.screenFrame == screen.frame {
+            return snap.tilingFrame
+        }
+        return TilingFrame.forScreen(screen, reserveDockOnAllDisplays: settingsStore.dockReserveAllDisplays)
+    }
+
     private func makeDragSwapController() -> DragSwapController {
         DragSwapController(
-            contextProvider: { [weak self] in
+            contextProvider: { [weak self] windowID in
                 guard let self,
-                      let layout = self.lastAppliedLayout,
-                      let screen = self.lastScreen
+                      let (key, snap) = self.placements.snapshot(holding: windowID),
+                      let screen = self.liveScreen(key)
                 else { return nil }
                 return DragSwapController.Context(
-                    layout: layout,
+                    layout: snap.layout,
                     screen: screen,
-                    windows: self.lastPlacedWindows,
-                    windowToSlotIdx: self.lastWindowToSlotIdx
+                    windows: snap.windows,
+                    windowToSlotIdx: snap.windowToSlotIdx
                 )
             },
             config: { [weak self] in self?.settingsStore.dragSwap ?? .default },
@@ -475,32 +495,28 @@ final class Coordinator: ObservableObject {
                 // consecutive drag-swaps (and seam-resize, which reads the same
                 // map) don't operate on stale slot positions. Previously this
                 // map only refreshed on `applyLayout`, so the 2nd swap broke.
-                guard let self else { return }
-                for (id, slot) in updates { self.lastWindowToSlotIdx[id] = slot }
+                self?.placements.applySlotUpdates(updates)
             },
-            // Must match the frame `performApplyLayout` tiled into, or a drag
-            // would snap the window to a slot rect belonging to a different
-            // frame than the one every other window was placed in.
+            onWindowsLeftLayout: { [weak self] ids in
+                self?.forgetPlacedWindows(ids)
+            },
             visibleFrameOverride: { [weak self] screen in
-                TilingFrame.forScreen(
-                    screen,
-                    reserveDockOnAllDisplays: self?.settingsStore.dockReserveAllDisplays ?? true
-                )
+                self?.dragFrame(for: screen) ?? TilingFrame.forScreen(screen)
             }
         )
     }
 
     /// V0.6 companion to `makeDragSwapController`. Returns a SeamResizeController
-    /// pointed at the same snapshot of placed windows and the same settings toggle,
+    /// pointed at the same per-display snapshots and the same settings toggle,
     /// but carrying the `CustomLayout`'s template + proportions (not just the
     /// derived `Layout.slots`) so reflow math can compute an updated proportion
     /// axis.
     private func makeSeamResizeController() -> SeamResizeController {
         SeamResizeController(
-            contextProvider: { [weak self] in
+            contextProvider: { [weak self] windowID in
                 guard let self,
-                      let custom = self.lastAppliedCustomLayout,
-                      let screen = self.lastScreen
+                      let (key, snap) = self.placements.snapshot(holding: windowID),
+                      let screen = self.liveScreen(key)
                 else { return nil }
                 // Tree-based custom layouts (V0.7) carry a stale `template` /
                 // `slotProportions` pair from whatever they were created from;
@@ -508,23 +524,20 @@ final class Coordinator: ObservableObject {
                 // template would push windows to rects of a DIFFERENT layout —
                 // seam reflow is template-only for now, so hand back no context
                 // and let the user resize freely.
-                guard custom.customTree == nil else { return nil }
+                guard snap.customLayout.customTree == nil else { return nil }
                 return SeamResizeController.Context(
-                    template: custom.template,
-                    proportions: custom.slotProportions,
+                    template: snap.customLayout.template,
+                    proportions: snap.customLayout.slotProportions,
                     screen: screen,
-                    windows: self.lastPlacedWindows,
-                    windowToSlotIdx: self.lastWindowToSlotIdx
+                    windows: snap.windows,
+                    windowToSlotIdx: snap.windowToSlotIdx
                 )
             },
             config: { [weak self] in self?.settingsStore.dragSwap ?? .default },
             // Same reason as drag-swap: reflow must measure the seam against
             // the frame the layout was actually tiled into.
             visibleFrameOverride: { [weak self] screen in
-                TilingFrame.forScreen(
-                    screen,
-                    reserveDockOnAllDisplays: self?.settingsStore.dockReserveAllDisplays ?? true
-                )
+                self?.dragFrame(for: screen) ?? TilingFrame.forScreen(screen)
             }
         )
     }
@@ -541,7 +554,14 @@ final class Coordinator: ObservableObject {
         seamResizeController.start()
     }
 
+    /// Full teardown, e.g. when Accessibility permission is revoked: observers
+    /// stop and every display's snapshot is forgotten.
     private func stopDragSwapInfrastructure() {
+        placements.removeAll()
+        tearDownDragSwapObservers()
+    }
+
+    private func tearDownDragSwapObservers() {
         observerGroup.stopObserving()
         dragSwapController.stop()
         seamResizeController.stop()
@@ -549,35 +569,59 @@ final class Coordinator: ObservableObject {
         escMonitor = nil
     }
 
-    /// Replace the AX observer set with the windows that were just placed by the
-    /// most recent successful `applyLayout`. Either starts the drag-swap infra
-    /// (when enabled in settings and there's a non-empty placed set) or stops it.
+    /// Record the windows the most recent successful `applyLayout` placed on
+    /// `screen`, replacing only that display's snapshot. Other displays keep
+    /// theirs, minus any window that has now been tiled here — a window lives
+    /// in one layout at a time.
+    private func rebuildDragSwapObservers(
+        plan: Plan,
+        windows: [any SceneWindowRef],
+        layout: Layout,
+        customLayout: CustomLayout,
+        screen: NSScreen,
+        tilingFrame: CGRect
+    ) {
+        let placed = plan.placements.compactMap { p in
+            windows.first(where: { $0.id == p.windowID })
+        }
+        placements.record(
+            PlacementSnapshot(
+                layout: layout,
+                customLayout: customLayout,
+                windows: placed,
+                windowToSlotIdx: Dictionary(
+                    uniqueKeysWithValues: plan.placements.map { ($0.windowID, $0.slotIndex) }
+                ),
+                tilingFrame: tilingFrame,
+                screenFrame: screen.frame
+            ),
+            on: EnvironmentCapture.displayID(of: screen),
+            liveDisplays: Set(NSScreen.screens.map(EnvironmentCapture.displayID(of:)))
+        )
+        refreshDragSwapObservers()
+    }
+
+    /// Windows that left their layout's display (dropped onto another one, or
+    /// moved away earlier). Forgetting them stops a later swap on the old
+    /// display from pulling them back across.
+    private func forgetPlacedWindows(_ ids: Set<CGWindowID>) {
+        placements.forget(ids)
+        refreshDragSwapObservers()
+    }
+
+    /// Observe every tiled window on every display. Either starts the drag-swap
+    /// infra (when enabled in settings and something is tiled) or stops it.
     /// V0.6: the observer also feeds `kAXResizedNotification` into the seam
     /// resize controller — both features share the same toggle and observer
     /// lifecycle.
-    private func rebuildDragSwapObservers(plan: Plan, windows: [any SceneWindowRef], layout: Layout, customLayout: CustomLayout, screen: NSScreen) {
-        observerGroup.stopObserving()
-        lastPlacedWindows = plan.placements.compactMap { p in
-            windows.first(where: { $0.id == p.windowID })
-        }
-        lastAppliedLayout = layout
-        lastAppliedCustomLayout = customLayout
-        lastScreen = screen
-        // Snapshot window→slot mapping. Placements carry their slot index
-        // explicitly (sticky re-apply can leave gaps, e.g. slots {0, 2, 3}
-        // claimed), so never infer the slot from array position. finishDrag
-        // uses this to recover the dragged window's original slot without
-        // trusting AX-live `source.frame`.
-        lastWindowToSlotIdx = Dictionary(
-            uniqueKeysWithValues: plan.placements.map { ($0.windowID, $0.slotIndex) }
-        )
-        let placedIDs = Set(lastPlacedWindows.map { $0.id })
-        guard settingsStore.dragSwap.enabled, !placedIDs.isEmpty else {
-            stopDragSwapInfrastructure()
+    private func refreshDragSwapObservers() {
+        let observed = placements.observedWindowIDs
+        guard settingsStore.dragSwap.enabled, !observed.isEmpty else {
+            tearDownDragSwapObservers()
             return
         }
-        observerGroup.startObserving(
-            windowIDs: placedIDs,
+        observerGroup.setObserved(
+            windowIDs: observed,
             onMove: { [weak self] id, frame in
                 guard let self, !self.freeMode else { return }
                 self.dragSwapController.handleWindowMoved(windowID: id, currentFrame: frame)

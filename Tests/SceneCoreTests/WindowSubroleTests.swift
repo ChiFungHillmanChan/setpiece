@@ -67,4 +67,51 @@ final class WindowSubroleTests: XCTestCase {
     func testSubroleIsMatchedIgnoringSurroundingWhitespace() {
         XCTAssertFalse(WindowSubrole.isTileable("  AXDialog  "))
     }
+
+    // MARK: - mislabelled main windows
+
+    /// WhatsApp's main window reports `AXDialog`, yet it has working minimize,
+    /// zoom and full-screen buttons like any document window. Skipping it left
+    /// it floating on top of the freshly tiled windows.
+    func testDialogWithFullDocumentChromeIsTileable() {
+        let chrome = WindowChrome(minimizeEnabled: true, zoomEnabled: true, fullScreenEnabled: true)
+        XCTAssertTrue(WindowSubrole.isTileable("AXDialog", chrome: chrome))
+    }
+
+    /// The full-screen button alone is enough: macOS only enables it on
+    /// windows that can be a primary full-screen window.
+    func testFloatingWindowWithFullScreenButtonIsTileable() {
+        let chrome = WindowChrome(minimizeEnabled: false, zoomEnabled: false, fullScreenEnabled: true)
+        XCTAssertTrue(WindowSubrole.isTileable("AXFloatingWindow", chrome: chrome))
+    }
+
+    func testDialogThatCanMinimizeAndZoomIsTileable() {
+        let chrome = WindowChrome(minimizeEnabled: true, zoomEnabled: true, fullScreenEnabled: false)
+        XCTAssertTrue(WindowSubrole.isTileable("AXDialog", chrome: chrome))
+    }
+
+    /// An alert or About box: close button only.
+    func testDialogWithoutDocumentChromeIsNotTileable() {
+        let chrome = WindowChrome(minimizeEnabled: false, zoomEnabled: false, fullScreenEnabled: false)
+        XCTAssertFalse(WindowSubrole.isTileable("AXDialog", chrome: chrome))
+    }
+
+    /// A resizable utility panel can zoom but not minimize — still a panel.
+    func testDialogThatCanOnlyZoomIsNotTileable() {
+        let chrome = WindowChrome(minimizeEnabled: false, zoomEnabled: true, fullScreenEnabled: false)
+        XCTAssertFalse(WindowSubrole.isTileable("AXDialog", chrome: chrome))
+    }
+
+    /// Sheets and drawers hang off a parent window and cannot be positioned on
+    /// their own, whatever buttons they report.
+    func testSheetIsNeverTileableEvenWithDocumentChrome() {
+        let chrome = WindowChrome(minimizeEnabled: true, zoomEnabled: true, fullScreenEnabled: true)
+        XCTAssertFalse(WindowSubrole.isTileable("AXSheet", chrome: chrome))
+        XCTAssertFalse(WindowSubrole.isTileable("AXDrawer", chrome: chrome))
+    }
+
+    func testStandardWindowStaysTileableWithoutChrome() {
+        let chrome = WindowChrome(minimizeEnabled: false, zoomEnabled: false, fullScreenEnabled: false)
+        XCTAssertTrue(WindowSubrole.isTileable("AXStandardWindow", chrome: chrome))
+    }
 }

@@ -13,21 +13,29 @@ public final class DragSwapController {
         /// the dragged window's original slot — `source.frame` reads AX live and by
         /// mouseUp time reflects the dragged position, not the original slot.
         public let windowToSlotIdx: [CGWindowID: Int]
+        /// The layout display's full frame (NS coordinates). A drag whose
+        /// pointer leaves it is the user moving the window to another display,
+        /// not a swap. Defaults to `screen.frame`; tests pin it.
+        public let screenFrame: CGRect
 
         public init(
             layout: Layout,
             screen: NSScreen,
             windows: [any WindowRef],
-            windowToSlotIdx: [CGWindowID: Int]
+            windowToSlotIdx: [CGWindowID: Int],
+            screenFrame: CGRect? = nil
         ) {
             self.layout = layout
             self.screen = screen
             self.windows = windows
             self.windowToSlotIdx = windowToSlotIdx
+            self.screenFrame = screenFrame ?? screen.frame
         }
     }
 
-    private let contextProvider: () -> Context?
+    /// Resolves the layout that holds the given window. Each display keeps its
+    /// own layout, so the answer depends on which window is being dragged.
+    private let contextProvider: (CGWindowID) -> Context?
     private let config: () -> DragSwapConfig
     private weak var animationSink: (any WindowAnimationSink)?
     private let modifierFlagsProbe: () -> NSEvent.ModifierFlags
@@ -40,6 +48,12 @@ public final class DragSwapController {
     /// positions — the dragged window's "original slot" is wrong and the
     /// displaced-window lookup misses — so the swap silently half-completes.
     private let onSwap: (([CGWindowID: Int]) -> Void)?
+    /// Invoked with windows that turned out not to be on their layout's
+    /// display any more: one the user just dropped onto another display, or a
+    /// displaced window that had already been moved away. The composition
+    /// root drops them from its snapshot so a later swap cannot pull them back.
+    private let onWindowsLeftLayout: ((Set<CGWindowID>) -> Void)?
+    private let pointerLocationProbe: () -> CGPoint
     private let preview: DragPreviewOverlay
     private var mouseUpMonitor: Any?
     private var activeDrag: ActiveDrag?
@@ -48,18 +62,22 @@ public final class DragSwapController {
 
     @MainActor
     public init(
-        contextProvider: @escaping () -> Context?,
+        contextProvider: @escaping (CGWindowID) -> Context?,
         config: @escaping () -> DragSwapConfig = { .default },
         animationSink: (any WindowAnimationSink)? = nil,
         onSwap: (([CGWindowID: Int]) -> Void)? = nil,
+        onWindowsLeftLayout: ((Set<CGWindowID>) -> Void)? = nil,
         modifierFlagsProbe: @escaping () -> NSEvent.ModifierFlags = { NSEvent.modifierFlags },
         mouseButtonsProbe: @escaping () -> Int = { NSEvent.pressedMouseButtons },
+        pointerLocationProbe: @escaping () -> CGPoint = { NSEvent.mouseLocation },
         visibleFrameOverride: ((NSScreen) -> CGRect)? = nil
     ) {
         self.contextProvider = contextProvider
         self.config = config
         self.animationSink = animationSink
         self.onSwap = onSwap
+        self.onWindowsLeftLayout = onWindowsLeftLayout
+        self.pointerLocationProbe = pointerLocationProbe
         self.modifierFlagsProbe = modifierFlagsProbe
         self.mouseButtonsProbe = mouseButtonsProbe
         self.visibleFrameOverride = visibleFrameOverride
@@ -149,8 +167,20 @@ public final class DragSwapController {
         let dist = (dx * dx + dy * dy).squareRoot()
         guard dist >= cfg.distanceThresholdPt else { return }
 
-        guard let ctx = contextProvider() else { return }
+        guard let ctx = contextProvider(windowID) else { return }
         guard ctx.windows.contains(where: { $0.id == windowID }) else { return }
+        // Remembered so `finishDrag` can tell a drop on another display apart
+        // from a swap even when no slot is armed.
+        dragOrigin?.ctx = ctx
+
+        // The pointer has carried the window onto another display. On release
+        // macOS moves it there, so this is not a swap on this layout; arming
+        // one would snap it back and fight that move.
+        guard pointerIsOn(ctx) else {
+            activeDrag = nil
+            preview.hide()
+            return
+        }
 
         let vf = visibleFrameOverride?(ctx.screen) ?? ctx.screen.visibleFrame
         let center = CGPoint(x: currentFrame.midX, y: currentFrame.midY)
@@ -167,12 +197,23 @@ public final class DragSwapController {
         preview.show(at: targetRect)
     }
 
+    /// `NSMouseInRect`, not `CGRect.contains`: on a display's top row AppKit
+    /// reports the pointer at exactly `frame.maxY`, which `contains` excludes,
+    /// so dragging into the menu bar would read as leaving the display.
+    private func pointerIsOn(_ ctx: Context) -> Bool {
+        NSMouseInRect(pointerLocationProbe(), ctx.screenFrame, false)
+    }
+
     @MainActor
     private func finishDrag() {
         defer {
             preview.hide()
             activeDrag = nil
             dragOrigin = nil
+        }
+        if let origin = dragOrigin, let ctx = origin.ctx, !pointerIsOn(ctx) {
+            onWindowsLeftLayout?([origin.windowID])
+            return
         }
         guard let drag = activeDrag else { return }
         let vf = visibleFrameOverride?(drag.ctx.screen) ?? drag.ctx.screen.visibleFrame
@@ -190,7 +231,19 @@ public final class DragSwapController {
         // target slot — also from the snapshot, not by frame matching (same reason).
         let otherID = drag.ctx.windowToSlotIdx
             .first(where: { $0.value == drag.targetSlotIdx && $0.key != source.id })?.key
-        let other = otherID.flatMap { id in drag.ctx.windows.first(where: { $0.id == id }) }
+        var other = otherID.flatMap { id in drag.ctx.windows.first(where: { $0.id == id }) }
+
+        // The snapshot is only as fresh as the last apply. A displaced window
+        // the user has since moved to another display (or closed) must not be
+        // animated back here — treat its slot as empty and let it go.
+        var departed: Set<CGWindowID> = []
+        if let candidate = other {
+            let live = candidate.frame
+            if !drag.ctx.screenFrame.contains(CGPoint(x: live.midX, y: live.midY)) {
+                departed.insert(candidate.id)
+                other = nil
+            }
+        }
 
         do { try source.setFrame(targetRect) }
         catch { log.error("swap source setFrame failed: \(String(describing: error), privacy: .public)") }
@@ -214,6 +267,7 @@ public final class DragSwapController {
             mapUpdates[other.id] = sourceOriginalSlotIdx
         }
         onSwap?(mapUpdates)
+        if !departed.isEmpty { onWindowsLeftLayout?(departed) }
     }
 }
 
@@ -226,6 +280,7 @@ private struct ActiveDrag {
 private struct DragOrigin {
     let windowID: CGWindowID
     let frame: CGRect
+    var ctx: DragSwapController.Context?
 }
 
 #if DEBUG
