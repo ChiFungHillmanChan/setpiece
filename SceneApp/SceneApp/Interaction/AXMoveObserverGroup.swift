@@ -6,9 +6,9 @@ import SceneCore
 
 /// Conforms to `SceneCore.WindowMoveObserving`. Wraps one `AXObserver` per
 /// placed window and subscribes it to both `kAXMovedNotification` (drag-swap)
-/// and `kAXResizedNotification` (V0.6 seam drag). Rebuilds wholesale on every
-/// `startObserving(windowIDs:onMove:onResize:)` call — the Coordinator calls
-/// this after every `applyLayout`.
+/// and `kAXResizedNotification` (V0.6 seam drag). `setObserved(windowIDs:…)`
+/// diffs against the current set, so applying a layout on one display leaves
+/// the other displays' observers running.
 ///
 /// Lifecycle: the group holds the `AXObserver` + `AXUIElement` references
 /// (retaining them prevents deallocation while they're on the run loop).
@@ -26,75 +26,84 @@ final class AXMoveObserverGroup: WindowMoveObserving {
     private var onResize: ((CGWindowID, CGRect) -> Void)?
     private let log = Logger(subsystem: "com.scene.app", category: "ax-observer")
 
-    func startObserving(
+    func setObserved(
         windowIDs: Set<CGWindowID>,
         onMove: @escaping (CGWindowID, CGRect) -> Void,
         onResize: @escaping (CGWindowID, CGRect) -> Void
     ) {
-        stopObserving()
         self.onMove = onMove
         self.onResize = onResize
-
-        for id in windowIDs {
-            guard let element = AXWindowLookup.element(for: id) else {
-                log.debug("skip observer for id=\(id, privacy: .public) — AX lookup failed")
-                continue
-            }
-            var pid: pid_t = 0
-            AXUIElementGetPid(element, &pid)
-
-            var observer: AXObserver?
-            let createErr = AXObserverCreate(pid, Self.observerCallback, &observer)
-            guard createErr == .success, let observer else {
-                log.error("AXObserverCreate failed pid=\(pid, privacy: .public) err=\(createErr.rawValue, privacy: .public)")
-                continue
-            }
-
-            let refcon = Unmanaged.passUnretained(self).toOpaque()
-            let addMoveErr = AXObserverAddNotification(
-                observer,
-                element,
-                kAXMovedNotification as CFString,
-                refcon
-            )
-            guard addMoveErr == .success else {
-                log.error("AXObserverAddNotification(move) failed id=\(id, privacy: .public) err=\(addMoveErr.rawValue, privacy: .public)")
-                continue
-            }
-            let addResizeErr = AXObserverAddNotification(
-                observer,
-                element,
-                kAXResizedNotification as CFString,
-                refcon
-            )
-            // V0.6 seam drag: if resize subscription fails (rare — some apps
-            // refuse selectively), we still keep the move observer live so
-            // drag-swap continues to work. Log and proceed.
-            if addResizeErr != .success {
-                log.error("AXObserverAddNotification(resize) failed id=\(id, privacy: .public) err=\(addResizeErr.rawValue, privacy: .public)")
-            }
-
-            CFRunLoopAddSource(
-                CFRunLoopGetMain(),
-                AXObserverGetRunLoopSource(observer),
-                .commonModes
-            )
-            entries[id] = Entry(observer: observer, element: element)
+        for id in entries.keys where !windowIDs.contains(id) {
+            removeObserver(for: id)
+        }
+        for id in windowIDs where entries[id] == nil {
+            addObserver(for: id)
         }
         log.info("observing \(self.entries.count, privacy: .public)/\(windowIDs.count, privacy: .public) windows")
     }
 
-    func stopObserving() {
-        for (_, entry) in entries {
-            CFRunLoopRemoveSource(
-                CFRunLoopGetMain(),
-                AXObserverGetRunLoopSource(entry.observer),
-                .commonModes
-            )
-            AXObserverRemoveNotification(entry.observer, entry.element, kAXMovedNotification as CFString)
-            AXObserverRemoveNotification(entry.observer, entry.element, kAXResizedNotification as CFString)
+    private func addObserver(for id: CGWindowID) {
+        guard let element = AXWindowLookup.element(for: id) else {
+            log.debug("skip observer for id=\(id, privacy: .public) — AX lookup failed")
+            return
         }
-        entries.removeAll()
+        var pid: pid_t = 0
+        AXUIElementGetPid(element, &pid)
+
+        var observer: AXObserver?
+        let createErr = AXObserverCreate(pid, Self.observerCallback, &observer)
+        guard createErr == .success, let observer else {
+            log.error("AXObserverCreate failed pid=\(pid, privacy: .public) err=\(createErr.rawValue, privacy: .public)")
+            return
+        }
+
+        let refcon = Unmanaged.passUnretained(self).toOpaque()
+        let addMoveErr = AXObserverAddNotification(
+            observer,
+            element,
+            kAXMovedNotification as CFString,
+            refcon
+        )
+        guard addMoveErr == .success else {
+            log.error("AXObserverAddNotification(move) failed id=\(id, privacy: .public) err=\(addMoveErr.rawValue, privacy: .public)")
+            return
+        }
+        let addResizeErr = AXObserverAddNotification(
+            observer,
+            element,
+            kAXResizedNotification as CFString,
+            refcon
+        )
+        // V0.6 seam drag: if resize subscription fails (rare — some apps
+        // refuse selectively), we still keep the move observer live so
+        // drag-swap continues to work. Log and proceed.
+        if addResizeErr != .success {
+            log.error("AXObserverAddNotification(resize) failed id=\(id, privacy: .public) err=\(addResizeErr.rawValue, privacy: .public)")
+        }
+
+        CFRunLoopAddSource(
+            CFRunLoopGetMain(),
+            AXObserverGetRunLoopSource(observer),
+            .commonModes
+        )
+        entries[id] = Entry(observer: observer, element: element)
+    }
+
+    private func removeObserver(for id: CGWindowID) {
+        guard let entry = entries.removeValue(forKey: id) else { return }
+        CFRunLoopRemoveSource(
+            CFRunLoopGetMain(),
+            AXObserverGetRunLoopSource(entry.observer),
+            .commonModes
+        )
+        AXObserverRemoveNotification(entry.observer, entry.element, kAXMovedNotification as CFString)
+        AXObserverRemoveNotification(entry.observer, entry.element, kAXResizedNotification as CFString)
+    }
+
+    func stopObserving() {
+        for id in Array(entries.keys) {
+            removeObserver(for: id)
+        }
         onMove = nil
         onResize = nil
     }

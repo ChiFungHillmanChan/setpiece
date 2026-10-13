@@ -18,7 +18,7 @@ final class SeamResizeControllerTests: XCTestCase {
         pressedButtons: Int = 0b1
     ) -> SeamResizeController {
         SeamResizeController(
-            contextProvider: { ctx },
+            contextProvider: { _ in ctx },
             config: { config },
             modifierFlagsProbe: { modifierFlags },
             mouseButtonsProbe: { pressedButtons },
