@@ -80,11 +80,36 @@ public enum AXWindowEnumerator {
                 // at layer 0 just like a real window, but it is not something
                 // the user arranges. Tiling it consumed a slot and pushed a
                 // genuine window into `toMinimize`. See `WindowSubrole`.
-                guard WindowSubrole.isTileable(subrole(of: window)) else { return nil }
+                let role = subrole(of: window)
+                // Buttons are only read for a denied label: it costs three AX
+                // round-trips, and only a mislabelled main window (WhatsApp's
+                // `AXDialog`) needs them to be recognized.
+                let chrome = WindowSubrole.isTileable(role) ? nil : self.chrome(of: window)
+                guard WindowSubrole.isTileable(role, chrome: chrome) else { return nil }
                 return AXWindow(element: window, id: id, pid: pid, bundleID: bundleID)
             }
         }
         return nil
+    }
+
+    private static func chrome(of window: AXUIElement) -> WindowChrome {
+        WindowChrome(
+            minimizeEnabled: buttonEnabled(window, kAXMinimizeButtonAttribute),
+            zoomEnabled: buttonEnabled(window, kAXZoomButtonAttribute),
+            fullScreenEnabled: buttonEnabled(window, kAXFullScreenButtonAttribute)
+        )
+    }
+
+    /// `true` only when the window has the button and it is enabled.
+    private static func buttonEnabled(_ window: AXUIElement, _ attribute: String) -> Bool {
+        var ref: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(window, attribute as CFString, &ref) == .success,
+              let ref, CFGetTypeID(ref) == AXUIElementGetTypeID()
+        else { return false }
+        var enabled: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(ref as! AXUIElement, kAXEnabledAttribute as CFString, &enabled) == .success
+        else { return false }
+        return (enabled as? Bool) ?? false
     }
 
     private static func subrole(of element: AXUIElement) -> String? {
