@@ -114,7 +114,7 @@
 			mainGroup = 0F6D04C92F944FB70077CF3E;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				0F6D04E02F9450E10077CF3E /* XCLocalSwiftPackageReference "../../macbook-resizer" */,
+				0F6D04E02F9450E10077CF3E /* XCLocalSwiftPackageReference ".." */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0F6D04D32F944FB70077CF3E /* Products */;
@@ -367,9 +367,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		0F6D04E02F9450E10077CF3E /* XCLocalSwiftPackageReference "../../macbook-resizer" */ = {
+		0F6D04E02F9450E10077CF3E /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../macbook-resizer";
+			relativePath = "..";
 		};
 /* End XCLocalSwiftPackageReference section */
 

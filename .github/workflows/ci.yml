@@ -18,13 +18,14 @@ jobs:
   build-and-test:
     # `macos-14` entered deprecation on 2026-07-06 and is fully unsupported
     # from 2026-11-02, so it is not an option even though the app's deployment
-    # target is macOS 14. `macos-26` ships Xcode 26.x, which matches the
-    # toolchain used locally — pinned rather than `macos-latest` so a runner
-    # image rollover can never silently change the compiler under us.
+    # target is macOS 14. `macos-26` (Xcode 26.x) is the newest GA image; local
+    # development is on Xcode 27, so CI doubles as a check that the code still
+    # builds on the previous toolchain. Pinned rather than `macos-latest` so a
+    # runner image rollover can never silently change the compiler under us.
     runs-on: macos-26
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Toolchain versions
         run: |
