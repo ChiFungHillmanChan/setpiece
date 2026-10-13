@@ -4,6 +4,16 @@ Scene 嘅完整版本史，最新嘅 release 喺最頂。
 
 要 download binary，去 [Releases page](https://github.com/ChiFungHillmanChan/scene-macos/releases)。
 
+## V0.8.2 — 雙螢幕修正 + WhatsApp 排得返
+
+- **拖拉對調每個螢幕各自運作。** 兩個螢幕嘅 Mac 有三個問題，全部喺真 MacBook + 外置 mon 重現過：拖咗去另一個螢幕嘅窗仍然記住喺舊格，所以下次喺舊螢幕對調就會將佢扯返過去；放手時滑鼠喺另一個螢幕、但個窗中心仲喺 layout 嗰個螢幕，會觸發一次對調，同 macOS 自己搬螢幕打交，個窗最後一半喺一邊、尺寸亂晒；coordinator 只係記住一份「最後套用嘅 layout」，所以喺一個螢幕套用就會令另一個螢幕嘅拖拉對調失效。
+- **修正：`PlacementRegistry`，每個螢幕一份 snapshot。** 記錄一個螢幕嗰陣，會將佢啲窗由其他螢幕嘅 snapshot 剔走，同埋清走已經拔咗嘅螢幕。拖拉對調同 seam resize 會搵返擁有被拖嗰個窗嘅 snapshot。`DragSwapController` 喺滑鼠離開 layout 嗰個螢幕時收起預覽；放落另一個螢幕嘅窗就由佢，經 `onWindowsLeftLayout` 通知，registry 會剔走佢；已經離開咗嘅讓位窗永遠唔會被扯返嚟。判斷「喺唔喺螢幕上」用 `NSMouseInRect`，因為喺螢幕最頂一行，滑鼠報嘅 `y == frame.maxY`，`CGRect.contains` 唔計。`AXMoveObserverGroup` 而家會比較前後嘅窗清單（`setObserved`），唔再每次套用都拆晒重砌。
+- **WhatsApp 排得返。** 佢個主視窗報 `AXSubrole = AXDialog`，v0.7.6 開始會跳過。`WindowChrome` 會救返被拒嘅 subrole，條件係全螢幕掣 enable，或者最小化同放大都 enable。`AXSheet` 同 `AXDrawer` 永遠唔救；讀唔到啲掣就照 subrole 判斷。淨係被拒嘅 subrole 先會去讀啲掣。
+- **淨係喺 Dock 所在嘅螢幕預留 Dock 空間。** `dockReserveAllDisplays` 而家預設熄，settings schema v4 → v5 會幫現有安裝熄埋；v5 檔就保留用家自己揀嘅值。冇咗個預留，重新套用都一樣穩定：`TilingFrame.stickyCandidates` 列出一個窗喺個螢幕可能被排入去嘅幾個範圍（而家嘅 `visibleFrame`、預留 Dock、淨係預留 menu bar），`LayoutEngine.plan(alternateFrames:)` 判斷個窗係咪已經喺自己格嗰陣會逐個試。v0.7.6 – v0.8.1 會用寬鬆嘅「未來版本」路徑讀 v5 檔，所以降級都開得到。
+- **CI build 得返。** Xcode project 喺 `../../macbook-resizer` 搵 SceneCore，所以自從 repository 改名做 `setpiece`，每次 push 都喺 package resolution 失敗。而家改咗做 `..`。`actions/checkout` v4 → v7。
+- **驗證：** 拖拉對調嘅幾個情況，用 Setpiece 自己嘅拖拉對調 code 喺真 MacBook + Dell 上面郁測試窗，而家每個情況最後所有窗都喺自己格。WhatsApp 喺 macOS 27 會被列為可排。Dock 喺外置 mon 嗰陣，MacBook 嘅排位範圍去到最底。Dock 真係搬螢幕之後再套用，淨係有 unit test 覆蓋，因為模擬滑鼠事件推唔郁 Dock。淨係喺 macOS 27 測過。
+- **Tests：438 → 467。** Universal（arm64 + x86_64），macOS 14+，Apple notarized。
+
 ## V0.8.1 — macOS 27 上面設定視窗開得返
 
 - **開設定唔會再凍結兼閃退。** 喺 macOS 27.0.1 用 v0.8.0，設定視窗一出現就凍結，過幾秒個 process 就以 `NSGenericException` 死咗：*"The window has been marked as needing another Update Constraints in Window pass, but it has already had more Update Constraints in Window passes than there are views in the window."* 次次開都係咁，因為設定一開就係 Workspaces 嗰版。

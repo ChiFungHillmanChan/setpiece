@@ -48,7 +48,7 @@ so an existing install keeps upgrading without any action.
 
 Quarantine is stripped automatically — no "cannot be verified" prompt. On first launch, grant Accessibility in **System Settings → Privacy & Security → Accessibility**.
 
-**Or download the DMG directly**: **[Scene-0.8.1.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.1/Scene-0.8.1.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
+**Or download the DMG directly**: **[Scene-0.8.2.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.2/Scene-0.8.2.dmg)** (Universal: Apple Silicon + Intel, macOS 14+, notarized by Apple — no Gatekeeper prompt)
 
 All versions: [Releases page](https://github.com/ChiFungHillmanChan/setpiece/releases) · DMG users, see [`docs/INSTALL.md`](docs/INSTALL.md) for the one-time Gatekeeper + Accessibility-permission steps.
 
@@ -63,6 +63,24 @@ All versions: [Releases page](https://github.com/ChiFungHillmanChan/setpiece/rel
 ![Setpiece Layouts editor — drag seams to design any tile shape](docs/media/scene-layouts.png)
 
 ▶ [Watch the full 30-second demo](docs/media/scene-marketing.mp4) (MP4, 13 MB)
+
+## What's new in v0.8.2
+
+**Drag-to-swap works across two monitors.** On a Mac with an external display, rearranging windows went wrong in three ways:
+
+- A window you dragged to the other display was still in its old slot as far as Setpiece knew, so the next swap on its old display pulled it back across.
+- Letting go with the pointer on the other display, while most of the window was still on the first, had Setpiece and macOS move the window at the same time. It ended up straddling both screens at the wrong size.
+- Applying a layout on one display switched drag-to-swap off on the other.
+
+Each display now keeps its own layout. A window you drop on another display stays where you put it and is never pulled back, and both displays keep swapping.
+
+**WhatsApp takes its slot again.** WhatsApp's main window calls itself a dialog, and since v0.7.6 Setpiece skips dialogs, so WhatsApp floated over the windows around it. Setpiece now tiles any "dialog" with working minimise, zoom or full-screen buttons. Real dialogs, save sheets and floating palettes are still left alone.
+
+**No more gap under your MacBook's screen.** "Reserve Dock space on every display" is now off by default, and this update turns it off for you. A display keeps room for the Dock only while the Dock is on it, so with the Dock on an external monitor, MacBook layouts reach the bottom edge. Re-applying a layout after the Dock moves still keeps every window in its slot. If you would rather the Dock never cover a window when it moves over, turn the setting back on in **Settings → Interaction → Dock space**.
+
+**To get it:** click **Update available** in the menu bar.
+
+For the full version history, see [`CHANGELOG.md`](CHANGELOG.md).
 
 ## What's new in v0.8.1
 
@@ -168,7 +186,7 @@ In Xcode, select the `SceneApp` scheme and press ⌘R. The app runs as a menu ba
 ### Build a distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.8.1    # produces dist/Scene-0.8.1.dmg (universal, notarized)
+./scripts/build-dmg.sh 0.8.2    # produces dist/Scene-0.8.2.dmg (universal, notarized)
 ```
 
 This builds a universal (arm64 + x86_64) binary, Developer ID-signs it, submits it to Apple for notarization, and packages it into a DMG with an `Applications` drop shortcut. Both Apple Silicon and Intel Macs install from the same DMG. Set `SKIP_NOTARY=1` for a local ad-hoc build that skips the Apple notary submission (useful while iterating on DMG layout).
@@ -181,7 +199,7 @@ The layout logic lives in `SceneCore`, a Swift package that works without Xcode:
 swift test
 ```
 
-438 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
+467 unit tests cover layout math, window-to-slot mapping, animation state machine, JSON persistence, hotkey conflicts, drag-to-swap logic, seam reflow, custom-layout tree round-trip, diagnostics writer + sanitizer, semver comparison for the update nudge, and edge cases.
 
 ## Usage
 
@@ -279,7 +297,7 @@ setpiece/
 │   │                           #   SettingsStore, StarPromptState, Cancellable
 │   └── Workspace/              # Workspace, WorkspaceTrigger, WorkspaceSeeds,
 │                               #   WorkspaceStore, FocusModeReference
-├── Tests/SceneCoreTests/       # 438 XCTest cases
+├── Tests/SceneCoreTests/       # 467 XCTest cases
 ├── SceneApp/                   # Xcode project — menu bar shell + settings window
 │   └── SceneApp/
 │       ├── Animation/                 # WindowAnimator (CVDisplayLink + AX bridge)
@@ -321,7 +339,7 @@ setpiece/
     └── media/                         # demo GIF, video + screenshots
 ```
 
-The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 438 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
+The split is deliberate: `SceneCore` is framework-neutral and owns all the hard logic (AX calls, layout math, hotkey plumbing, animation state machine, JSON persistence, drag-swap, seam reflow, diagnostics). 467 unit tests run via `swift test` without Xcode. `SceneApp` is a thin SwiftUI/AppKit shell — only UI, app lifecycle, and the AppKit/AX bridges (`WindowAnimator`, `AXMoveObserverGroup`, `AXWindowLookup`, `DragSwapAnimationSink`) that can't live in a framework-neutral library. Only the final `.app` build needs Xcode.
 
 ## Persistence
 

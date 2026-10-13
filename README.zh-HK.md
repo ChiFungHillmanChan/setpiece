@@ -46,7 +46,7 @@ Homebrew 7 唔會載入你未 trust 過嘅 tap 入面嘅 cask，而且佢係直�
 
 自動幫你清走 quarantine flag，唔會彈「cannot be verified」嘅 Gatekeeper 警告。首次開 Setpiece 嗰陣，去 **System Settings → Privacy & Security → Accessibility** 撳着 Setpiece 就得。
 
-**或者直接下載 DMG**：**[Scene-0.8.1.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.1/Scene-0.8.1.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
+**或者直接下載 DMG**：**[Scene-0.8.2.dmg](https://github.com/ChiFungHillmanChan/setpiece/releases/download/v0.8.2/Scene-0.8.2.dmg)**（Universal：Apple Silicon + Intel，macOS 14+，Apple notarized — 唔會彈 Gatekeeper 警告）
 
 所有版本：[Releases page](https://github.com/ChiFungHillmanChan/setpiece/releases) · 用 DMG 嘅話，跟住 [`docs/INSTALL.md`](docs/INSTALL.md) 做一次性嘅 Gatekeeper + Accessibility 授權步驟。
 
@@ -61,6 +61,24 @@ Homebrew 7 唔會載入你未 trust 過嘅 tap 入面嘅 cask，而且佢係直�
 ![Setpiece Layouts editor — 拖 seam 整任何形狀嘅 tile 排列](docs/media/scene-layouts.png)
 
 ▶ [睇完整 30 秒示範片](docs/media/scene-marketing.mp4)（MP4，13 MB）
+
+## v0.8.2 嘅新功能
+
+**拖拉對調喺兩個螢幕之間用得返。** 喺接咗外置 mon 嘅 Mac 度調位，之前有三個問題：
+
+- 你拖咗一個窗去另一個螢幕，Setpiece 仲以為佢喺原本嗰格，所以下次喺舊螢幕對調，就會將佢扯返過去。
+- 放手嗰陣滑鼠喺另一個螢幕，但個窗大部分仲喺第一個螢幕，Setpiece 同 macOS 就會同時郁個窗，結果個窗一半喺一邊、尺寸仲亂晒。
+- 喺一個螢幕套用 layout，另一個螢幕嘅拖拉對調就會冇咗反應。
+
+而家每個螢幕各自記住自己嘅 layout。你放落另一個螢幕嘅窗會留喺你放嘅位置，唔會再被扯返轉頭，兩個螢幕都照樣對調得到。
+
+**WhatsApp 佔返自己一格。** WhatsApp 個主視窗自稱係 dialog，而 Setpiece 由 v0.7.6 開始會跳過 dialog，所以 WhatsApp 一直浮喺隔籬啲窗上面。而家只要個「dialog」有可以用嘅最小化、放大或者全螢幕掣，Setpiece 就會排佢。真正嘅對話框、儲存 sheet 同浮動面板就照舊唔理。
+
+**MacBook 螢幕底唔會再留空。** 「喺每個螢幕都預留 Dock 空間」而家預設熄，今次更新會自動幫你熄埋。每個螢幕淨係喺 Dock 喺佢度嗰陣先留位，所以 Dock 放咗喺外置 mon 嘅話，MacBook 啲 layout 會去到最底。Dock 搬咗之後再套用 layout，每個窗都會留喺原本嗰格。如果你寧願 Dock 搬過嚟嗰陣永遠唔遮住任何窗，可以喺 **設定 → 互動 → Dock 空間** 開返。
+
+**點樣更新：** 喺 menu bar 撳 **Update available**。
+
+完整版本歷史見 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## v0.8.1 嘅新功能
 
@@ -168,7 +186,7 @@ Xcode 揀 `SceneApp` scheme → ⌘R。App 以 menu bar extra 形式行（冇 Do
 ### Build distributable DMG
 
 ```bash
-./scripts/build-dmg.sh 0.8.1    # 出 dist/Scene-0.8.1.dmg（universal + notarized）
+./scripts/build-dmg.sh 0.8.2    # 出 dist/Scene-0.8.2.dmg（universal + notarized）
 ```
 
 Build universal（arm64 + x86_64）binary，Developer ID sign，submit 去 Apple notary，pack 入 DMG 連 `Applications` drop shortcut。Apple Silicon 同 Intel Mac 用同一個 DMG。如果想 local iterate DMG layout，set `SKIP_NOTARY=1` 會 skip Apple notary submission，改用 ad-hoc sign。
@@ -181,7 +199,7 @@ Layout / animation / store / hotkey / drag-swap / seam reflow / 自訂 tree / �
 swift test
 ```
 
-438 個 unit test 覆蓋 layout 數學、window-to-slot mapping、animation 狀態機、JSON persistence、hotkey 衝突、drag-to-swap 邏輯、seam reflow、自訂 layout tree round-trip、診斷 writer + sanitizer、update nudge 嘅 semver 比較、edge case。
+467 個 unit test 覆蓋 layout 數學、window-to-slot mapping、animation 狀態機、JSON persistence、hotkey 衝突、drag-to-swap 邏輯、seam reflow、自訂 layout tree round-trip、診斷 writer + sanitizer、update nudge 嘅 semver 比較、edge case。
 
 ## 用法
 
@@ -279,7 +297,7 @@ setpiece/
 │   │                           #   SettingsStore, StarPromptState, Cancellable
 │   └── Workspace/              # Workspace, WorkspaceTrigger, WorkspaceSeeds,
 │                               #   WorkspaceStore, FocusModeReference
-├── Tests/SceneCoreTests/       # 438 個 XCTest case
+├── Tests/SceneCoreTests/       # 467 個 XCTest case
 ├── SceneApp/                   # Xcode project — menu bar shell + 設定視窗
 │   └── SceneApp/
 │       ├── Animation/          # WindowAnimator（CVDisplayLink + AX bridge）
@@ -309,7 +327,7 @@ setpiece/
     └── media/                  # 示範片 + screenshots
 ```
 
-故意分層：**`SceneCore` 完全 framework-neutral** — 冇 SwiftUI、冇 Combine、冇 ObservableObject。所有 hard logic（AX call、layout 數學、animation 狀態機、store CRUD、drag-to-swap、seam reflow、診斷）住喺度，438 個 unit test 覆蓋。**`SceneApp` 係薄殼**，只負責 SwiftUI binding、AppKit lifecycle，同埋 framework-neutral library 做唔到嘅 AppKit/AX bridge（`WindowAnimator`、`AXMoveObserverGroup`、`AXWindowLookup`、`DragSwapAnimationSink`）。SceneCore 用 closure-based observation 同 SceneApp 通訊（`@MainActor class FooStoreViewModel: ObservableObject` 做 adapter）。
+故意分層：**`SceneCore` 完全 framework-neutral** — 冇 SwiftUI、冇 Combine、冇 ObservableObject。所有 hard logic（AX call、layout 數學、animation 狀態機、store CRUD、drag-to-swap、seam reflow、診斷）住喺度，467 個 unit test 覆蓋。**`SceneApp` 係薄殼**，只負責 SwiftUI binding、AppKit lifecycle，同埋 framework-neutral library 做唔到嘅 AppKit/AX bridge（`WindowAnimator`、`AXMoveObserverGroup`、`AXWindowLookup`、`DragSwapAnimationSink`）。SceneCore 用 closure-based observation 同 SceneApp 通訊（`@MainActor class FooStoreViewModel: ObservableObject` 做 adapter）。
 
 `swift test` 由 command line 跑得，唔使 Xcode；只有最後 `.app` build 先要。
 
