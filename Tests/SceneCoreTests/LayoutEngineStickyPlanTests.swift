@@ -127,4 +127,58 @@ final class LayoutEngineStickyPlanTests: XCTestCase {
         XCTAssertEqual(plan.leftEmptySlotCount, 1)
         XCTAssertTrue(plan.toMinimize.isEmpty)
     }
+
+    // MARK: - Dock hops between displays
+
+    /// Halves tiled while the Dock sat on this display (bottom 70pt reserved),
+    /// then the Dock hopped to the other display. Re-applying against the now
+    /// taller frame must keep each window in its slot and only stretch it —
+    /// not reshuffle by z-order because no window matches the new rects.
+    func testReapplyAfterTheDockLeavesKeepsEveryWindowInItsSlot() {
+        let withDock = CGRect(x: 0, y: 70, width: 1000, height: 930)
+        let withoutDock = CGRect(x: 0, y: 0, width: 1000, height: 1000)
+        let left = CGRect(x: 0, y: 70, width: 500, height: 930)
+        let right = CGRect(x: 500, y: 70, width: 500, height: 930)
+        // Right-hand window is frontmost, so a z-order fill would put it left.
+        let ws = [MockWindow(id: 2, frame: right), MockWindow(id: 1, frame: left)]
+
+        let plan = LayoutEngine.plan(
+            windows: ws, visibleFrame: withoutDock, layout: .halves,
+            alternateFrames: [withDock]
+        )
+
+        XCTAssertEqual(plan.placements, [
+            Placement(windowID: 1, targetFrame: CGRect(x: 0, y: 0, width: 500, height: 1000), slotIndex: 0),
+            Placement(windowID: 2, targetFrame: CGRect(x: 500, y: 0, width: 500, height: 1000), slotIndex: 1),
+        ])
+    }
+
+    /// Without the alternate frame the same re-apply reshuffles — the bug the
+    /// unified Dock reserve used to paper over.
+    func testReapplyAfterTheDockLeavesReshufflesWithoutAlternates() {
+        let withoutDock = CGRect(x: 0, y: 0, width: 1000, height: 1000)
+        let left = CGRect(x: 0, y: 70, width: 500, height: 930)
+        let right = CGRect(x: 500, y: 70, width: 500, height: 930)
+        let ws = [MockWindow(id: 2, frame: right), MockWindow(id: 1, frame: left)]
+
+        let plan = LayoutEngine.plan(windows: ws, visibleFrame: withoutDock, layout: .halves)
+
+        XCTAssertEqual(plan.placements.first { $0.slotIndex == 0 }?.windowID, 2)
+    }
+
+    /// The primary frame wins when a window matches both it and an alternate.
+    func testPrimaryFrameMatchTakesPriorityOverAlternate() {
+        let withDock = CGRect(x: 0, y: 70, width: 1000, height: 930)
+        let withoutDock = CGRect(x: 0, y: 0, width: 1000, height: 1000)
+        let ws = [
+            MockWindow(id: 1, frame: CGRect(x: 0, y: 0, width: 500, height: 1000)),
+            MockWindow(id: 2, frame: CGRect(x: 0, y: 70, width: 500, height: 930)),
+        ]
+        let plan = LayoutEngine.plan(
+            windows: ws, visibleFrame: withoutDock, layout: .halves,
+            alternateFrames: [withDock]
+        )
+        XCTAssertEqual(plan.placements.first { $0.slotIndex == 0 }?.windowID, 1)
+        XCTAssertEqual(plan.placements.first { $0.slotIndex == 1 }?.windowID, 2)
+    }
 }

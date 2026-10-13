@@ -34,32 +34,27 @@ public struct ScreenInsets: Equatable, Sendable {
 /// The rect Scene tiles into. Replaces raw `NSScreen.visibleFrame` for all
 /// layout math.
 ///
-/// **Why not `visibleFrame` directly.** `visibleFrame` reserves Dock space only
-/// on the display the Dock *currently* occupies, and the Dock is not pinned to
-/// a display — it hops to whichever screen the pointer last touched the edge
-/// of. That makes `visibleFrame` a function of the screen *and recent mouse
-/// history*, so applying the same layout twice on the same screen could target
-/// rects ~70pt apart. Every window then resized and shifted, and
-/// `LayoutEngine`'s sticky pass (10pt tolerance) could not recognize windows
-/// that were already in position.
+/// **The Dock roams.** `visibleFrame` reserves Dock space only on the display
+/// the Dock *currently* occupies, and the Dock hops to whichever screen the
+/// pointer last touched the edge of. So the same layout applied twice on the
+/// same screen can target rects ~70pt apart.
 ///
-/// **The fix.** Reserve the Dock's thickness uniformly on *every* screen.
-/// Because the Dock sits on exactly one display at a time, the maximum
-/// left/bottom/right inset across all screens *is* the Dock's thickness, and it
-/// stays constant as the Dock moves. The top inset stays per-screen: the menu
-/// bar does not follow the pointer, so a display without one must not surrender
-/// 25pt to a display that has one.
+/// **Default (V0.8.2): reserve only where the Dock is.** Each display uses its
+/// own `visibleFrame`, so a display without the Dock tiles to its bottom edge.
+/// Re-apply stability comes from `stickyCandidates`: `LayoutEngine.plan`
+/// recognises a window tiled under the with-Dock or without-Dock frame and
+/// keeps it in its slot, only stretching it to today's rect.
 ///
-/// The trade-off: on a multi-display setup the screen the Dock is *not* on
-/// gives up the Dock strip. That is the price of "re-apply never moves
-/// anything". Single-display users see no change at all — the maximum over one
-/// screen is that screen's own inset, so the result equals `visibleFrame`
-/// exactly.
+/// **Opt-in: reserve on every display** (`reserveDockOnAllDisplays: true`,
+/// V0.7.4's behaviour). Because the Dock sits on exactly one display at a
+/// time, the maximum left/bottom/right inset across all screens *is* the
+/// Dock's thickness, and it stays constant as the Dock moves. The top inset
+/// stays per-screen: the menu bar does not follow the pointer. The cost is a
+/// dead strip on every display the Dock is not on; the gain is that the Dock
+/// never covers a tiled window when it hops over.
 ///
-/// Users who would rather have windows flush against the bottom edge can turn
-/// the unified reserve off via `SettingsStore.dockReserveAllDisplays`, which
-/// flows in as `reserveDockOnAllDisplays` and restores raw `visibleFrame`
-/// behaviour — roaming Dock and all.
+/// Single-display users see no difference either way — the maximum over one
+/// screen is that screen's own inset.
 public enum TilingFrame {
     /// AppKit entry point. Reads the live screen list.
     ///
@@ -116,6 +111,39 @@ public enum TilingFrame {
         // `CGRect.width` / `.height` standardize to absolute values, so they
         // report a negative-size rect as positive. Test `size` directly.
         guard result.size.width > 0, result.size.height > 0 else { return ownFrame }
+        return result
+    }
+
+    /// AppKit entry point for `stickyCandidates(frame:ownInsets:allInsets:)`.
+    public static func stickyCandidates(for screen: NSScreen) -> [CGRect] {
+        stickyCandidates(
+            frame: screen.frame,
+            ownInsets: ScreenInsets(frame: screen.frame, visibleFrame: screen.visibleFrame),
+            allInsets: NSScreen.screens.map { ScreenInsets(frame: $0.frame, visibleFrame: $0.visibleFrame) }
+        )
+    }
+
+    /// Every rect a layout on this display could have been tiled into as the
+    /// Dock roams: its current `visibleFrame`, the frame with the Dock's strip
+    /// reserved, and the frame with no Dock at all. Identical rects are listed
+    /// once.
+    ///
+    /// `LayoutEngine.plan` takes these as `alternateFrames` so a window that
+    /// was tiled before the Dock hopped still counts as sitting in its slot.
+    /// That is what lets a Dockless display use its full height without a
+    /// re-apply reshuffling windows whenever the Dock moves.
+    public static func stickyCandidates(
+        frame: CGRect,
+        ownInsets: ScreenInsets,
+        allInsets: [ScreenInsets]
+    ) -> [CGRect] {
+        let withDock = compute(frame: frame, ownInsets: ownInsets, allInsets: allInsets,
+                               reserveDockOnAllDisplays: true)
+        let noDock = inset(frame, by: ScreenInsets(top: ownInsets.top, left: 0, bottom: 0, right: 0))
+        var result: [CGRect] = []
+        for rect in [inset(frame, by: ownInsets), withDock, noDock] where !result.contains(rect) {
+            result.append(rect)
+        }
         return result
     }
 

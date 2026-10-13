@@ -13,16 +13,17 @@ public final class SettingsStore {
     /// toggle lets them opt out (which drains the writer + deletes the
     /// `diagnostics/` directory).
     public private(set) var diagnosticsEnabled: Bool
-    /// V0.7.6. When `true` (the default, and V0.7.4's behaviour) the Dock's
-    /// thickness is reserved on every display so the tiling rect cannot move
-    /// when the Dock hops screens. Turning it off restores raw `visibleFrame`:
-    /// windows reach the bottom edge of a display the Dock is not on, and a
-    /// re-apply can shift them when the Dock moves. See `TilingFrame`.
+    /// V0.7.6. When `true` the Dock's thickness is reserved on every display
+    /// (V0.7.4's behaviour), leaving a dead strip on displays the Dock is not
+    /// on. V0.8.2 made `false` the default and migrated everyone to it: each
+    /// display reserves the Dock only while the Dock is on it, and
+    /// `LayoutEngine` matches windows against both frames so a re-apply after
+    /// the Dock hops keeps every window in its slot. See `TilingFrame`.
     public private(set) var dockReserveAllDisplays: Bool
     private let fileURL: URL
     private var observers: [UUID: () -> Void] = [:]
 
-    public static let currentVersion = 4
+    public static let currentVersion = 5
 
     public init(fileURL: URL) throws {
         self.fileURL = fileURL
@@ -38,7 +39,7 @@ public final class SettingsStore {
             self.animation = .default
             self.dragSwap = .default
             self.diagnosticsEnabled = true
-            self.dockReserveAllDisplays = true
+            self.dockReserveAllDisplays = false
             try persist()
         }
     }
@@ -96,31 +97,37 @@ public final class SettingsStore {
     private static func decodeWithMigration(data: Data) throws -> Decoded {
         let versionProbe = try JSONDecoder().decode(VersionProbe.self, from: data)
         switch versionProbe.version {
+        case 5:
+            let v5 = try JSONDecoder().decode(StoredFile.self, from: data)
+            return Decoded(animation: v5.animation, dragSwap: v5.dragSwap,
+                           diagnosticsEnabled: v5.diagnosticsEnabled,
+                           dockReserveAllDisplays: v5.dockReserveAllDisplays,
+                           needsRewrite: false)
         case 4:
             let v4 = try JSONDecoder().decode(StoredFile.self, from: data)
+            // V0.8.2: move everyone to reserving the Dock only where it is.
+            // v4's `true` was almost always the untouched default, and the
+            // stability it bought now comes from `LayoutEngine`'s alternate
+            // frames instead. Turning it back on sticks from v5 onward.
             return Decoded(animation: v4.animation, dragSwap: v4.dragSwap,
                            diagnosticsEnabled: v4.diagnosticsEnabled,
-                           dockReserveAllDisplays: v4.dockReserveAllDisplays,
-                           needsRewrite: false)
+                           dockReserveAllDisplays: false, needsRewrite: true)
         case 3:
             let v3 = try JSONDecoder().decode(StoredFileV3.self, from: data)
-            // V0.7.6: default the escape hatch OFF for upgraders, i.e. keep
-            // reserving on every display. Someone upgrading already has the
-            // stable-tiling behaviour and must not have it changed under them.
             return Decoded(animation: v3.animation, dragSwap: v3.dragSwap,
                            diagnosticsEnabled: v3.diagnosticsEnabled,
-                           dockReserveAllDisplays: true, needsRewrite: true)
+                           dockReserveAllDisplays: false, needsRewrite: true)
         case 2:
             let v2 = try JSONDecoder().decode(StoredFileV2.self, from: data)
             // Default V0.6 diagnostics ON for upgraded users — they can
             // still opt out via the AboutTab toggle.
             return Decoded(animation: v2.animation, dragSwap: v2.dragSwap,
-                           diagnosticsEnabled: true, dockReserveAllDisplays: true,
+                           diagnosticsEnabled: true, dockReserveAllDisplays: false,
                            needsRewrite: true)
         case 1:
             let v1 = try JSONDecoder().decode(StoredFileV1.self, from: data)
             return Decoded(animation: v1.animation, dragSwap: .default,
-                           diagnosticsEnabled: true, dockReserveAllDisplays: true,
+                           diagnosticsEnabled: true, dockReserveAllDisplays: false,
                            needsRewrite: true)
         default:
             guard versionProbe.version > currentVersion else {
@@ -142,7 +149,7 @@ public final class SettingsStore {
                 animation: future.animation ?? .default,
                 dragSwap: future.dragSwap ?? .default,
                 diagnosticsEnabled: future.diagnosticsEnabled ?? true,
-                dockReserveAllDisplays: future.dockReserveAllDisplays ?? true,
+                dockReserveAllDisplays: future.dockReserveAllDisplays ?? false,
                 needsRewrite: false
             )
         }
